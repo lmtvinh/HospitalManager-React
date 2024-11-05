@@ -5,12 +5,12 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { AppProvider } from '@toolpad/core/react-router-dom';
-import { Navigation } from '@toolpad/core';
+import { NavigateOptions, Navigation, Router } from '@toolpad/core';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
-import { Outlet, useRoutes } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
 const NAVIGATION: Navigation = [
   // {
@@ -18,9 +18,8 @@ const NAVIGATION: Navigation = [
   //   title: 'Main items',
   // },
   {
-    segment: '',
+    segment: 'admin',
     title: 'Dashboard',
-    action: '/admin',
     icon: <DashboardIcon />,
   },
   {
@@ -39,8 +38,23 @@ const AUTHENTICATION = {
   signOut: () => {},
 };
 export default function AdminLayoutComponent() {
+  const navigate = useNavigate();
+  const pathname = useLocation().pathname;
+  const searchParams = new URLSearchParams(useLocation().search);
+
+  const router: Router = React.useMemo(
+    () => ({
+      navigate: (url: string | URL, options?: NavigateOptions) => {
+        navigate(url.toString());
+      },
+      pathname,
+      searchParams,
+    }),
+    [navigate, pathname, searchParams]
+  );
+
   return (
-    <AppProvider navigation={NAVIGATION} branding={BRANDING} router={undefined} authentication={AUTHENTICATION}>
+    <AppProvider navigation={NAVIGATION} branding={BRANDING} router={router} authentication={AUTHENTICATION}>
       <DashboardLayout>
         <PageContainer>
           <Outlet />
