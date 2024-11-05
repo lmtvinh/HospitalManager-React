@@ -11,7 +11,10 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { Outlet, useLocation, useNavigate, useRoutes } from 'react-router-dom';
-
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import { viVN } from '@mui/material/locale';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { viVN as viDG } from '@mui/x-data-grid/locales';
 const NAVIGATION: Navigation = [
   // {
   //   kind: 'header',
@@ -26,6 +29,11 @@ const NAVIGATION: Navigation = [
     segment: 'admin/orders',
     title: 'Orders',
     icon: <ShoppingCartIcon />,
+  },
+  {
+    segment: 'admin/departments',
+    title: 'Quản lý phòng khám',
+    icon: <MedicalServicesIcon />,
   },
 ];
 
@@ -52,14 +60,30 @@ export default function AdminLayoutComponent() {
     }),
     [navigate, pathname, searchParams]
   );
-
+  const theme = createTheme(
+    {
+      palette: {
+        primary: { main: '#1976d2' },
+      },
+    },
+    viVN,
+    viDG
+  );
   return (
-    <AppProvider navigation={NAVIGATION} branding={BRANDING} router={router} authentication={AUTHENTICATION}>
-      <DashboardLayout>
-        <PageContainer>
-          <Outlet />
-        </PageContainer>
-      </DashboardLayout>
-    </AppProvider>
+    <ThemeProvider theme={theme}>
+      <AppProvider
+        theme={theme}
+        navigation={NAVIGATION}
+        branding={BRANDING}
+        router={router}
+        authentication={AUTHENTICATION}
+      >
+        <DashboardLayout>
+          <PageContainer>
+            <Outlet />
+          </PageContainer>
+        </DashboardLayout>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
