@@ -1,7 +1,10 @@
 import React from 'react'
-
-export default function index() {
+import Header from './components/header'
+import './index.css'
+export default function HomePage() {
   return (
-    <div>index</div>
+    <div>
+      <Header />
+    </div>
   )
 }
