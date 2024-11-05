@@ -1,1 +1,0 @@
-# HospitalManager-React
