@@ -1,12 +1,19 @@
 import AdminLayoutComponent from '@/pages/admin/components/layout';
 import ListDepartment from '@/pages/admin/department';
 import HomePage from '@/pages/home';
+import HomeLayout from '@/pages/home/components/layout';
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 
 const routerObjects: RouteObject[] = [
   {
     path: '/',
-    element: <HomePage />,
+    element: <HomeLayout />,
+    children: [
+      {
+        path: '',
+        element: <HomePage />,
+      },
+    ],
   },
   {
     path: '/admin',
