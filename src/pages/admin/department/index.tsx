@@ -1,6 +1,8 @@
 import { Department } from '@/types/department';
 import { Paginated } from '@/types/paginated';
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { PageContainer, PageContainerToolbar } from '@toolpad/core';
+import CreateModal from './components/create-modal';
 
 const columns: GridColDef[] = [
   { field: 'departmentId', headerName: 'Mã phòng khám', minWidth: 150 },
@@ -24,7 +26,10 @@ const data: Paginated<Department> = {
 
 export default function ListDepartment() {
   return (
-    <div>
+    <PageContainer
+    slots={{ toolbar: PageToolbar }}
+    >
+
       <DataGrid
         rows={data.data}
         columns={columns}
@@ -36,6 +41,16 @@ export default function ListDepartment() {
           },
         }}
       />
-    </div>
+          </PageContainer>
+
+
+  );
+}
+
+function PageToolbar() {
+  return (
+    <PageContainerToolbar>
+      <CreateModal />
+    </PageContainerToolbar>
   );
 }

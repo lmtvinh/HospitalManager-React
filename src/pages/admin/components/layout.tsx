@@ -9,7 +9,6 @@ import { Navigation, Router } from '@toolpad/core';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { PageContainer } from '@toolpad/core/PageContainer';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import { viVN } from '@mui/material/locale';
@@ -79,9 +78,7 @@ export default function AdminLayoutComponent() {
         authentication={AUTHENTICATION}
       >
         <DashboardLayout>
-          <PageContainer>
             <Outlet />
-          </PageContainer>
         </DashboardLayout>
       </AppProvider>
     </ThemeProvider>

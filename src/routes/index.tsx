@@ -1,7 +1,7 @@
 import AdminLayoutComponent from '@/pages/admin/components/layout';
 import ListDepartment from '@/pages/admin/department';
 import HomePage from '@/pages/home';
-import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouteObject } from 'react-router-dom';
 
 const routerObjects: RouteObject[] = [
   {
