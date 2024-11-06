@@ -5,12 +5,12 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { AppProvider } from '@toolpad/core/react-router-dom';
-import { NavigateOptions, Navigation, Router } from '@toolpad/core';
+import { Navigation, Router } from '@toolpad/core';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
-import { Outlet, useLocation, useNavigate, useRoutes } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import { viVN } from '@mui/material/locale';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -52,7 +52,7 @@ export default function AdminLayoutComponent() {
 
   const router: Router = React.useMemo(
     () => ({
-      navigate: (url: string | URL, options?: NavigateOptions) => {
+      navigate: (url: string | URL) => {
         navigate(url.toString());
       },
       pathname,
