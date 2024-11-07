@@ -1,6 +1,5 @@
-import '~bootstrap/dist/css/bootstrap.min.css';
 import '@/assets/css/main.css';
-
+import './index.scss';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'aos/dist/aos.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -11,6 +10,8 @@ import { Outlet } from 'react-router-dom';
 
 export default function HomeLayout() {
   return (
-    <Outlet />
+   <main id='home'>
+     <Outlet />
+   </main>
   )
 }
