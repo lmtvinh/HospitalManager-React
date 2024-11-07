@@ -11,4 +11,11 @@ export default defineConfig({
       '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
     },
   },
+  css:{
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+      },
+    }
+  }
 });
