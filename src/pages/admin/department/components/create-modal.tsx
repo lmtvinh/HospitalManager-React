@@ -7,13 +7,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Department, DepartmentSchema } from '../validations';
 import { FormControl, TextField, } from '@mui/material';
 export default function CreateModal() {
-    const { toggle, value } = useBoolean()
+    const { toggle, value,setFalse } = useBoolean()
     const form = useForm<Department>({
         resolver: zodResolver(DepartmentSchema)
     })
+    const onClosed = () => {
+        setFalse()
+        form.reset()
+    }
     const onSubmit = (data: Department) => {
         console.log(data)
+
     }
+
     return (
         <>
             <Button variant="contained" onClick={toggle} startIcon={<AddIcon />}>
@@ -22,7 +28,7 @@ export default function CreateModal() {
             <Dialog
                 component={'form'}
                 onSubmit={form.handleSubmit(onSubmit)}
-                onClose={toggle}
+                onClose={onClosed}
                 aria-labelledby="customized-dialog-title"
                 open={value}
                 
@@ -67,7 +73,7 @@ export default function CreateModal() {
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus type='reset' variant='outlined' >
+                    <Button autoFocus type='reset' variant='outlined'  onClick={onClosed}>
                         Đóng
                     </Button>
                     <Button autoFocus type='submit' variant='contained'>

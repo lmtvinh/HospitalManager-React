@@ -6,34 +6,69 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { AppProvider } from '@toolpad/core/react-router-dom';
 import { Navigation, Router } from '@toolpad/core';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import { viVN } from '@mui/material/locale';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { viVN as viDG } from '@mui/x-data-grid/locales';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import PersonIcon from '@mui/icons-material/Person';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import EmergencyIcon from '@mui/icons-material/Emergency';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import PeopleIcon from '@mui/icons-material/People';
+import { THEME } from '@/configs/themes';
+
 const NAVIGATION: Navigation = [
-  // {
-  //   kind: 'header',
-  //   title: 'Main items',
-  // },
   {
     segment: 'admin',
     title: 'Dashboard',
     icon: <DashboardIcon />,
   },
   {
-    segment: 'admin/orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
-  },
-  {
     segment: 'admin/departments',
     title: 'Quản lý phòng khám',
+    icon: <LocalHospitalIcon />,
+  },
+  {
+    segment: 'admin/doctors',
+    title: 'Quản lý bác sĩ',
+    icon: <PersonIcon />,
+  },
+  {
+    segment: 'admin/doctor-schedules',
+    title: 'Lịch làm việc bác sĩ',
+    icon: <ScheduleIcon />,
+  },
+  {
+    segment: 'admin/emergency-contacts',
+    title: 'Liên hệ khẩn cấp',
+    icon: <EmergencyIcon />,
+  },
+  {
+    segment: 'admin/invoices',
+    title: 'Hóa đơn',
+    icon: <ReceiptIcon />,
+  },
+  {
+    segment: 'admin/patients',
+    title: 'Quản lý bệnh nhân',
+    icon: <PeopleIcon />,
+  },
+  {
+    segment: 'admin/diagnoses',
+    title: 'Chẩn đoán',
     icon: <MedicalServicesIcon />,
   },
+  {
+    segment: 'admin/appointments',
+    title: 'Quản lý lịch hẹn',
+    icon: <EventNoteIcon />,
+  }
 ];
 
 const BRANDING = {
@@ -46,8 +81,9 @@ const AUTHENTICATION = {
 };
 export default function AdminLayoutComponent() {
   const navigate = useNavigate();
-  const pathname = useLocation().pathname;
-  const searchParams = new URLSearchParams(useLocation().search);
+  const location = useLocation();
+  const pathname = location.pathname;
+  const searchParams = new URLSearchParams(location.search);
 
   const router: Router = React.useMemo(
     () => ({
@@ -60,11 +96,7 @@ export default function AdminLayoutComponent() {
     [navigate, pathname, searchParams]
   );
   const theme = createTheme(
-    {
-      palette: {
-        primary: { main: '#1976d2' },
-      },
-    },
+    THEME as object,
     viVN,
     viDG
   );
