@@ -22,7 +22,6 @@ import EmergencyIcon from '@mui/icons-material/Emergency';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PeopleIcon from '@mui/icons-material/People';
 import { THEME } from '@/configs/themes';
-import { appointmentsClient } from '@/services';
 
 const NAVIGATION: Navigation = [
   {
@@ -85,11 +84,7 @@ export default function AdminLayoutComponent() {
   const location = useLocation();
   const pathname = location.pathname;
   const searchParams = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
-
-  React.useEffect(() => {
-    appointmentsClient.appointmentsAll().then(console.log);
-  }, []);
-
+  
   const router: Router = React.useMemo(
     () => ({
       navigate: (url: string | URL) => {

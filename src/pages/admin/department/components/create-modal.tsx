@@ -6,18 +6,39 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Department, DepartmentSchema } from '../validations';
 import { FormControl, TextField, } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { departmentsClient } from '@/services/mock';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useNotifications } from '@toolpad/core/useNotifications';
 export default function CreateModal() {
-    const { toggle, value,setFalse } = useBoolean()
+    const { toggle, value, setFalse } = useBoolean()
     const form = useForm<Department>({
         resolver: zodResolver(DepartmentSchema)
+    })
+    const queryClient = useQueryClient()
+    const { show } = useNotifications()
+    const { mutateAsync, isPending } = useMutation({
+        mutationKey: ['departments', 'create'],
+        mutationFn: (data: Department) => {
+            return departmentsClient.departmentsPOST(data)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['departments']
+            })
+            show('Tạo mới phòng khám thành công', {
+                autoHideDuration: 3000,
+                severity: 'success',
+            })
+        }
     })
     const onClosed = () => {
         setFalse()
         form.reset()
     }
-    const onSubmit = (data: Department) => {
-        console.log(data)
-
+    const onSubmit = async (data: Department) => {
+       await mutateAsync(data)
+        onClosed()
     }
 
     return (
@@ -31,7 +52,7 @@ export default function CreateModal() {
                 onClose={onClosed}
                 aria-labelledby="customized-dialog-title"
                 open={value}
-                
+
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                     Tạo mới phòng khám
@@ -73,12 +94,18 @@ export default function CreateModal() {
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus type='reset' variant='outlined'  onClick={onClosed}>
+                    <Button
+                    disabled={isPending}
+                    autoFocus type='reset' variant='outlined' onClick={onClosed}>
                         Đóng
                     </Button>
-                    <Button autoFocus type='submit' variant='contained'>
+                    <LoadingButton 
+                    
+                    autoFocus type='submit' variant='contained'
+                    loading={isPending}
+                    >
                         Tạo mới
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </Dialog>
         </>
