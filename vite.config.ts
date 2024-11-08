@@ -2,7 +2,18 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
-// https://vite.dev/config/
+import { config } from 'dotenv';
+config({})
+const SERVER_URL = process.env.SERVER_URL;
+const proxy = SERVER_URL ? {
+  '/api': {
+    target: SERVER_URL,
+    changeOrigin: true,
+    rewrite: (path:string) => path,
+  }
+} : undefined;
+
+
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   // root: path.resolve(__dirname, 'src'),
@@ -17,5 +28,8 @@ export default defineConfig({
         quietDeps: true,
       },
     }
+  },
+  server: {
+    proxy,
   }
 });

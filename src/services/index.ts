@@ -3,7 +3,7 @@ import { AccountClient, AppointmentsClient, DepartmentsClient, DiagnosesClient, 
 
 const instance = axios.create({
 });
-const BASE_URL = 'http://localhost:5265';
+const BASE_URL = '';
 export const accountClient = new AccountClient(BASE_URL,instance);
 export const appointmentsClient = new AppointmentsClient(BASE_URL,instance);
 export const departmentsClient = new DepartmentsClient(BASE_URL,instance);
