@@ -94,6 +94,7 @@ export const departmentsClient: MethodOnly<DepartmentsClient> = {
             setTimeout(() => {
                 const index = store.departments.findIndex(d => d.departmentId === id);
                 if (index !== -1) {
+                    store.departments=[...store.departments];
                     store.departments[index] = {
                         ...store.departments[index],
                         ...body
@@ -108,13 +109,8 @@ export const departmentsClient: MethodOnly<DepartmentsClient> = {
     departmentsDELETE: function (id: number, signal?: AbortSignal): Promise<void> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                const index = store.departments.findIndex(d => d.departmentId === id);
-                if (index !== -1) {
-                    store.departments.splice(index, 1);
-                    resolve();
-                } else {
-                    reject(new Error("Not found"));
-                }
+                store.departments = store.departments.filter(d => d.departmentId !== id);
+                resolve();
             }, 1000);
         })
     }

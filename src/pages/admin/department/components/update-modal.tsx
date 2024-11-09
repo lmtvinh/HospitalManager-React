@@ -3,16 +3,18 @@ import { GridCloseIcon } from '@mui/x-data-grid';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Department, DepartmentSchema } from '../validations';
-import { FormControl, TextField, } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { departmentsClient } from '@/services/mock';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { DialogProps } from '@toolpad/core';
 import React from 'react';
+import FormInput from '../../components/form/FormInput';
+import { getDefaultValue } from '@/utils/form-utils';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
     const form = useForm<Department>({
+        defaultValues: getDefaultValue(DepartmentSchema),
         resolver: zodResolver(DepartmentSchema)
     })
     const queryClient = useQueryClient()
@@ -55,8 +57,6 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
     }
 
     return (
-
-
         <Dialog
             component={'form'}
             onSubmit={form.handleSubmit(onSubmit)}
@@ -82,26 +82,9 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             </IconButton>
             <DialogContent dividers>
                 <Stack gap={3} minWidth={400}>
-                    <FormControl fullWidth>
-                        <TextField
-                            {...form.register('departmentName')}
-                            label="Tên phòng khám"
-                            variant="outlined"
-                            error={!!form.formState.errors.departmentName}
-                            helperText={form.formState.errors.departmentName?.message}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <TextField
-                            {...form.register('description')}
-                            label="Mô tả"
-                            variant="outlined"
-                            multiline
-                            rows={3}
-                            error={!!form.formState.errors.description}
-                            helperText={form.formState.errors.description?.message}
-                        />
-                    </FormControl>
+                    <FormInput control={form.control} name='departmentName' label='Tên phòng khám' variant='outlined' />
+                    <FormInput control={form.control} name='description' label='Mô tả' variant='outlined' multiline rows={3} />
+
                 </Stack>
             </DialogContent>
             <DialogActions>

@@ -1,4 +1,4 @@
-import '@/assets/css/main.css';
+import '@/assets/css/main.scss';
 import './index.scss';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'aos/dist/aos.css';
