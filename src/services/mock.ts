@@ -36,7 +36,7 @@ function createDoctor(): Doctor {
             min: 1,
             max: 4
         }),
-        phoneNumber: faker.helpers.fromRegExp(/^(03|07|08|09)\d{8}$/),
+        phoneNumber: "03"+faker.string.numeric({ length: 8 }),
     };
 }
 

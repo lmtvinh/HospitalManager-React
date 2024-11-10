@@ -5,7 +5,7 @@ import { Control, Controller, FieldValues, Path } from 'react-hook-form'
 interface TextInputProps<T extends FieldValues> extends InputProps {
     control: Control<T>
     // only allow key of T
-    name: Path<T>
+    name: Path<T> 
     label: string,
     variant?: "outlined" | "standard" | "filled"
     controlProps?: React.ComponentProps<typeof FormControl>

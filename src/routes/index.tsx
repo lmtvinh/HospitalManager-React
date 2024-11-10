@@ -1,5 +1,6 @@
 import AdminLayoutComponent from '@/pages/admin/components/layout';
 import ListDepartment from '@/pages/admin/department';
+import DoctorManagementPage from '@/pages/admin/doctor';
 import HomePage from '@/pages/home';
 import HomeLayout from '@/pages/home/components/layout';
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
@@ -27,6 +28,10 @@ const routerObjects: RouteObject[] = [
         path: 'departments',
         element: <ListDepartment />,
       },
+      {
+        path: 'doctors',
+        element: <DoctorManagementPage />,
+      }
     ],
   },
 ];
