@@ -5,12 +5,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DoctorRegistration, DoctorRegistrationSchema } from '../validations';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { doctorsClient } from '@/services/mock';
+import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { getDefaultValue } from '@/utils/form-utils';
 import DoctorForm from './doctor-form';
+import { usePostApiDoctorsDoctorregister } from '@/services/api';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean()
     const form = useForm<DoctorRegistration>({
@@ -19,27 +19,25 @@ export default function CreateModal() {
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
-    const { mutateAsync, isPending } = useMutation({
-        mutationKey: ['doctors', 'create'],
-        mutationFn: (data: DoctorRegistration) => {
-            return doctorsClient.doctorsPOST(data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['doctors']
-            })
-            show('Tạo mới phòng khám thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
+    const { mutateAsync, isPending } = usePostApiDoctorsDoctorregister({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['doctors']
+                })
+                show('Tạo mới phòng khám thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                })
+            }
         }
-    })
+    });
     const onClosed = () => {
         setFalse()
         form.reset()
     }
     const onSubmit = async (data: DoctorRegistration) => {
-        await mutateAsync(data)
+        await mutateAsync({data})
         onClosed()
     }
 

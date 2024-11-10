@@ -3,14 +3,14 @@ import { GridCloseIcon } from '@mui/x-data-grid';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Department, DepartmentSchema } from '../validations';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { departmentsClient } from '@/services/mock';
+import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import FormInput from '../../components/form/FormInput';
 import { getDefaultValue } from '@/utils/form-utils';
+import { useGetApiDepartmentsId, usePutApiDepartmentsId } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
     const form = useForm<Department>({
@@ -20,31 +20,25 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
     const queryClient = useQueryClient()
     const { show } = useNotifications()
 
-    const { data, isLoading } = useQuery({
-        queryKey: ['departments', payload],
-        queryFn: () => departmentsClient.departmentsGET(payload),
-        enabled: open && !!payload
-    })
+    const { data, isLoading } = useGetApiDepartmentsId(payload)
 
     React.useEffect(() => {
         if (data) {
-            form.reset(data)
+            form.reset(data.data as any)
         }
     }, [data])
 
-    const { mutateAsync, isPending } = useMutation({
-        mutationKey: ['departments', 'create'],
-        mutationFn: (data: Department) => {
-            return departmentsClient.departmentsPUT(payload, data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['departments']
-            })
-            show('Cập nhật phòng khám thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
+    const { mutateAsync, isPending } = usePutApiDepartmentsId({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['departments']
+                })
+                show('Cập nhật phòng khám thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                })
+            }
         }
     })
     const onClosed = () => {
@@ -52,7 +46,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         form.reset()
     }
     const onSubmit = async (data: Department) => {
-        await mutateAsync(data)
+        await mutateAsync({ data, id: payload })
         onClosed()
     }
 

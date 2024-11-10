@@ -1,52 +1,35 @@
-import { doctorsClient } from '@/services/mock';
 import { GridActionsCellItem, GridColDef, GridRowParams } from '@mui/x-data-grid';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDialogs, useNotifications } from '@toolpad/core';
 import React from 'react';
-import { Doctor, Department } from '@/services/api-client';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
+import { useDeleteApiDoctorsId, useGetApiDoctors } from '@/services/api';
+import { Department, Doctor } from '@/types';
 export default function useDoctor() {
-    const { data, isLoading } = useQuery({
-        queryKey: ['doctors'],
-        queryFn: () => doctorsClient.doctorsAll(),
-        select: (data) => data
-    })
+    const { data, isLoading } = useGetApiDoctors();
     const { show } = useNotifications()
     const queryClient = useQueryClient()
 
-    const { mutateAsync } = useMutation({
-        mutationFn: (id: number) => {
-            return doctorsClient.doctorsDELETE(id)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['doctors']
-            })
-            show('Xóa bác sĩ thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
-        },
-    })
-
+    const { mutateAsync } = useDeleteApiDoctorsId({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['doctors']
+                })
+                show('Xóa bác sĩ thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                })
+            },
+        }
+    });
     const dialogs = useDialogs();
     const handleEdit = (id: number) => {
         dialogs.open(UpdateModal, id);
     }
-    // doctorId?: number;
-    // name?: string | undefined;
-    // specialization?: string | undefined;
-    // phoneNumber?: string | undefined;
-    // email?: string | undefined;
-    // departmentId?: number | undefined;
-    // userId?: string | undefined;
-    // appointments?: Appointment[] | undefined;
-    // department?: Department;
-    // doctorSchedules?: DoctorSchedule[] | undefined;
-    // user?: IdentityUser;
     const columns: GridColDef[] = React.useMemo(() => {
         return [
             { field: 'doctorId', headerName: 'Mã bác sĩ', width: 150 },
@@ -54,7 +37,7 @@ export default function useDoctor() {
             { field: 'phoneNumber', headerName: 'Số điện thoại', width: 150 },
             { field: 'email', headerName: 'Email', width: 150 },
             { field: 'specialization', headerName: 'Chuyên khoa', width: 150 },
-            { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value:Department) => value.departmentName },
+            { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value: Department) => value.departmentName },
             {
                 field: 'actions',
                 type: 'actions',
@@ -78,7 +61,7 @@ export default function useDoctor() {
                                     title: "Xác nhận xóa",
                                     async onClose(result) {
                                         if (result) {
-                                            await mutateAsync(id)
+                                            await mutateAsync({ id })
                                         }
                                     },
                                 })
@@ -92,7 +75,7 @@ export default function useDoctor() {
     return {
         table: {
             columns,
-            data,
+            data:data?.data,
             isLoading
         }
     }

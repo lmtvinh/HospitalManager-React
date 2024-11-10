@@ -59,11 +59,18 @@
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
     "lodash": "^4.17.21",
+    "msw": "^2.6.3",
     "nswag": "^14.1.0",
+    "orval": "^7.2.0",
     "sass-embedded": "^1.80.6",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.11.0",
     "vite": "^5.4.10",
     "vite-tsconfig-paths": "^5.1.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

@@ -2,8 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import { GridCloseIcon } from '@mui/x-data-grid';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { doctorsClient } from '@/services/mock';
+import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { DialogProps } from '@toolpad/core';
@@ -11,6 +10,7 @@ import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
 import { DoctorUpdate, DoctorUpdateSchema } from '../validations';
 import DoctorForm from './doctor-form';
+import { useGetApiDoctorsId, usePutApiDoctorsId } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
     const form = useForm<DoctorUpdate>({
@@ -20,31 +20,25 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
     const queryClient = useQueryClient()
     const { show } = useNotifications()
 
-    const { data, isLoading } = useQuery({
-        queryKey: ['doctors', payload],
-        queryFn: () => doctorsClient.doctorsGET(payload),
-        enabled: open && !!payload
-    })
+    const { data, isLoading } = useGetApiDoctorsId(payload)
 
     React.useEffect(() => {
         if (data) {
-            form.reset(data)
+            form.reset(data.data as any)
         }
     }, [data])
 
-    const { mutateAsync, isPending } = useMutation({
-        mutationKey: ['doctor', 'create'],
-        mutationFn: (data: DoctorUpdate) => {
-            return doctorsClient.doctorsPUT(payload, data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['doctors']
-            })
-            show('Cập nhật bác sĩ thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
+    const { mutateAsync, isPending } = usePutApiDoctorsId({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['doctors']
+                })
+                show('Cập nhật bác sĩ thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                })
+            }
         }
     })
     const onClosed = () => {
@@ -52,7 +46,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         form.reset()
     }
     const onSubmit = async (data: DoctorUpdate) => {
-        await mutateAsync(data)
+        await mutateAsync({ data, id: payload })
         onClosed()
     }
 

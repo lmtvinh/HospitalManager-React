@@ -1,6 +1,5 @@
-import { departmentsClient } from '@/services/mock';
 import { GridActionsCellItem, GridColDef, GridRowParams } from '@mui/x-data-grid';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDialogs, useNotifications } from '@toolpad/core';
 import React from 'react';
 import { Department } from '../validations';
@@ -8,29 +7,25 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
+import { useDeleteApiDepartmentsId, useGetApiDepartments } from '@/services/api';
 export default function useDepartment() {
-    const { data, isLoading } = useQuery({
-        queryKey: ['departments'],
-        queryFn: () => departmentsClient.departmentsAll(),
-        select: (data) => data
-    })
+    const { data, isLoading } = useGetApiDepartments();
     const { show } = useNotifications()
     const queryClient = useQueryClient()
 
-    const { mutateAsync } = useMutation({
-        mutationFn: (id: number) => {
-            return departmentsClient.departmentsDELETE(id)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['departments']
-            })
-            show('Xóa phòng khám thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
-        },
-    })
+    const { mutateAsync } = useDeleteApiDepartmentsId({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['departments']
+                })
+                show('Xóa phòng khám thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                })
+            },
+        }
+    });
 
     const dialogs = useDialogs();
     const handleEdit = (id: number) => {
@@ -65,7 +60,7 @@ export default function useDepartment() {
                                     title: "Xác nhận xóa",
                                     async onClose(result) {
                                         if (result) {
-                                            await mutateAsync(id)
+                                            await mutateAsync({ id })
                                         }
                                     },
                                 })
@@ -79,7 +74,7 @@ export default function useDepartment() {
     return {
         table: {
             columns,
-            data,
+            data:data?.data,
             isLoading
         }
     }
