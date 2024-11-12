@@ -1,5 +1,5 @@
-import { GridActionsCellItem, GridColDef, GridRowParams } from '@mui/x-data-grid';
-import { useQueryClient } from '@tanstack/react-query';
+import { GridActionsCellItem, GridCallbackDetails, GridColDef, GridFilterModel, GridPaginationModel, GridRowParams, GridSortModel } from '@mui/x-data-grid';
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
 import { useDialogs, useNotifications } from '@toolpad/core';
 import React from 'react';
 import { Department } from '../validations';
@@ -7,13 +7,52 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
-import { useDeleteApiDepartmentsId, useGetApiDepartments } from '@/services/api';
+import { useDeleteDepartment, useGetDepartments } from '@/services/api';
+import { GetDepartmentsParams } from '@/types';
+import { camelCaseToPascalCase } from '@/utils/string-utils';
 export default function useDepartment() {
-    const { data, isLoading } = useGetApiDepartments();
+    const [filter, setFilter] = React.useState<GetDepartmentsParams>({
+        Page: 0,
+        PageSize: 10,
+    })
+
+    const handlePageChange = (page: GridPaginationModel) => {
+        setFilter(pre => ({
+            ...pre,
+            Page: page.page,
+            PageSize: page.pageSize
+        }))
+    }
+
+    const handleFilterModelChange = (model: GridFilterModel) => {
+        setFilter(pre => ({
+            ...pre,
+            Search: model.quickFilterValues?.[0] as string
+        }))
+    }
+
+    const handleSortModelChange = (model: GridSortModel, details: GridCallbackDetails) => {
+        console.log(model, details)
+        setFilter(pre => ({
+            ...pre,
+            SortBy: model[0]?.field,
+            SortOrder: model[0]?.sort|| 'asc'
+        }))
+    }
+
+    const { data, isLoading } = useGetDepartments({
+        ...filter,
+        Page: filter.Page! + 1,
+        SortBy: camelCaseToPascalCase(filter.SortBy || 'departmentId')
+    }, {
+        query: {
+            placeholderData: keepPreviousData
+        }
+    });
     const { show } = useNotifications()
     const queryClient = useQueryClient()
 
-    const { mutateAsync } = useDeleteApiDepartmentsId({
+    const { mutateAsync } = useDeleteDepartment({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
@@ -74,8 +113,26 @@ export default function useDepartment() {
     return {
         table: {
             columns,
-            data:data?.data,
-            isLoading
+            data: data?.data || {
+                data: [],
+                totalItems: 0
+            },
+            isLoading,
+            handlePageChange,
+            handleFilterModelChange,
+            handleSortModelChange,
+            filterModel: {
+                items: [],
+                quickFilterValues: filter.Search ? [filter.Search] : []
+            },
+            pagination: {
+                page: filter.Page!,
+                pageSize: filter.PageSize!,
+            },
+            sortModel:[{
+                field: filter.SortBy || 'departmentId',
+                sort: filter.SortOrder || 'asc'
+            }]
         }
     }
 }

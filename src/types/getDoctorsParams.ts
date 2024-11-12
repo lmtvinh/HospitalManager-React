@@ -55,4 +55,6 @@ export type GetDoctorsParams = {
     PageSize?: number;
     Skip?: number;
     Take?: number;
+    SortBy?: string;
+    SortOrder?: string;
 };

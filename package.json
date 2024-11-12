@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "gen:api": "nswag run ./config.nswag"
+    "gen:api": "orval --config ./orval.config.cjs"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",

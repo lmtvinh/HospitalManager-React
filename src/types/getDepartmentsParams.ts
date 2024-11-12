@@ -29,4 +29,6 @@ export type GetDepartmentsParams = {
     PageSize?: number;
     Skip?: number;
     Take?: number;
+    SortBy?: string;
+    SortOrder?: string;
 };

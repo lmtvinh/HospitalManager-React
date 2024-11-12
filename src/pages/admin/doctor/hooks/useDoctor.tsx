@@ -6,14 +6,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
-import { useDeleteApiDoctorsId, useGetApiDoctors } from '@/services/api';
 import { Department, Doctor } from '@/types';
+import { useDeleteDoctor, useGetDoctors } from '@/services/api';
 export default function useDoctor() {
-    const { data, isLoading } = useGetApiDoctors();
+    const { data, isLoading } = useGetDoctors();
     const { show } = useNotifications()
     const queryClient = useQueryClient()
 
-    const { mutateAsync } = useDeleteApiDoctorsId({
+    const { mutateAsync } = useDeleteDoctor({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({

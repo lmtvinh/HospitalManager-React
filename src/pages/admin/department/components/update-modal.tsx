@@ -10,7 +10,7 @@ import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import FormInput from '../../components/form/FormInput';
 import { getDefaultValue } from '@/utils/form-utils';
-import { useGetApiDepartmentsId, usePutApiDepartmentsId } from '@/services/api';
+import { useGetDepartment, usePutDepartment } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
     const form = useForm<Department>({
@@ -20,7 +20,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
     const queryClient = useQueryClient()
     const { show } = useNotifications()
 
-    const { data, isLoading } = useGetApiDepartmentsId(payload)
+    const { data, isLoading } = useGetDepartment(payload)
 
     React.useEffect(() => {
         if (data) {
@@ -28,7 +28,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         }
     }, [data])
 
-    const { mutateAsync, isPending } = usePutApiDepartmentsId({
+    const { mutateAsync, isPending } = usePutDepartment({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({

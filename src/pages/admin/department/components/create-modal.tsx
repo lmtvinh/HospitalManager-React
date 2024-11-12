@@ -10,7 +10,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import FormInput from '../../components/form/FormInput';
 import { getDefaultValue } from '@/utils/form-utils';
-import { usePostApiDepartments } from '@/services/api';
+import { usePostDepartment } from '@/services/api';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean()
     const form = useForm<Department>({
@@ -19,7 +19,7 @@ export default function CreateModal() {
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
-    const { mutateAsync, isPending } = usePostApiDepartments({
+    const { mutateAsync, isPending } = usePostDepartment({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({

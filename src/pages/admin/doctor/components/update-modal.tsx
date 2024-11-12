@@ -10,7 +10,7 @@ import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
 import { DoctorUpdate, DoctorUpdateSchema } from '../validations';
 import DoctorForm from './doctor-form';
-import { useGetApiDoctorsId, usePutApiDoctorsId } from '@/services/api';
+import { useGetDoctor, usePutDoctor } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
     const form = useForm<DoctorUpdate>({
@@ -20,7 +20,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
     const queryClient = useQueryClient()
     const { show } = useNotifications()
 
-    const { data, isLoading } = useGetApiDoctorsId(payload)
+    const { data, isLoading } = useGetDoctor(payload)
 
     React.useEffect(() => {
         if (data) {
@@ -28,7 +28,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         }
     }, [data])
 
-    const { mutateAsync, isPending } = usePutApiDoctorsId({
+    const { mutateAsync, isPending } = usePutDoctor({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
