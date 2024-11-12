@@ -4,11 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
+import type { Department } from './department';
 
-export interface WeatherForecast {
-    date?: string;
+export interface DepartmentPaginated {
     /** @nullable */
-    summary?: string | null;
-    temperatureC?: number;
-    readonly temperatureF?: number;
+    data?: Department[] | null;
+    totalItems?: number;
 }

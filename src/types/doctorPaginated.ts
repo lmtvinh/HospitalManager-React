@@ -4,11 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
+import type { Doctor } from './doctor';
 
-export interface WeatherForecast {
-    date?: string;
+export interface DoctorPaginated {
     /** @nullable */
-    summary?: string | null;
-    temperatureC?: number;
-    readonly temperatureF?: number;
+    data?: Doctor[] | null;
+    totalItems?: number;
 }
