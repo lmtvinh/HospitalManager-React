@@ -3,14 +3,14 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "http://localhost:5265/swagger/v1/swagger.json",
+      "url": "http://103.82.194.100:5265/swagger/v1/swagger.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
   },
   "codeGenerators": {
     "openApiToTypeScriptClient": {
-      "input": "http://localhost:5265/swagger/v1/swagger.json",
+      "input": "http://103.82.194.100:5265/swagger/v1/swagger.json",
       "className": "{controller}Client",
       "moduleName": "",
       "namespace": "",
