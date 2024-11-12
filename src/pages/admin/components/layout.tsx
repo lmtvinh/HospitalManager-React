@@ -75,10 +75,10 @@ const BRANDING = {
   title: 'Quản trị hệ thống',
 };
 
-const AUTHENTICATION = {
-  signIn: () => { },
-  signOut: () => { },
-};
+// const AUTHENTICATION = {
+//   signIn: () => { },
+//   signOut: () => { },
+// };
 export default function AdminLayoutComponent() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,9 +107,12 @@ export default function AdminLayoutComponent() {
         navigation={NAVIGATION}
         branding={BRANDING}
         router={router}
-        authentication={AUTHENTICATION}
+        window={window}
+        // authentication={AUTHENTICATION}
       >
-        <DashboardLayout>
+        <DashboardLayout
+        
+        >
           <Outlet />
         </DashboardLayout>
       </AppProvider>
