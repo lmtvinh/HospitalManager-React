@@ -11,7 +11,7 @@ interface DoctorFormProps {
 
 export default function DoctorForm({ form, type }: DoctorFormProps) {
 	const { data, isLoading } = useGetDepartments({
-		PageSize: 20
+		PageSize: 100000,
 	}, {
 		query: {
 			select: data => data.data.data,

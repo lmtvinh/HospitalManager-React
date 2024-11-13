@@ -9,7 +9,7 @@ export const DoctorRegistrationSchema = z.object({
     phoneNumber: mustBePhoneNumber(),
     specialization: z.string().min(1, ValidationMessages.required('Chuyên khoa')).max(1000, ValidationMessages.maxLength('Chuyên khoa', 1000)),
     password: z.string().refine((value) => {
-        const STRONG_PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
+        const STRONG_PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/
         return STRONG_PASSWORD.test(value)
     }, {
         message: 'Mật khẩu phải chứa ít nhất 6 ký tự, 1 chữ hoa, 1 chữ thường và 1 số'

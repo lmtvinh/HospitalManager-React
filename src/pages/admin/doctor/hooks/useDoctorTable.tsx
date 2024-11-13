@@ -1,15 +1,53 @@
-import { GridActionsCellItem, GridColDef, GridRowParams } from '@mui/x-data-grid';
-import { useQueryClient } from '@tanstack/react-query';
+import { GridActionsCellItem, GridCallbackDetails, GridColDef, GridFilterModel, GridPaginationModel, GridRowParams, GridSortModel } from '@mui/x-data-grid';
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
 import { useDialogs, useNotifications } from '@toolpad/core';
 import React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
-import { Department, Doctor } from '@/types';
-import { useDeleteDoctor, useGetDoctors } from '@/services/api';
-export default function useDoctor() {
-    const { data, isLoading } = useGetDoctors();
+import { getGetDoctorsQueryKey, useDeleteDoctor, useGetDoctors } from '@/services/api';
+import { Department, Doctor, GetDoctorsParams } from '@/types';
+import { camelCaseToPascalCase } from '@/utils/string-utils';
+export default function useDoctorTable() {
+    const [filter, setFilter] = React.useState<GetDoctorsParams>({
+        Page: 0,
+        PageSize: 10,
+    })
+
+    const handlePageChange = (page: GridPaginationModel) => {
+        setFilter(pre => ({
+            ...pre,
+            Page: page.page,
+            PageSize: page.pageSize
+        }))
+    }
+
+    const handleFilterModelChange = (model: GridFilterModel) => {
+        setFilter(pre => ({
+            ...pre,
+            Search: model.quickFilterValues?.[0] as string
+        }))
+    }
+
+    const handleSortModelChange = (model: GridSortModel, details: GridCallbackDetails) => {
+        console.log(model, details)
+        setFilter(pre => ({
+            ...pre,
+            SortBy: model[0]?.field,
+            SortOrder: model[0]?.sort || 'asc'
+        }))
+    }
+
+    const { data, isLoading } = useGetDoctors({
+        ...filter,
+        Page: filter.Page! + 1,
+        SortBy: camelCaseToPascalCase(filter.SortBy || 'doctorId')
+    }, {
+        query: {
+            placeholderData: keepPreviousData
+        }
+    });
     const { show } = useNotifications()
     const queryClient = useQueryClient()
 
@@ -17,7 +55,7 @@ export default function useDoctor() {
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['doctors']
+                    queryKey: getGetDoctorsQueryKey()
                 })
                 show('Xóa bác sĩ thành công', {
                     autoHideDuration: 3000,
@@ -26,10 +64,12 @@ export default function useDoctor() {
             },
         }
     });
+
     const dialogs = useDialogs();
     const handleEdit = (id: number) => {
         dialogs.open(UpdateModal, id);
     }
+
     const columns: GridColDef[] = React.useMemo(() => {
         return [
             { field: 'doctorId', headerName: 'Mã bác sĩ', width: 150 },
@@ -37,7 +77,7 @@ export default function useDoctor() {
             { field: 'phoneNumber', headerName: 'Số điện thoại', width: 150 },
             { field: 'email', headerName: 'Email', width: 150 },
             { field: 'specialization', headerName: 'Chuyên khoa', width: 150 },
-            { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value: Department) => value.departmentName },
+            { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value: Department) => value?.departmentName },
             {
                 field: 'actions',
                 type: 'actions',
@@ -75,8 +115,26 @@ export default function useDoctor() {
     return {
         table: {
             columns,
-            data:data?.data,
-            isLoading
+            data: data?.data || {
+                data: [],
+                totalItems: 0
+            },
+            isLoading,
+            handlePageChange,
+            handleFilterModelChange,
+            handleSortModelChange,
+            filterModel: {
+                items: [],
+                quickFilterValues: filter.Search ? [filter.Search] : []
+            },
+            pagination: {
+                page: filter.Page!,
+                pageSize: filter.PageSize!,
+            },
+            sortModel: [{
+                field: filter.SortBy || 'doctorId',
+                sort: filter.SortOrder || 'asc'
+            }]
         }
     }
 }

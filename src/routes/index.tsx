@@ -1,9 +1,6 @@
 import AdminLayoutComponent from '@/pages/admin/components/layout';
 import ListDepartment from '@/pages/admin/department';
 import DoctorManagementPage from '@/pages/admin/doctor';
-import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
-import InvoiceManagementPage from '@/pages/admin/invoice';
-import PatientManagementPage from '@/pages/admin/patient';
 import HomePage from '@/pages/home';
 import HomeLayout from '@/pages/home/components/layout';
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
@@ -34,17 +31,18 @@ const routerObjects: RouteObject[] = [
       {
         path: 'doctors',
         element: <DoctorManagementPage />,
-      },{
-        path: 'doctor-schedules',
-        element: <DoctorScheduleManagementPage />,
-      },{
-        path: 'patients',
-        element: <PatientManagementPage />,
-      }
-      ,{
-        path: 'invoices',
-        element: <InvoiceManagementPage />,
-      }
+      },
+      // {
+      //   path: 'doctor-schedules',
+      //   element: <DoctorScheduleManagementPage />,
+      // },{
+      //   path: 'patients',
+      //   element: <PatientManagementPage />,
+      // }
+      // ,{
+      //   path: 'invoices',
+      //   element: <InvoiceManagementPage />,
+      // }
     ],
   },
 ];

@@ -51,6 +51,7 @@ export type GetDoctorsParams = {
     'DepartmentId.In'?: number[];
     'DepartmentId.IsNull'?: boolean;
     'DepartmentId.IsNotNull'?: boolean;
+    Search?: string;
     Page?: number;
     PageSize?: number;
     Skip?: number;

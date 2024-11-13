@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
-import { useDeleteDepartment, useGetDepartments } from '@/services/api';
+import { getGetDepartmentsQueryKey, useDeleteDepartment, useGetDepartments } from '@/services/api';
 import { GetDepartmentsParams } from '@/types';
 import { camelCaseToPascalCase } from '@/utils/string-utils';
 export default function useDepartment() {
@@ -36,7 +36,7 @@ export default function useDepartment() {
         setFilter(pre => ({
             ...pre,
             SortBy: model[0]?.field,
-            SortOrder: model[0]?.sort|| 'asc'
+            SortOrder: model[0]?.sort || 'asc'
         }))
     }
 
@@ -56,12 +56,13 @@ export default function useDepartment() {
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['departments']
+                    queryKey: getGetDepartmentsQueryKey()
                 })
                 show('Xóa phòng khám thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
+
             },
         }
     });
@@ -129,7 +130,7 @@ export default function useDepartment() {
                 page: filter.Page!,
                 pageSize: filter.PageSize!,
             },
-            sortModel:[{
+            sortModel: [{
                 field: filter.SortBy || 'departmentId',
                 sort: filter.SortOrder || 'asc'
             }]
