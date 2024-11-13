@@ -7,10 +7,12 @@
 
 export * from './appointment';
 export * from './department';
-export * from './departmentPaginated';
+export * from './departmentDTO';
+export * from './departmentDTOPaginated';
 export * from './diagnosis';
 export * from './doctor';
-export * from './doctorPaginated';
+export * from './doctorDTO';
+export * from './doctorDTOPaginated';
 export * from './doctorRegistration';
 export * from './doctorSchedule';
 export * from './emergencyContact';

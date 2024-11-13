@@ -22,10 +22,11 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type {
     Appointment,
     Department,
-    DepartmentPaginated,
+    DepartmentDTOPaginated,
     Diagnosis,
     Doctor,
-    DoctorPaginated,
+    DoctorDTO,
+    DoctorDTOPaginated,
     DoctorRegistration,
     DoctorSchedule,
     EmergencyContact,
@@ -99,6 +100,78 @@ export const useLogout = <TError = AxiosError<unknown>, TContext = unknown>(opti
 
     return useMutation(mutationOptions);
 };
+
+export const getCurrentUser = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+    return axios.default.get(`/api/Account/@Me`, options);
+};
+
+export const getGetCurrentUserQueryKey = () => {
+    return [`/api/Account/@Me`] as const;
+};
+
+export const getGetCurrentUserQueryOptions = <
+    TData = Awaited<ReturnType<typeof getCurrentUser>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetCurrentUserQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentUser>>> = ({ signal }) =>
+        getCurrentUser({ signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getCurrentUser>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetCurrentUserQueryResult = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
+export type GetCurrentUserQueryError = AxiosError<unknown>;
+
+export function useGetCurrentUser<
+    TData = Awaited<ReturnType<typeof getCurrentUser>>,
+    TError = AxiosError<unknown>,
+>(options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>> &
+        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetCurrentUser<
+    TData = Awaited<ReturnType<typeof getCurrentUser>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>> &
+        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetCurrentUser<
+    TData = Awaited<ReturnType<typeof getCurrentUser>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+export function useGetCurrentUser<
+    TData = Awaited<ReturnType<typeof getCurrentUser>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetCurrentUserQueryOptions(options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
 
 export const getAppointments = (options?: AxiosRequestConfig): Promise<AxiosResponse<Appointment[]>> => {
     return axios.default.get(`/api/Appointments`, options);
@@ -482,7 +555,7 @@ export function useGetAppointmentsByDoctorAndDate<
 export const getDepartments = (
     params?: GetDepartmentsParams,
     options?: AxiosRequestConfig
-): Promise<AxiosResponse<DepartmentPaginated>> => {
+): Promise<AxiosResponse<DepartmentDTOPaginated>> => {
     return axios.default.get(`/api/Departments`, {
         ...options,
         params: { ...params, ...options?.params },
@@ -1025,7 +1098,7 @@ export const useDeleteDiagnosis = <TError = AxiosError<unknown>, TContext = unkn
 export const getDoctors = (
     params?: GetDoctorsParams,
     options?: AxiosRequestConfig
-): Promise<AxiosResponse<DoctorPaginated>> => {
+): Promise<AxiosResponse<DoctorDTOPaginated>> => {
     return axios.default.get(`/api/Doctors`, {
         ...options,
         params: { ...params, ...options?.params },
@@ -1132,7 +1205,7 @@ export const usePostDoctor = <TError = AxiosError<unknown>, TContext = unknown>(
     return useMutation(mutationOptions);
 };
 
-export const getDoctor = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<Doctor>> => {
+export const getDoctor = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<DoctorDTO>> => {
     return axios.default.get(`/api/Doctors/${id}`, options);
 };
 

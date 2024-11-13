@@ -4,10 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
-import type { Doctor } from './doctor';
+import type { DoctorDTO } from './doctorDTO';
 
-export interface DoctorPaginated {
+export interface DoctorDTOPaginated {
     /** @nullable */
-    data?: Doctor[] | null;
+    data?: DoctorDTO[] | null;
     totalItems?: number;
 }

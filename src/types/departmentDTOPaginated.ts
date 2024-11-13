@@ -4,10 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
-import type { Department } from './department';
+import type { DepartmentDTO } from './departmentDTO';
 
-export interface DepartmentPaginated {
+export interface DepartmentDTOPaginated {
     /** @nullable */
-    data?: Department[] | null;
+    data?: DepartmentDTO[] | null;
     totalItems?: number;
 }
