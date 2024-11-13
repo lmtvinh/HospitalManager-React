@@ -9,13 +9,22 @@ const proxy = SERVER_URL ? {
   '/api': {
     target: SERVER_URL,
     changeOrigin: true,
-    rewrite: (path:string) => path,
+    rewrite: (path: string) => path,
+    configure: (proxy: any, options: any) => {
+      proxy.on('proxyReq', (proxyReq: any, req: any, res: any, options: any) => {
+        const origin = req.headers.host;
+        proxyReq.setHeader('origin', origin);
+      }
+      );
+    }
   }
 } : undefined;
 
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react({
+    jsxImportSource: '@emotion/react',
+  }), tsconfigPaths()],
   // root: path.resolve(__dirname, 'src'),
   resolve: {
     alias: {
@@ -23,11 +32,11 @@ export default defineConfig({
       '~assets': path.resolve(__dirname, 'src/assets'),
     },
   },
-  css:{
+  css: {
     preprocessorOptions: {
       scss: {
         quietDeps: true,
-        api:"modern-compiler",
+        api: "modern-compiler",
       },
     }
   },

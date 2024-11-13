@@ -173,6 +173,150 @@ export function useGetCurrentUser<
     return query;
 }
 
+export const loginWithGoogle = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+    return axios.default.get(`/api/Account/login/google`, options);
+};
+
+export const getLoginWithGoogleQueryKey = () => {
+    return [`/api/Account/login/google`] as const;
+};
+
+export const getLoginWithGoogleQueryOptions = <
+    TData = Awaited<ReturnType<typeof loginWithGoogle>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getLoginWithGoogleQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof loginWithGoogle>>> = ({ signal }) =>
+        loginWithGoogle({ signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof loginWithGoogle>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type LoginWithGoogleQueryResult = NonNullable<Awaited<ReturnType<typeof loginWithGoogle>>>;
+export type LoginWithGoogleQueryError = AxiosError<unknown>;
+
+export function useLoginWithGoogle<
+    TData = Awaited<ReturnType<typeof loginWithGoogle>>,
+    TError = AxiosError<unknown>,
+>(options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError, TData>> &
+        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useLoginWithGoogle<
+    TData = Awaited<ReturnType<typeof loginWithGoogle>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError, TData>> &
+        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useLoginWithGoogle<
+    TData = Awaited<ReturnType<typeof loginWithGoogle>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+export function useLoginWithGoogle<
+    TData = Awaited<ReturnType<typeof loginWithGoogle>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getLoginWithGoogleQueryOptions(options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const googleResponse = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+    return axios.default.get(`/api/Account/google-response`, options);
+};
+
+export const getGoogleResponseQueryKey = () => {
+    return [`/api/Account/google-response`] as const;
+};
+
+export const getGoogleResponseQueryOptions = <
+    TData = Awaited<ReturnType<typeof googleResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof googleResponse>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGoogleResponseQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof googleResponse>>> = ({ signal }) =>
+        googleResponse({ signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof googleResponse>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GoogleResponseQueryResult = NonNullable<Awaited<ReturnType<typeof googleResponse>>>;
+export type GoogleResponseQueryError = AxiosError<unknown>;
+
+export function useGoogleResponse<
+    TData = Awaited<ReturnType<typeof googleResponse>>,
+    TError = AxiosError<unknown>,
+>(options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof googleResponse>>, TError, TData>> &
+        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof googleResponse>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGoogleResponse<
+    TData = Awaited<ReturnType<typeof googleResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof googleResponse>>, TError, TData>> &
+        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof googleResponse>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGoogleResponse<
+    TData = Awaited<ReturnType<typeof googleResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof googleResponse>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+export function useGoogleResponse<
+    TData = Awaited<ReturnType<typeof googleResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof googleResponse>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGoogleResponseQueryOptions(options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
 export const getAppointments = (options?: AxiosRequestConfig): Promise<AxiosResponse<Appointment[]>> => {
     return axios.default.get(`/api/Appointments`, options);
 };
