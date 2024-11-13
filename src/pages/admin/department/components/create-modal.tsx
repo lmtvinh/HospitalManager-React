@@ -5,12 +5,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Department, DepartmentSchema } from '../validations';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { departmentsClient } from '@/services/mock';
+import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import FormInput from '../../components/form/FormInput';
 import { getDefaultValue } from '@/utils/form-utils';
+import { usePostDepartment } from '@/services/api';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean()
     const form = useForm<Department>({
@@ -19,27 +19,25 @@ export default function CreateModal() {
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
-    const { mutateAsync, isPending } = useMutation({
-        mutationKey: ['departments', 'create'],
-        mutationFn: (data: Department) => {
-            return departmentsClient.departmentsPOST(data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['departments']
-            })
-            show('Tạo mới phòng khám thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
+    const { mutateAsync, isPending } = usePostDepartment({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['departments']
+                })
+                show('Tạo mới phòng khám thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                })
+            }
         }
-    })
+    });
     const onClosed = () => {
         setFalse()
         form.reset()
     }
     const onSubmit = async (data: Department) => {
-       await mutateAsync(data)
+        await mutateAsync({ data })
         onClosed()
     }
 
@@ -73,22 +71,22 @@ export default function CreateModal() {
                 </IconButton>
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
-                        
+
                         <FormInput control={form.control} name='departmentName' label='Tên phòng khám' variant='outlined' />
                         <FormInput control={form.control} name='description' label='Mô tả' variant='outlined' multiline rows={3} />
-                   
+
                     </Stack>
                 </DialogContent>
                 <DialogActions>
                     <Button
-                    disabled={isPending}
-                    autoFocus type='reset' variant='outlined' onClick={onClosed}>
+                        disabled={isPending}
+                        autoFocus type='reset' variant='outlined' onClick={onClosed}>
                         Đóng
                     </Button>
-                    <LoadingButton 
-                    
-                    autoFocus type='submit' variant='contained'
-                    loading={isPending}
+                    <LoadingButton
+
+                        autoFocus type='submit' variant='contained'
+                        loading={isPending}
                     >
                         Tạo mới
                     </LoadingButton>

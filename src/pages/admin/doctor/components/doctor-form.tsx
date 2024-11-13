@@ -2,8 +2,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 
 import FormInput from '@/pages/admin/components/form/FormInput';
 import { Autocomplete, TextField } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { departmentsClient } from '@/services/mock';
+import { useGetDepartments } from '@/services/api';
 
 interface DoctorFormProps {
 	form: UseFormReturn<any>;
@@ -11,10 +10,13 @@ interface DoctorFormProps {
 }
 
 export default function DoctorForm({ form, type }: DoctorFormProps) {
-	const { data, isLoading } = useQuery({
-		queryKey: ['departments'],
-		queryFn: () => departmentsClient.departmentsAll(),
-	})
+	const { data, isLoading } = useGetDepartments({
+		PageSize: 20
+	}, {
+		query: {
+			select: data => data.data.data,
+		}
+	});
 
 	return (
 		<>

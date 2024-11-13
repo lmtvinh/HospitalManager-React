@@ -1,28 +1,37 @@
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import { PageContainer, PageContainerToolbar } from '@toolpad/core';
 import CreateModal from './components/create-modal';
 import useDepartment from './hooks/useDepartment';
-
+import DatagridPagination from '../components/datagrid-pagination';
 export default function ListDepartment() {
 
 
 
   const { table } = useDepartment();
-
   return (
     <PageContainer
       slots={{ toolbar: PageToolbar }}
-    >
 
+    >
+        
       <DataGrid
-        rows={table.data}
+        rows={table.data?.data || []}
         columns={table.columns}
-        pagination
+        onPaginationModelChange={table.handlePageChange}
+        paginationMode='server'
+        filterMode='server'
+        sortingMode='server'
+        sortModel={table.sortModel as any}
+        onSortModelChange={table.handleSortModelChange}
+        onFilterModelChange={table.handleFilterModelChange}
+        filterModel={table.filterModel}
+        paginationModel={table.pagination}
         getRowId={(row) => row.departmentId}
         loading={table.isLoading}
         disableColumnFilter
         slots={{
-          toolbar: GridToolbar,
+          toolbar: DataGridToolbar,
+          pagination:DatagridPagination,
         }}
         slotProps={{
           loadingOverlay: {
@@ -33,17 +42,68 @@ export default function ListDepartment() {
             showQuickFilter: true
           },
         }}
-        initialState={{
-          pagination: {
-            rowCount: 5,
-          },
+        disableColumnSelector
+        rowCount={table.data?.totalItems || -1}
+        sx={{
+          padding: '10px'
         }}
+        disableVirtualization
       />
     </PageContainer>
 
 
   );
 }
+
+const DataGridToolbar = () => {
+  // const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
+  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
+  // const open = Boolean(anchorEl);
+  // const id = open ? 'simple-popover' : undefined;
+  return (
+    <GridToolbarContainer sx={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0 16px',
+    }}>
+      <GridToolbarQuickFilter />
+      {/* <Button
+        variant="contained"
+        startIcon={<FilterListIcon />}
+        onClick={handleClick}
+        aria-describedby={id}
+      >
+        Bộ lọc
+      </Button>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        Bộ lọc
+      </Popover> */}
+    </GridToolbarContainer>
+
+  );
+}
+
 
 function PageToolbar() {
   return (
