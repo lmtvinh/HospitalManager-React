@@ -3,9 +3,9 @@ import Gallery from './components/gallery'
 import homeStyle from './style'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useBoolean } from 'usehooks-ts'
-import LoginModal from './components/login-modal'
+import AuthModal from './components/auth-modal'
 export default function HomePage() {
-  const {value,toggle} = useBoolean()
+  const {value,toggle} = useBoolean(true)
   return (
     <div
     css={homeStyle.container}
@@ -13,7 +13,7 @@ export default function HomePage() {
       <Header />
       <Gallery />
       <button onClick={toggle}>Toggle</button>
-      <LoginModal show={value} onHide={toggle} />
+      <AuthModal show={value} onHide={toggle} />
     </div>
   )
 }

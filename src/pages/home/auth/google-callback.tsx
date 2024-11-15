@@ -1,4 +1,6 @@
 import { useGoogleResponse } from '@/services/api';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function GoogleCallback() {
     const { data } = useGoogleResponse({
@@ -9,5 +11,9 @@ export default function GoogleCallback() {
             refetchOnWindowFocus:false,
         }
     });
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        // Todo: login user
+    }, [data]);
     return <div>Loading</div>;
 }

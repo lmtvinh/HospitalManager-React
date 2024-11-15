@@ -32,14 +32,17 @@ import type {
     EmergencyContact,
     GetDepartmentsParams,
     GetDoctorsParams,
+    IdentityExistsParams,
     Invoice,
     LoginModel,
+    LoginResponse,
     Patient,
     PatientRegistration,
+    UserProfileDTO,
     WeatherForecast,
 } from '../../types';
 
-export const login = (loginModel: LoginModel, options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+export const login = (loginModel: LoginModel, options?: AxiosRequestConfig): Promise<AxiosResponse<LoginResponse>> => {
     return axios.default.post(`/api/Account/Login`, loginModel, options);
 };
 
@@ -101,7 +104,7 @@ export const useLogout = <TError = AxiosError<unknown>, TContext = unknown>(opti
     return useMutation(mutationOptions);
 };
 
-export const getCurrentUser = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+export const getCurrentUser = (options?: AxiosRequestConfig): Promise<AxiosResponse<UserProfileDTO>> => {
     return axios.default.get(`/api/Account/@Me`, options);
 };
 
@@ -309,6 +312,87 @@ export function useGoogleResponse<
     axios?: AxiosRequestConfig;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGoogleResponseQueryOptions(options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const identityExists = (
+    params?: IdentityExistsParams,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<boolean>> => {
+    return axios.default.get(`/api/Account/Identity-Exists`, {
+        ...options,
+        params: { ...params, ...options?.params },
+    });
+};
+
+export const getIdentityExistsQueryKey = (params?: IdentityExistsParams) => {
+    return [`/api/Account/Identity-Exists`, ...(params ? [params] : [])] as const;
+};
+
+export const getIdentityExistsQueryOptions = <
+    TData = Awaited<ReturnType<typeof identityExists>>,
+    TError = AxiosError<unknown>,
+>(
+    params?: IdentityExistsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof identityExists>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getIdentityExistsQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof identityExists>>> = ({ signal }) =>
+        identityExists(params, { signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof identityExists>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type IdentityExistsQueryResult = NonNullable<Awaited<ReturnType<typeof identityExists>>>;
+export type IdentityExistsQueryError = AxiosError<unknown>;
+
+export function useIdentityExists<TData = Awaited<ReturnType<typeof identityExists>>, TError = AxiosError<unknown>>(
+    params: undefined | IdentityExistsParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof identityExists>>, TError, TData>> &
+            Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof identityExists>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useIdentityExists<TData = Awaited<ReturnType<typeof identityExists>>, TError = AxiosError<unknown>>(
+    params?: IdentityExistsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof identityExists>>, TError, TData>> &
+            Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof identityExists>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useIdentityExists<TData = Awaited<ReturnType<typeof identityExists>>, TError = AxiosError<unknown>>(
+    params?: IdentityExistsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof identityExists>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+export function useIdentityExists<TData = Awaited<ReturnType<typeof identityExists>>, TError = AxiosError<unknown>>(
+    params?: IdentityExistsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof identityExists>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getIdentityExistsQueryOptions(params, options);
 
     const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

@@ -5,9 +5,8 @@
  * OpenAPI spec version: v1
  */
 
-export interface LoginModel {
-    /** @minLength 1 */
-    nameIdentifier: string;
-    /** @minLength 1 */
-    password: string;
+export interface TokenDTO {
+    expires?: string;
+    /** @nullable */
+    token?: string | null;
 }
