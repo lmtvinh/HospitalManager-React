@@ -16,8 +16,7 @@ const Doctor: React.FC = () => {
     return (
         <section id="doctors" className="doctors section">
             <div className="container section-title" data-aos="fade-up">
-                <h2>Doctors</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+                <h2>Đội ngũ bác sĩ</h2>
             </div>
 
             <div className="container">
@@ -25,9 +24,10 @@ const Doctor: React.FC = () => {
                     <TeamMember
                         delay="100"
                         img={doctor1}
-                        name="Name Doctor 1"
-                        position="Chief Medical Officer"
-                        description="Explicabo voluptatem mollitia et repellat qui dolorum quasi"
+                        name="Nguyễn Tư Nghĩa"
+                        position="BS CKI"
+                        specialization="Hô hấp"
+                        description="Tận tâm, tận tình, dễ thương"
                         socialinks={{
                             twitter: "https://x.com/realmadrid",
                             facebook: "https://web.facebook.com/RealMadrid",
@@ -39,9 +39,10 @@ const Doctor: React.FC = () => {
                     <TeamMember
                         delay="200"
                         img={doctor2}
-                        name="Name Doctor 2"
-                        position="Anesthesiologist"
-                        description="Explicabo voluptatem mollitia et repellat qui dolorum quasi"
+                        name="Nguyễn Minh Phi"
+                        position="ThS Bác sĩ"
+                        specialization="Răng hàm mặt"
+                        description="Tận tâm, tận tình, dễ thương"
                         socialinks={{
                             twitter: "https://x.com/realmadrid",
                             facebook: "https://web.facebook.com/RealMadrid",
@@ -53,9 +54,10 @@ const Doctor: React.FC = () => {
                     <TeamMember
                         delay="300"
                         img={doctor3}
-                        name="Name Doctor 3"
-                        position="Cardiology"
-                        description="Explicabo voluptatem mollitia et repellat qui dolorum quasi"
+                        name="Ngô Hữu Hoàng"
+                        position="Ths. BS CKII"
+                        specialization="Ung bứu"
+                        description="Tận tâm, tận tình, dễ thương"
                         socialinks={{
                             twitter: "https://x.com/realmadrid",
                             facebook: "https://web.facebook.com/RealMadrid",
@@ -67,9 +69,38 @@ const Doctor: React.FC = () => {
                     <TeamMember
                         delay="400"
                         img={doctor4}
-                        name="Name Doctor 4"
-                        position="Neurosurgeon"
-                        description="Explicabo voluptatem mollitia et repellat qui dolorum quasi"
+                        name="Lương Minh Thế Vinh"
+                        position="Trưởng khoa"
+                        specialization="Khoa nhi"
+                        description="Tận tâm, tận tình, dễ thương"
+                        socialinks={{
+                            twitter: "https://x.com/realmadrid",
+                            facebook: "https://web.facebook.com/RealMadrid",
+                            instagram: "https://www.instagram.com/realmadrid/",
+                            linkedin: "https://www.linkedin.com/company/realmadrid"
+                        }}
+                    />
+                    <TeamMember
+                        delay="400"
+                        img={doctor4}
+                        name="Nguyễn Hoàng Kiều Ngân"
+                        position="Bác sĩ"
+                        specialization="Da liễu - Thẩm mỹ da"
+                        description="Tận tâm, tận tình, dễ thương"
+                        socialinks={{
+                            twitter: "https://x.com/realmadrid",
+                            facebook: "https://web.facebook.com/RealMadrid",
+                            instagram: "https://www.instagram.com/realmadrid/",
+                            linkedin: "https://www.linkedin.com/company/realmadrid"
+                        }}
+                    />
+                    <TeamMember
+                        delay="400"
+                        img={doctor4}
+                        name="Nguyễn Trọng Tấn Sang"
+                        position="Trưởng khoa"
+                        specialization="Cơ xương khớp"
+                        description="Tận tâm, tận tình, dễ thương"
                         socialinks={{
                             twitter: "https://x.com/realmadrid",
                             facebook: "https://web.facebook.com/RealMadrid",

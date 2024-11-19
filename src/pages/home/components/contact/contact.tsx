@@ -12,10 +12,7 @@ const Contact: React.FC = () => {
     return (
         <section id="contact" className="contact section">
             <div className="container section-title" data-aos="fade-up">
-                <h2>Contact</h2>
-                <p>
-                    Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit
-                </p>
+                <h2>Liên hệ</h2>
             </div>
 
             <div className="mb-5" data-aos="fade-up" data-aos-delay="200">
@@ -36,17 +33,17 @@ const Contact: React.FC = () => {
                     <div className="col-lg-4 text-start">
                         <InfoItem
                             icon="bi bi-geo-alt"
-                            title="Location"
+                            title="Địa chỉ"
                             description="273 Đ. An Dương Vương, Phường 3, Quận 5, TP Hồ Chí Minh, Việt Nam"
                         />
                         <InfoItem
                             icon="bi bi-telephone"
-                            title="Call Us"
-                            description="02838354409"
+                            title="Hotline"
+                            description="1800 5678  "
                         />
                         <InfoItem
                             icon="bi bi-envelope"
-                            title="Email us"
+                            title="Email"
                             description="https://sgu.edu.vn/"
                         />
                     </div>

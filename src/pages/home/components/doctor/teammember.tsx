@@ -17,11 +17,12 @@ interface TeamMemberProps {
     img: string;
     name: string;
     position: string;
+    specialization: string;
     description: string;
     socialinks?: SocialLinks;
 }
 
-const TeamMember: React.FC<TeamMemberProps> = ({ delay, img, name, position, description, socialinks }) => {
+const TeamMember: React.FC<TeamMemberProps> = ({ delay, img, name, position,specialization, description, socialinks }) => {
     return (
         <div className="col-lg-6" data-aos="fade-up" data-aos-type={delay}>
             <div className="team-member d-flex align-items-start">
@@ -34,7 +35,8 @@ const TeamMember: React.FC<TeamMemberProps> = ({ delay, img, name, position, des
                 </div>
                 <div className='member-info'>
                     <h4>{name}</h4>
-                    <span>{position}</span>
+                    <span>{position}  <b>| {specialization}</b></span> 
+                    
                     <p>{description}</p>
                     <div className='social'>
                         {socialinks?.twitter && (

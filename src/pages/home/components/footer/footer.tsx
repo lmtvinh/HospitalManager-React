@@ -12,11 +12,11 @@ const Footer: FC = () => {
                 <div className="row gy-4">
                     <div className="col-lg-4 col-md-6 footer-about">
                         <Button href="index.html" className="logo d-flex align-items-center">
-                            <span className="sitename text-decoration-none">Medilab</span>
+                            <span className="sitename text-decoration-none">MediHos</span>
                         </Button>
                         <div className="footer-contact pt-3 text-start">
                             <p>273 Đ. An Dương Vương, Phường 3, Quận 5, TP Hồ Chí Minh, Việt Nam</p>
-                            <p className="mt-3"><strong>Phone:</strong> <span>02838354409</span></p>
+                            <p className="mt-3"><strong>Hotline:</strong> <span>1800 5678</span></p>
                             <p><strong>Email:</strong> <span>https://sgu.edu.vn/</span></p>
                         </div>
                         <div className='social-links d-flex mt-4'>

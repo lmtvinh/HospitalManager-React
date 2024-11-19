@@ -15,11 +15,11 @@ const Header = () => {
                             ></Button>
                         </i>
                         <i className="bi bi-phone d-flex align-items-center ms-4">
-                            <span>0346575111</span>
+                            <span>1800 5678</span>
                         </i>
                     </div>
-                    <div className="social-links d-none d-md-flex align-items-center">
-                        {/* <a href="#" className="twitter"><i className="bi bi-twitter-x"></i></a> */}
+                    {/* <div className="social-links d-none d-md-flex align-items-center">
+                        <a href="#" className="twitter"><i className="bi bi-twitter-x"></i></a>
                         <a
                             href="#"
                             className="twitter"
@@ -44,7 +44,7 @@ const Header = () => {
                         >
                             <i className="bi bi-linkedin"></i>
                         </a>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -64,7 +64,7 @@ const Header = () => {
                                     href="#"
                                     className="text-decoration-none active"
                                 >
-                                    Home
+                                    Trang chủ
                                 </a>
                             </li>
                             <li>
@@ -72,7 +72,7 @@ const Header = () => {
                                     href="#about"
                                     className="text-decoration-none"
                                 >
-                                    About
+                                    Giới thiệu
                                 </a>
                             </li>
                             <li>
@@ -80,7 +80,7 @@ const Header = () => {
                                     href="#services"
                                     className="text-decoration-none"
                                 >
-                                    Services
+                                    Dịch vụ
                                 </a>
                             </li>
                             <li>
@@ -88,7 +88,7 @@ const Header = () => {
                                     href="#departments"
                                     className="text-decoration-none"
                                 >
-                                    Departments
+                                    Chuyên khoa
                                 </a>
                             </li>
                             <li>
@@ -96,10 +96,18 @@ const Header = () => {
                                     href="#doctors"
                                     className="text-decoration-none"
                                 >
-                                    Doctors
+                                    Bác sĩ
                                 </a>
                             </li>
-                            <Dropdown
+                            <li>
+                                <a
+                                    href="#contact"
+                                    className="text-decoration-none"
+                                >
+                                    Liên hệ
+                                </a>
+                            </li>
+                            {/* <Dropdown
                                 title="Dropdown"
                                 items={[
                                     { href: "#dropdown1", label: "dropdown 1" },
@@ -115,14 +123,14 @@ const Header = () => {
                                     className="text-decoration-none"
                                 >
                                 </a>
-                            </li>
+                            </li> */}
                         </ul>
                     </nav>
                     <a
-                        href="#appointment"
+                        href="#login"
                         className="cta-btn d-none d-sm-block text-decoration-none"
                     >
-                        Make an Appointment
+                        Đăng nhập
                     </a>
                 </div>
             </div>

@@ -61,7 +61,7 @@ function ContactForm() {
                         type="text"
                         name="name"
                         className="form-control"
-                        placeholder="Your Name"
+                        placeholder="Họ và tên"
                         required
                         value={formData.name}
                         onChange={handleChange}
@@ -73,7 +73,7 @@ function ContactForm() {
                         type="email"
                         name="email"
                         className="form-control"
-                        placeholder="Your Email"
+                        placeholder="Email"
                         required
                         value={formData.email}
                         onChange={handleChange}
@@ -86,7 +86,7 @@ function ContactForm() {
                     type="text"
                     name="subject"
                     className="form-control"
-                    placeholder="Subject"
+                    placeholder="Tiêu đề"
                     required
                     value={formData.subject}
                     onChange={handleChange}
@@ -97,7 +97,7 @@ function ContactForm() {
                 <textarea
                     className="form-control"
                     name="message"
-                    placeholder="Message"
+                    placeholder="Nội dung"
                     rows={5}
                     value={formData.message}
                     onChange={handleChange}
@@ -109,7 +109,7 @@ function ContactForm() {
                 {status.error && <div className="error-message">{status.error}</div>}
                 {status.success && <div className="sent-message">{status.success}</div>}
 
-                <button type="submit" disabled={status.loading}>Send Message</button>
+                <button type="submit" disabled={status.loading}>Gửi</button>
             </div>
         </form>
     );
