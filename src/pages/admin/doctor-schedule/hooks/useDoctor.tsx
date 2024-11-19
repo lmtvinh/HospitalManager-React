@@ -49,12 +49,12 @@ export default function useDoctor() {
     // user?: IdentityUser;
     const columns: GridColDef[] = React.useMemo(() => {
         return [
-            { field: 'doctorId', headerName: 'Mã bác sĩ', width: 150 },
+            { field: 'doctorSheduleId', headerName: 'Mã lịch khám', width: 150 },
             { field: 'name', headerName: 'Tên bác sĩ', flex: 1 },
-            { field: 'phoneNumber', headerName: 'Số điện thoại', width: 150 },
-            { field: 'email', headerName: 'Email', width: 150 },
-            { field: 'specialization', headerName: 'Chuyên khoa', width: 150 },
-            { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value:Department) => value.departmentName },
+            { field: 'dayOfWeek', headerName: 'Số ngày làm việc', width: 150 },
+            { field: 'startTime', headerName: 'Bắt đầu', width: 150 },
+            { field: 'endTime', headerName: 'Kết thúc', width: 150 },
+            // { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value:Department) => value.departmentName },
             {
                 field: 'actions',
                 type: 'actions',

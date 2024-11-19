@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import './Department.css';
 import Button from '@/components/button';
 import DepartmentDetail from './departmentitem';
-import departmentImage1 from '../../../assets/img/departments-1.jpg';
-import departmentImage2 from '../../../assets/img/departments-2.jpg';
-import departmentImage3 from '../../../assets/img/departments-3.jpg';
-import departmentImage4 from '../../../assets/img/departments-4.jpg';
-import departmentImage5 from '../../../assets/img/departments-5.jpg';
+import departmentImage1 from '@/assets/img/departments-1.jpg';
+import departmentImage2 from '@/assets/img/departments-2.jpg';
+import departmentImage3 from '@/assets/img/departments-3.jpg';
+import departmentImage4 from '@/assets/img/departments-4.jpg';
+import departmentImage5 from '@/assets/img/departments-5.jpg';
 
 const Department: React.FC = () => {
     const [activeTab, setActiveTab] = useState<string>("departments-tab-1");

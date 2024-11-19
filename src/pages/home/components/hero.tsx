@@ -1,12 +1,22 @@
-// src/components/Hero.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import heroImg from '@/assets/img/hero-bg.jpg';
 import Image from '@/components/image';
 import Button from '@/components/button';
 import IconBox from '@/components/iconbox';
+import { once } from 'events';
 
 const Hero: React.FC = () => {
+    useEffect(() => {
+        AOS.init({
+            duration: 100,
+            once: true,
+        });
+    }, []);
+
+
     return (
         <section id="hero" className="hero section light-background">
             <Image

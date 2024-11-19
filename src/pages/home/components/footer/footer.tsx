@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../../assets/css/main.css';
-import './Footer.css';
+import '@/assets/css/main.css.txt';
+import './main.css';
 import Button from '@/components/button';
 import InfoItem from './infoItem';
 

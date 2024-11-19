@@ -10,7 +10,7 @@ import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
 import { DoctorUpdate, DoctorUpdateSchema } from '../validations';
-import DoctorForm from './doctor-form';
+import DoctorForm from './doctor-schedule-form';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
     const form = useForm<DoctorUpdate>({

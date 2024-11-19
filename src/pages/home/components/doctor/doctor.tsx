@@ -1,9 +1,9 @@
 import React from 'react';
 import TeamMember from './teammember';
-import doctor1 from '@/doctors-1.jpg';
-import doctor2 from '@/doctors-2.jpg';
-import doctor3 from '@/doctors-3.jpg';
-import doctor4 from '@/doctors-4.jpg';
+import doctor1 from '@/assets/img/doctors/doctors-1.jpg';
+import doctor2 from '@/assets/img/doctors/doctors-2.jpg';
+import doctor3 from '@/assets/img/doctors/doctors-3.jpg';
+import doctor4 from '@/assets/img/doctors/doctors-4.jpg';
 
 interface SocialLinks {
     twitter?: string;

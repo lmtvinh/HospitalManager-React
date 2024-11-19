@@ -10,7 +10,7 @@ import { doctorsClient } from '@/services/mock';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { getDefaultValue } from '@/utils/form-utils';
-import DoctorForm from './doctor-form';
+import DoctorScheduleForm from './doctor-schedule-form';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean()
     const form = useForm<DoctorRegistration>({
@@ -57,7 +57,7 @@ export default function CreateModal() {
 
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Tạo mới bác sĩ
+                    Tạo lịch làm việc mới
                 </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -73,7 +73,7 @@ export default function CreateModal() {
                 </IconButton>
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
-                        <DoctorForm type='create' form={form} />
+                        <DoctorScheduleForm type='create' form={form} />
                     </Stack>
                 </DialogContent>
                 <DialogActions>

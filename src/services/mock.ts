@@ -1,6 +1,9 @@
-import { Department, DepartmentsClient, Doctor, DoctorRegistration, DoctorsClient } from "./api-client";
+import { Department, DepartmentsClient, Doctor, DoctorRegistration, DoctorsClient, DoctorSchedule, DoctorSchedulesClient} from "./api-client";
 import { faker } from '@faker-js/faker/locale/vi';
-import _ from 'lodash';
+import dayjs from "dayjs";
+import _, { reject } from 'lodash';
+import { resolve } from "path";
+import { scheduler } from "timers/promises";
 
 
 type MethodOnly<T> = {
@@ -11,6 +14,7 @@ type MethodOnly<T> = {
 interface Store {
     departments: Department[];
     doctors: Doctor[];
+    schedules: DoctorSchedule[]
 }
 
 
@@ -43,7 +47,8 @@ function createDoctor(): Doctor {
 
 const store: Store = {
     departments: Array.from({ length: 5 }, createDepartment),
-    doctors: Array.from({ length: 5 }, createDoctor)
+    doctors: Array.from({ length: 5 }, createDoctor),
+    schedules: []
 };
 
 
@@ -204,5 +209,111 @@ export const doctorsClient: MethodOnly<DoctorsClient> = {
                 resolve();
             }, 1000);
         });
+    }
+}
+
+// 
+function createDoctorSchedule(doctorId: number): DoctorSchedule {
+    const randomDayOfWeek = faker.number.int({ min: 0, max: 7 });
+    const startTime = dayjs().hour(faker.number.int({ min: 8, max: 11 })).minute(0);
+    const endTime = startTime.add(faker.number.int({ min: 1, max: 7 }), 'hour');
+    return {
+        scheduleId: faker.number.int({ min: 1, max: 1000000 }),
+        doctorId,
+        dayOfWeek: randomDayOfWeek,
+        startTime,
+        endTime
+    };
+}
+
+// 
+store.doctors.forEach((doctor) => {
+    const numSchedules = faker.number.int({ min: 1, max: 10 });
+    const schedules = Array.from({ length: numSchedules }, () => createDoctorSchedule(doctor.doctorId!));
+    store.schedules.push(...schedules);
+});
+
+export const doctorScheduleClient: MethodOnly<DoctorSchedulesClient> = {
+    doctorSchedulesAll: function (signal?: AbortSignal): Promise<DoctorSchedule[]> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const schedules = _.map(store.schedules, (schedule) => {
+                    const doctor = _.find(store.doctors, (d) => d.doctorId === schedule.doctorId) || store.doctors[0];
+                    return {
+                        ...schedule,
+                        doctor,
+                    }
+                });
+                resolve(schedules);
+            }, 1000);
+        });
+    },
+    doctorSchedulesPOST: function (body: DoctorSchedule | undefined, signal?: AbortSignal): Promise<DoctorSchedule> {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const newSchedule = {
+                    ...body,
+                    scheduleId: faker.number.int({ min: 1, max: 100000 }),
+                };
+                store.schedules = [newSchedule, ...store.schedules];
+                resolve(newSchedule);
+            }, 1000);
+        });
+    },
+    doctorSchedulesGET: function (id: number, signal?: AbortSignal): Promise<DoctorSchedule> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const schedule = store.schedules.find((s) => s.scheduleId === id);
+                if (schedule) {
+                    const doctor = store.doctors.find((d) => d.doctorId === schedule.doctorId) || store.doctors[0];
+                    schedule.doctor = doctor;
+                    resolve(schedule);
+                } else {
+                    reject(new Error("Not found"));
+                }
+            }, 1000);
+        });
+    },
+    doctorSchedulesPUT: function (id: number, body: DoctorSchedule | undefined, signal?: AbortSignal): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const index = store.schedules.findIndex((s) => s.scheduleId === id);
+                if (index != 1) {
+                    store.schedules[index] = {
+                        ...store.schedules[index],
+                        ...body,
+                    };
+                    resolve();
+                } else {
+                    reject(new Error("Not found"));
+                }
+            }, 1000);
+        })       
+    },
+    doctorSchedulesDELETE: function (id: number, signal?: AbortSignal): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const index = store.schedules.findIndex((s) => s.scheduleId === id);
+                if (index !== -1) {
+                    store.schedules.splice(index, 1);
+                    resolve();
+                } else {
+                    reject(new Error("Not found"));
+                }
+            }, 1000);
+        });
+    },
+    doctorSchedule: function (doctorId: number, signal?: AbortSignal): Promise<DoctorSchedule[]> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const schedules = store.schedules.filter(schedule => schedule.doctorId === doctorId);
+
+                if (schedules.length > 0) {
+                    resolve(schedules);
+                } else {
+                    reject(new Error("no schedules found for this doctor"));
+                }
+            }, 1000);
+        })
     }
 }

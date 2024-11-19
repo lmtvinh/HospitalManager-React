@@ -7,3 +7,25 @@
     padding: 30px;
     height: 100%;
 }
+
+.social .btn {
+    margin-right: 10px !important;
+    border-color: transparent !important;
+    border-radius: 38px !important;
+    background-color: transparent !important;
+}
+
+.social .btn svg {
+    color: #1977cc;
+}
+
+.social .btn:hover {
+    background-color: #1977cc !important;
+    transition: color 0.3s ease;
+    border-radius: 38px !important
+}
+
+.social .btn:hover svg {
+    color: #fff;
+    transition: color 0.3s ease;
+}
