@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Department.css';
+import './department.css';
 import Button from '@/components/button';
 import DepartmentDetail from './departmentitem';
 import departmentImage1 from '@/assets/img/departments-1.jpg';

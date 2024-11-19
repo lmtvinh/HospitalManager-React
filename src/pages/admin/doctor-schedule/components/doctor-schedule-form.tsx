@@ -24,11 +24,11 @@ export default function DoctorScheduleForm({ form, type }: DoctorFormProps) {
 				name="departmentId"
 				control={form.control}
 				render={({ field: { onBlur, onChange, value, ...rest }, }) => {
-					const selected = data?.find((item) => item.doctorId === value) || null;
+					const selected = data?.find((item: { doctorId: any; }) => item.doctorId === value) || null;
 
 					return <Autocomplete
 						disablePortal
-						options={data?.map((option) => {
+						options={data?.map((option: { doctorId: any; name: any; }) => {
 							return {
 								value: option.doctorId,
 								label: option.name,

@@ -1,6 +1,7 @@
 import AdminLayoutComponent from '@/pages/admin/components/layout';
 import ListDepartment from '@/pages/admin/department';
 import DoctorManagementPage from '@/pages/admin/doctor';
+import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
 import HomePage from '@/pages/home';
 import GoogleCallback from '@/pages/home/auth/google-callback';
 import HomeLayout from '@/pages/home/components/layout';
@@ -37,10 +38,11 @@ const routerObjects: RouteObject[] = [
                 path: 'doctors',
                 element: <DoctorManagementPage />,
             },
+            {
+              path: 'doctor-schedules',
+              element: <DoctorScheduleManagementPage />,
+            },
             // {
-            //   path: 'doctor-schedules',
-            //   element: <DoctorScheduleManagementPage />,
-            // },{
             //   path: 'patients',
             //   element: <PatientManagementPage />,
             // }
