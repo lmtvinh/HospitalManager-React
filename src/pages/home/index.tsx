@@ -11,6 +11,7 @@ import Doctor from './components/doctor/doctor'
 import Testimonials from './components/testimonials/testimonials'
 import Contact from './components/contact/contact'
 import Footer from './components/footer/footer'
+import { useBoolean } from 'usehooks-ts'
 
 export default function HomePage() {
   const {value,toggle} = useBoolean(true)
