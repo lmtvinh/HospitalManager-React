@@ -1,6 +1,6 @@
 @use "sass:meta";
 
 
-#home{
+.home{
     @include meta.load-css("~bootstrap/scss/bootstrap");
 }

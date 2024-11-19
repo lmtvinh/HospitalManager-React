@@ -13,6 +13,7 @@ import Contact from './components/contact/contact'
 import Footer from './components/footer/footer'
 
 export default function HomePage() {
+  const {value,toggle} = useBoolean(true)
   return (
     <div
        css={homeStyle.container}
