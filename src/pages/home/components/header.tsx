@@ -1,8 +1,13 @@
 import Dropdown from "@/components/dropdown";
 import { Button } from "react-bootstrap";
+import { useBoolean } from "usehooks-ts";
+import AuthModal from "./auth-modal";
 const Header = () => {
+    const { toggle, value } = useBoolean(false);
+
     return (
         <header id="header" className="header sticky-top">
+            <AuthModal onHide={toggle} show={value} />
             {/* Header Topbar */}
             <div className="topbar d-flex align-items-center">
                 <div className="container d-flex justify-content-center justify-content-md-between">
@@ -126,12 +131,12 @@ const Header = () => {
                             </li> */}
                         </ul>
                     </nav>
-                    <a
-                        href="#login"
+                    <Button
+                        onClick={toggle}
                         className="cta-btn d-none d-sm-block text-decoration-none"
                     >
                         Đăng nhập
-                    </a>
+                    </Button>
                 </div>
             </div>
         </header>

@@ -17,3 +17,16 @@
     border-color: transparent !important;
 }
 
+.social-links .social-icon-ft {
+    background-color: transparent !important;
+    color: #696e70 !important;
+    border-color: #696e70 !important;
+    margin-right: 8px;
+    border-radius: 36px !important;
+}
+
+.btn-link-footer {
+    background-color: transparent !important;
+    color: #696e70 !important;
+    border: none !important;
+}

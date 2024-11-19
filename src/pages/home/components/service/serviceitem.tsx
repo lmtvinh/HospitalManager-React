@@ -16,8 +16,9 @@ const ServiceItem: React.FC<ServiceItemProps> = ({ icon, title, description }) =
                 <div className="icon">
                     <FontAwesomeIcon icon={icon} />
                 </div>
-                <Button href="#" className="stretched-link">
-                    <h3>{title}</h3>
+                <Button
+                    lassName="stretched-link">
+                    <h3 className="title-service-item">{title}</h3>
                 </Button>
                 <p>{description}</p>
             </div>

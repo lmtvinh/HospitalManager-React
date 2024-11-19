@@ -47,19 +47,19 @@ const Footer: FC = () => {
                             <h4>Useful Links</h4>
                             <ul>
                                 <li>
-                                    <Button href="#" title="Home" />
+                                    <Button href="#" children="Home" className='btn-link-footer'/>
                                 </li>
                                 <li>
-                                    <Button href="#about" title="About us" />
+                                    <Button href="#about" children="About us" className='btn-link-footer'/>
                                 </li>
                                 <li>
-                                    <Button href="#service" title="Services" />
+                                    <Button href="#service" children="Services" className='btn-link-footer'/>
                                 </li>
                                 <li>
-                                    <Button href="#" title="Terms of service" />
+                                    <Button href="#" children="Terms of service" className='btn-link-footer'/>
                                 </li>
                                 <li>
-                                    <Button href="#" title="Privacy policy" />
+                                    <Button href="#" children="Privacy policy" className='btn-link-footer'/>
                                 </li>
                             </ul>
                         </div>

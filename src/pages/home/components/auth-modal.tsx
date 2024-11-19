@@ -4,10 +4,13 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useIdentityExists } from '@/services/api';
+import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons';
+import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import RegisterForm, { IdentityType } from './register';
 // fa-times
 import CloseIcon from '@mui/icons-material/Close';
 import LoginForm from './login';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const Container = styled.div`
     max-width: 400px;
     margin: 0 auto;
@@ -103,14 +106,15 @@ export default function AuthModal({ show, onHide }: Props) {
         setActiveTab(null);
     };
     return (
-        <Modal className="home" show={show} onHide={handleClose}>
-            <Modal.Body>
+        <Modal className="home mt-4" show={show} onHide={handleClose}>
+            <Modal.Body className='mt-2'>
                 {activeTab === 'login' && <LoginForm type={type} nameIdentifier={nameIdentifier} />}
                 {activeTab === 'register' && <RegisterForm type={type} nameIdentifier={nameIdentifier} />}
                 {activeTab == null && (
                     <Container>
                         <Header>
-                            <img src="https://placewaifu.com/image/150/40" alt="hellobacsi" width={150} height={40} />
+                            {/* <img src="https://placewaifu.com/image/150/40" alt="hellobacsi" width={150} height={40} /> */}
+                            <h3 className='fs-2'>Medilab</h3>
                             <CloseButton aria-label="Close">
                                 <CloseIcon onClick={handleClose} />
                             </CloseButton>
@@ -164,36 +168,36 @@ export default function AuthModal({ show, onHide }: Props) {
                             </p>
                             <SocialLoginContainer>
                                 <SocialButton>
-                                    <img src="https://placewaifu.com/image/24/24" alt="Google" width={24} height={24} />
+                                    <FontAwesomeIcon
+                                        icon={faGoogle}
+                                        css={css`
+                                            color: #f4511e;
+                                            `}
+                                    />
                                     Google
                                 </SocialButton>
                                 <SocialButton>
-                                    <img
-                                        src="https://placewaifu.com/image/24/24"
-                                        alt="Facebook"
-                                        width={24}
-                                        height={24}
+                                    <FontAwesomeIcon
+                                        icon={faFacebookF}
+                                        css={css`
+                                            color: #0866ff
+                                            `
+                                        }
                                     />
                                     Facebook
                                 </SocialButton>
                                 {type !== IdentityType.Email && (
                                     <SocialButton onClick={() => handleChangeNameIdentifier(IdentityType.Email)}>
-                                        <img
-                                            src="https://placewaifu.com/image/24/24"
-                                            alt="Email"
-                                            width={24}
-                                            height={24}
-                                        />
                                         Email
                                     </SocialButton>
                                 )}
                                 {type !== IdentityType.Phone && (
                                     <SocialButton onClick={() => handleChangeNameIdentifier(IdentityType.Phone)}>
-                                        <img
-                                            src="https://placewaifu.com/image/24/24"
-                                            alt="Email"
-                                            width={24}
-                                            height={24}
+                                        <FontAwesomeIcon
+                                            icon={faPhone}
+                                            css={css`
+                                                color: #979595
+                                                `}
                                         />
                                         SĐT
                                     </SocialButton>
