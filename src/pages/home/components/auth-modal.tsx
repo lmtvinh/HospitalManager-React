@@ -169,7 +169,7 @@ export default function AuthModal({ show, onHide }: Props) {
                             <SocialLoginContainer>
                                 <SocialButton>
                                     <FontAwesomeIcon
-                                        icon={faGoogle}
+                                        icon={faGoogle as any}
                                         css={css`
                                             color: #f4511e;
                                             `}
@@ -178,11 +178,11 @@ export default function AuthModal({ show, onHide }: Props) {
                                 </SocialButton>
                                 <SocialButton>
                                     <FontAwesomeIcon
-                                        icon={faFacebookF}
+                                    
+                                        icon={faFacebookF as any}
                                         css={css`
                                             color: #0866ff
-                                            `
-                                        }
+                                            `}
                                     />
                                     Facebook
                                 </SocialButton>
