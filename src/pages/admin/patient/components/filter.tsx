@@ -1,12 +1,13 @@
 import { Autocomplete, Box, Button, Popover, TextField, Typography } from '@mui/material';
 import React, { useId } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { Department, GetDoctorsParams } from '@/types';
+import { GetPatientsParams } from '@/types';
 import { useGetDepartments } from '@/services/api';
 import MenuItem from '@mui/material/MenuItem';
+import { Gender, GenderLabel } from '@/services/enums/gender';
 interface FilterProps {
-    setFilter: React.Dispatch<React.SetStateAction<GetDoctorsParams>>;
-    filter: GetDoctorsParams;
+    setFilter: React.Dispatch<React.SetStateAction<GetPatientsParams>>;
+    filter: GetPatientsParams;
 }
 
 export default function Filter({ setFilter, filter }: FilterProps) {
@@ -14,17 +15,16 @@ export default function Filter({ setFilter, filter }: FilterProps) {
     const { data } = useGetDepartments({
         PageSize: 100000,
     });
-    const [values, setValues] = React.useState<Department[]>([]);
+    const [values, setValues] = React.useState<string|Gender|undefined>();
     const options = React.useMemo(() => {
-        return data?.data.data?.map((option) => option) || [];
-    }, [data]);
+        return Object.values(Gender)
+    }, []);
 
     React.useEffect(() => {
-        if (filter['DepartmentId.In']) {
-            const departments = data?.data.data?.filter((d) => filter['DepartmentId.In']?.includes(d.departmentId!));
-            setValues(departments || []);
+        if (filter['Gender.Equal']) {
+            setValues(filter['Gender.Equal']);
         }
-    }, [filter['DepartmentId.In'], data]);
+    }, [filter['Gender.Equal'], data]);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -35,8 +35,9 @@ export default function Filter({ setFilter, filter }: FilterProps) {
         setFilter(pre => ({
             ...pre,
             Page: 0,
-            "DepartmentId.In": values.map(v => v.departmentId!)
+            "Gender.Equal": values
         }))
+        console.log(filter)
     };
     const open = Boolean(anchorEl);
     const id = useId();
@@ -62,28 +63,26 @@ export default function Filter({ setFilter, filter }: FilterProps) {
             >
                 <Box sx={{ padding: 3 }} display={'flex'} flexDirection={'column'} gap={2}>
                     <Typography variant="h6">Bộ lọc</Typography>
-                    <Autocomplete<Department,true>
+                    <Autocomplete<Gender,false>
                         options={options}
                         sx={{ width: 300 }}
-                        multiple
-                        getOptionLabel={(option) => option.departmentName!}
-                        getOptionKey={(option) => option.departmentId!}
-                        renderInput={(params) => <TextField {...params} label="Chuyên khoa" />}
-                        value={values}
+                        getOptionLabel={(option) => GenderLabel[option]}
+                        getOptionKey={(option) => option}
+                        renderInput={(params) => <TextField {...params} label="Giới tính" />}
+                        value={values as Gender}
                         renderOption={(props, option, { selected }) => (
                             <MenuItem {...props} selected={selected}>
-                                {option.departmentName}
+                                {GenderLabel[option]}
                             </MenuItem>
                         )}
-                        onChange={(event: any, newValue: Department[]) => {
-                            setValues(newValue);
+                        onChange={(event, value) => {
+                            setValues(value!);
                         }}
                     />
                     <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
                         <Button
                             onClick={() => {
-                                setValues([]);
-                                handleClose();
+                                setValues(undefined);
                             }}
                         >
                             Xóa bộ lọc

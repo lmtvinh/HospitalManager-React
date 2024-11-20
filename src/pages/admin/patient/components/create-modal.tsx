@@ -4,42 +4,40 @@ import { useBoolean } from 'usehooks-ts';
 import AddIcon from '@mui/icons-material/Add';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DoctorRegistration, DoctorRegistrationSchema } from '../validations';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { doctorsClient } from '@/services/mock';
+import { PatientSchema, Patient } from '../validations';
+import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { getDefaultValue } from '@/utils/form-utils';
 import DoctorForm from './doctor-form';
+import { useDoctorsRegister } from '@/services/api';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean()
-    const form = useForm<DoctorRegistration>({
-        defaultValues: getDefaultValue(DoctorRegistrationSchema),
-        resolver: zodResolver(DoctorRegistrationSchema)
+    const form = useForm<Patient>({
+        defaultValues: getDefaultValue(PatientSchema),
+        resolver: zodResolver(PatientSchema)
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
-    const { mutateAsync, isPending } = useMutation({
-        mutationKey: ['doctors', 'create'],
-        mutationFn: (data: DoctorRegistration) => {
-            return doctorsClient.doctorsPOST(data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['doctors']
-            })
-            show('Tạo mới chuyên khoa thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
+    const { mutateAsync, isPending } = useDoctorsRegister({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['doctors']
+                })
+                show('Tạo mới chuyên khoa thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                })
+            }
         }
-    })
+    });
     const onClosed = () => {
         setFalse()
         form.reset()
     }
-    const onSubmit = async (data: DoctorRegistration) => {
-        await mutateAsync(data)
+    const onSubmit = async (data: Patient) => {
+        await mutateAsync({data})
         onClosed()
     }
 
