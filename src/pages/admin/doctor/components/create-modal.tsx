@@ -25,7 +25,7 @@ export default function CreateModal() {
                 queryClient.invalidateQueries({
                     queryKey: ['doctors']
                 })
-                show('Tạo mới phòng khám thành công', {
+                show('Tạo mới chuyên khoa thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })

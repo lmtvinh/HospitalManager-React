@@ -54,7 +54,7 @@ export default function useDoctor() {
             { field: 'phoneNumber', headerName: 'Số điện thoại', width: 150 },
             { field: 'email', headerName: 'Email', width: 150 },
             { field: 'specialization', headerName: 'Chuyên khoa', width: 150 },
-            { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value:Department) => value.departmentName },
+            { field: 'department', headerName: 'Chuyên khoa', width: 150, valueGetter: (value:Department) => value.departmentName },
             {
                 field: 'actions',
                 type: 'actions',

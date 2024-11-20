@@ -34,7 +34,7 @@ export default function DoctorForm({ form, type }: DoctorFormProps) {
 							};
 						}) || []}
 						loading={isLoading}
-						renderInput={(params) => <TextField {...params} label="Phòng khám" variant='outlined' />}
+						renderInput={(params) => <TextField {...params} label="Chuyên khoa" variant='outlined' />}
 						onChange={(_, data) => {
 							onChange(data?.value);
 						}}
@@ -51,7 +51,7 @@ export default function DoctorForm({ form, type }: DoctorFormProps) {
 
 			<FormInput control={form.control} name="phoneNumber" label="Số điện thoại" variant="outlined" />
 			<FormInput control={form.control} name="specialization" label="Chuyên khoa" variant="outlined" />
-			{/* <FormInput control={form.control} name="departmentId" label="Mã phòng khám" variant="outlined" disabled /> */}
+			{/* <FormInput control={form.control} name="departmentId" label="Mã chuyên khoa" variant="outlined" disabled /> */}
 
 		</>
 	);

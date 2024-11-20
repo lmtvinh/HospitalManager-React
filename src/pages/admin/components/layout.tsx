@@ -31,7 +31,7 @@ const NAVIGATION: Navigation = [
   },
   {
     segment: 'admin/departments',
-    title: 'Quản lý phòng khám',
+    title: 'Quản lý chuyên khoa',
     icon: <LocalHospitalIcon />,
   },
   {

@@ -3,7 +3,7 @@ import { GridActionsCellItem, GridColDef, GridRowParams } from '@mui/x-data-grid
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDialogs, useNotifications } from '@toolpad/core';
 import React from 'react';
-import { Doctor, Department } from '@/services/api-client';
+import { Doctor } from '@/services/api-client';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
