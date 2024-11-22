@@ -1,6 +1,7 @@
 import AppointmentManagementPage from '@/pages/admin/appointment';
 import AdminLayoutComponent from '@/pages/admin/components/layout';
 import ListDepartment from '@/pages/admin/department';
+import DiagnosesManagementPage from '@/pages/admin/diagnosis';
 import DoctorManagementPage from '@/pages/admin/doctor';
 import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
 import PatientManagementPage from '@/pages/admin/patient';
@@ -51,6 +52,10 @@ const routerObjects: RouteObject[] = [
             {
                 path: 'appointments',
                 element: <AppointmentManagementPage />,
+            },
+            {
+                path: 'diagnoses',
+                element: <DiagnosesManagementPage />,
             },
         ],
     },

@@ -1,11 +1,11 @@
 import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import { PageContainer, PageContainerToolbar } from '@toolpad/core';
 import CreateModal from './components/create-modal';
-import usePatientTable from './hooks/usePatientTable';
+import useDiagnosisTable from './hooks/useDiagnosisTable';
 import DatagridPagination from '../components/datagrid-pagination';
 import Filter from './components/filter';
-export default function PatientManagementPage() {
-    const { table ,filter} = usePatientTable();
+export default function DiagnosesManagementPage() {
+    const { table ,filter} = useDiagnosisTable();
     return (
         <PageContainer slots={{ toolbar: PageToolbar }}>
             <DataGrid
