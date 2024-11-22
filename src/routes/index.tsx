@@ -1,3 +1,4 @@
+import AppointmentManagementPage from '@/pages/admin/appointment';
 import AdminLayoutComponent from '@/pages/admin/components/layout';
 import ListDepartment from '@/pages/admin/department';
 import DoctorManagementPage from '@/pages/admin/doctor';
@@ -40,17 +41,17 @@ const routerObjects: RouteObject[] = [
                 element: <DoctorManagementPage />,
             },
             {
-              path: 'doctor-schedules',
-              element: <DoctorScheduleManagementPage />,
+                path: 'doctor-schedules',
+                element: <DoctorScheduleManagementPage />,
             },
             {
-              path: 'patients',
-              element: <PatientManagementPage />,
-            }
-            // ,{
-            //   path: 'invoices',
-            //   element: <InvoiceManagementPage />,
-            // }
+                path: 'patients',
+                element: <PatientManagementPage />,
+            },
+            {
+                path: 'appointments',
+                element: <AppointmentManagementPage />,
+            },
         ],
     },
 ];

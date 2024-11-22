@@ -39,6 +39,28 @@ export const mustBePhoneNumber = (customMessage?: string) =>
         return /^0[0-9]{9,10}$/.test(value);
     }
         , {
-            message: customMessage||`Số điện thoại không hợp lệ`,
+            message: customMessage || `Số điện thoại không hợp lệ`,
         }).optional();
 
+
+/*
+eg: {Doctor:{Id:1}} => {"Doctor.Id":1}
+*/
+export const removeDotObject = (data:{[key:string]:any}) => {
+    const formattedData: { [key: string]: { [key: string]: any } } = {};
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            const value = data[key];
+            if (typeof value === 'object') {
+                for (const subKey in value) {
+                    if (value.hasOwnProperty(subKey)) {
+                        formattedData[`${key}.${subKey}`] = value[subKey];
+                    }
+                }
+            } else {
+                formattedData[key] = value;
+            }
+        }
+    }
+    return formattedData
+};
