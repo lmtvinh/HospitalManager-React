@@ -1,5 +1,6 @@
 import AppointmentManagementPage from '@/pages/admin/appointment';
 import AdminLayoutComponent from '@/pages/admin/components/layout';
+import Dashboard from '@/pages/admin/dashboard';
 import ListDepartment from '@/pages/admin/department';
 import DiagnosesManagementPage from '@/pages/admin/diagnosis';
 import DoctorManagementPage from '@/pages/admin/doctor';
@@ -31,7 +32,7 @@ const routerObjects: RouteObject[] = [
         children: [
             {
                 path: '',
-                element: <div>Dashboard</div>,
+                element: <Dashboard />,
             },
             {
                 path: 'departments',
