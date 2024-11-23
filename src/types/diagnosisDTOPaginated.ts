@@ -4,10 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
-import type { Appointment } from './appointment';
+import type { DiagnosisDTO } from './diagnosisDTO';
 
-export interface AppointmentPaginated {
+export interface DiagnosisDTOPaginated {
     /** @nullable */
-    data?: Appointment[] | null;
+    data?: DiagnosisDTO[] | null;
     totalItems?: number;
 }

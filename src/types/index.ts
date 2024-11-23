@@ -6,12 +6,14 @@
  */
 
 export * from './appointment';
-export * from './appointmentPaginated';
+export * from './appointmentDTO';
+export * from './appointmentDTOPaginated';
 export * from './department';
 export * from './departmentDTO';
 export * from './departmentDTOPaginated';
 export * from './diagnosis';
-export * from './diagnosisPaginated';
+export * from './diagnosisDTO';
+export * from './diagnosisDTOPaginated';
 export * from './doctor';
 export * from './doctorDTO';
 export * from './doctorDTOPaginated';

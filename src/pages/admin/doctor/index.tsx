@@ -1,9 +1,10 @@
-import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
 import { PageContainer, PageContainerToolbar } from '@toolpad/core';
 import CreateModal from './components/create-modal';
 import useDoctorTable from './hooks/useDoctorTable';
 import DatagridPagination from '../components/datagrid-pagination';
 import Filter from './components/filter';
+import { CustomQuickFilter } from '../components/datagrid-search';
 export default function DoctorManagementPage() {
     const { table ,filter} = useDoctorTable();
     return (
@@ -64,7 +65,7 @@ const DataGridToolbar = ({ children,...rest }: DataGridToolbarProps) => {
             }}
             {...rest}
         >
-            <GridToolbarQuickFilter />
+            <CustomQuickFilter />
             {children}
         </GridToolbarContainer>
     );

@@ -1,9 +1,10 @@
-import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
 import { PageContainer, PageContainerToolbar } from '@toolpad/core';
 import CreateModal from './components/create-modal';
 import useDiagnosisTable from './hooks/useDiagnosisTable';
 import DatagridPagination from '../components/datagrid-pagination';
 import Filter from './components/filter';
+import { CustomQuickFilter } from '../components/datagrid-search';
 export default function DiagnosesManagementPage() {
     const { table ,filter} = useDiagnosisTable();
     return (
@@ -20,7 +21,7 @@ export default function DiagnosesManagementPage() {
                 onFilterModelChange={table.handleFilterModelChange}
                 filterModel={table.filterModel}
                 paginationModel={table.pagination}
-                getRowId={(row) => row.patientId}
+                getRowId={(row) => row.diagnosisId!}
                 loading={table.isLoading}
                 disableColumnFilter
                 slots={{
@@ -64,7 +65,7 @@ const DataGridToolbar = ({ children,...rest }: DataGridToolbarProps) => {
             }}
             {...rest}
         >
-            <GridToolbarQuickFilter />
+            <CustomQuickFilter />
             {children}
         </GridToolbarContainer>
     );

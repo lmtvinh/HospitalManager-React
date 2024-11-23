@@ -21,11 +21,11 @@ import * as axios from 'axios';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type {
     Appointment,
-    AppointmentPaginated,
+    AppointmentDTOPaginated,
     Department,
     DepartmentDTOPaginated,
     Diagnosis,
-    DiagnosisPaginated,
+    DiagnosisDTOPaginated,
     Doctor,
     DoctorDTO,
     DoctorDTOPaginated,
@@ -412,7 +412,7 @@ export function useIdentityExists<TData = Awaited<ReturnType<typeof identityExis
 export const getAppointments = (
     params?: GetAppointmentsParams,
     options?: AxiosRequestConfig
-): Promise<AxiosResponse<AppointmentPaginated>> => {
+): Promise<AxiosResponse<AppointmentDTOPaginated>> => {
     return axios.default.get(`/api/Appointments`, {
         ...options,
         params: { ...params, ...options?.params },
@@ -1084,7 +1084,7 @@ export const useDeleteDepartment = <TError = AxiosError<unknown>, TContext = unk
 export const getDiagnoses = (
     params?: GetDiagnosesParams,
     options?: AxiosRequestConfig
-): Promise<AxiosResponse<DiagnosisPaginated>> => {
+): Promise<AxiosResponse<DiagnosisDTOPaginated>> => {
     return axios.default.get(`/api/Diagnoses`, {
         ...options,
         params: { ...params, ...options?.params },
@@ -1980,6 +1980,69 @@ export const useDeleteDoctorSchedule = <TError = AxiosError<unknown>, TContext =
     axios?: AxiosRequestConfig;
 }): UseMutationResult<Awaited<ReturnType<typeof deleteDoctorSchedule>>, TError, { id: number }, TContext> => {
     const mutationOptions = getDeleteDoctorScheduleMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+
+export const buildICrateDoctorSchedule = (
+    doctorSchedule: DoctorSchedule[],
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<DoctorSchedule>> => {
+    return axios.default.post(`/api/DoctorSchedules/Bulk`, doctorSchedule, options);
+};
+
+export const getBuildICrateDoctorScheduleMutationOptions = <
+    TError = AxiosError<unknown>,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        TError,
+        { data: DoctorSchedule[] },
+        TContext
+    >;
+    axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+    TError,
+    { data: DoctorSchedule[] },
+    TContext
+> => {
+    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        { data: DoctorSchedule[] }
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return buildICrateDoctorSchedule(data, axiosOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type BuildICrateDoctorScheduleMutationResult = NonNullable<
+    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>
+>;
+export type BuildICrateDoctorScheduleMutationBody = DoctorSchedule[];
+export type BuildICrateDoctorScheduleMutationError = AxiosError<unknown>;
+
+export const useBuildICrateDoctorSchedule = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        TError,
+        { data: DoctorSchedule[] },
+        TContext
+    >;
+    axios?: AxiosRequestConfig;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+    TError,
+    { data: DoctorSchedule[] },
+    TContext
+> => {
+    const mutationOptions = getBuildICrateDoctorScheduleMutationOptions(options);
 
     return useMutation(mutationOptions);
 };
