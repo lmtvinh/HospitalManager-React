@@ -18,6 +18,7 @@ import { useGetDiagnoses, useDeleteDiagnosis, getGetDiagnosesQueryKey } from '@/
 import { Diagnosis, DiagnosisDTO, GetDiagnosesParams } from '@/types';
 import { camelCaseToPascalCase } from '@/utils/string-utils';
 import dayjs from 'dayjs';
+import DetailModal from '../components/detail-modal';
 export default function useDiagnosisTable() {
     const [filter, setFilter] = React.useState<GetDiagnosesParams>({
         Page: 0,
@@ -81,7 +82,6 @@ export default function useDiagnosisTable() {
     const handleEdit = (id: number) => {
         dialogs.open(UpdateModal, id);
     };
-   
 
     const columns: GridColDef<DiagnosisDTO>[] = React.useMemo(() => {
         return [
@@ -110,9 +110,7 @@ export default function useDiagnosisTable() {
                 headerName: 'Mô tả',
                 flex: 1,
                 valueGetter: (params: string) =>
-                    (params?.length || 0) > 50
-                        ? params?.substring(0, 50) + '...'
-                        : params,
+                    (params?.length || 0) > 50 ? params?.substring(0, 50) + '...' : params,
             },
             {
                 field: 'actions',
@@ -121,7 +119,14 @@ export default function useDiagnosisTable() {
                 getActions: (params: GridRowParams<Diagnosis>) => {
                     const id = params.row.diagnosisId as number;
                     return [
-                        <GridActionsCellItem showInMenu icon={<ViewIcon />} label="Xem" onClick={() => {}} />,
+                        <GridActionsCellItem
+                            showInMenu
+                            icon={<ViewIcon />}
+                            label="Xem"
+                            onClick={() => {
+                                dialogs.open(DetailModal, id);
+                            }}
+                        />,
                         <GridActionsCellItem
                             sx={{
                                 width: '200px',

@@ -25,6 +25,7 @@ import type {
     Department,
     DepartmentDTOPaginated,
     Diagnosis,
+    DiagnosisDTO,
     DiagnosisDTOPaginated,
     Doctor,
     DoctorDTO,
@@ -1197,7 +1198,7 @@ export const usePostDiagnosis = <TError = AxiosError<unknown>, TContext = unknow
     return useMutation(mutationOptions);
 };
 
-export const getDiagnosis = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<Diagnosis>> => {
+export const getDiagnosis = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<DiagnosisDTO>> => {
     return axios.default.get(`/api/Diagnoses/${id}`, options);
 };
 
