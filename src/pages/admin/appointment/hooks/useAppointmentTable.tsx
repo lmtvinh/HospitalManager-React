@@ -7,6 +7,7 @@ import {
     GridRowParams,
     GridSortModel,
 } from '@mui/x-data-grid';
+import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
 import { useDialogs, useNotifications } from '@toolpad/core';
 import React from 'react';
@@ -18,6 +19,7 @@ import { getGetAppointmentsQueryKey, useDeleteAppointment, useGetAppointments } 
 import { Appointment, GetAppointmentsParams } from '@/types';
 import { camelCaseToPascalCase } from '@/utils/string-utils';
 import dayjs from 'dayjs';
+import CreateModal from '../../diagnosis/components/create-modal';
 export default function useAppointmentTable() {
     const [filter, setFilter] = React.useState<GetAppointmentsParams>({
         Page: 0,
@@ -81,6 +83,9 @@ export default function useAppointmentTable() {
     const handleEdit = (id: number) => {
         dialogs.open(UpdateModal, id);
     };
+    const handleDiagnosis = (id: number) => {
+        dialogs.open(CreateModal.FromDialog, { initAppointmentId: id });
+    };
 
     const columns: GridColDef[] = React.useMemo(() => {
         return [
@@ -126,6 +131,15 @@ export default function useAppointmentTable() {
                             icon={<EditIcon />}
                             label="Sửa"
                             onClick={() => handleEdit(id)}
+                        />,
+                        <GridActionsCellItem
+                            sx={{
+                                width: '200px',
+                            }}
+                            showInMenu
+                            icon={<MonitorWeightIcon />}
+                            label="Chẩn đoán"
+                            onClick={() => handleDiagnosis(id)}
                         />,
                         <GridActionsCellItem
                             showInMenu

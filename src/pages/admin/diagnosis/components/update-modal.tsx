@@ -8,19 +8,19 @@ import { useNotifications } from '@toolpad/core/useNotifications';
 import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
-import { Patient, PatientSchema } from '../validations';
-import DoctorForm from './doctor-form';
-import { useGetDoctor, usePutDoctor } from '@/services/api';
+import { Diagnosis, DiagnosisSchema } from '../validations';
+import DiagnosisForm from './diagnosis-form';
+import { useGetDiagnosis, usePutDiagnosis } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
-    const form = useForm<Patient>({
-        defaultValues: getDefaultValue(PatientSchema),
-        resolver: zodResolver(PatientSchema)
+    const form = useForm<Diagnosis>({
+        defaultValues: getDefaultValue(DiagnosisSchema),
+        resolver: zodResolver(DiagnosisSchema)
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
 
-    const { data, isLoading } = useGetDoctor(payload)
+    const { data, isLoading } = useGetDiagnosis(payload)
 
     React.useEffect(() => {
         if (data) {
@@ -28,7 +28,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         }
     }, [data])
 
-    const { mutateAsync, isPending } = usePutDoctor({
+    const { mutateAsync, isPending } = usePutDiagnosis({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
@@ -45,8 +45,11 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         onClose()
         form.reset()
     }
-    const onSubmit = async (data: Patient) => {
-        await mutateAsync({ data, id: payload })
+    const onSubmit = async (data: Diagnosis) => {
+        await mutateAsync({ data:{
+            ...data,
+            diagnosisDate:data.diagnosisDate.toISOString()
+        }, id: payload })
         onClosed()
     }
 
@@ -76,7 +79,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             </IconButton>
             <DialogContent dividers>
                 <Stack gap={3} minWidth={400}>
-                    <DoctorForm form={form} />
+                    <DiagnosisForm form={form} />
                 </Stack>
             </DialogContent>
             <DialogActions>

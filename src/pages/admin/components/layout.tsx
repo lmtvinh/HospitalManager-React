@@ -102,6 +102,7 @@ export default function AdminLayoutComponent() {
             <LocalizationProvider
                 dateAdapter={AdapterDayjs}
                 adapterLocale='vi'
+              
             >
                 <AppProvider
                     theme={theme}

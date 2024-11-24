@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import z, { ZodObject } from 'zod';
 
 export function getDefaultValue<T extends ZodObject<any>>(schema: T): z.infer<T> {
@@ -33,6 +34,18 @@ export const mustBeOptionalNumber = (field: string) =>
             message: ValidationMessages.number(field),
         }).optional()
     );
+export const mustBeNumber = (field: string) =>
+    z.preprocess(
+        (value) => {
+            if (isNaN(Number(value))) {
+                return ValidationMessages.number(field);
+            }
+            return Number(value);
+        }, z.number({
+            message: ValidationMessages.number(field),
+        })
+    );
+
 
 export const mustBePhoneNumber = (customMessage?: string) =>
     z.string().refine((value) => {
@@ -42,11 +55,30 @@ export const mustBePhoneNumber = (customMessage?: string) =>
             message: customMessage || `Số điện thoại không hợp lệ`,
         }).optional();
 
+export const mustBeDayjs = (field: string) =>
+    z.preprocess(
+        (value: any) => {
+            if (value === null || value === undefined || value === '') {
+                return undefined;
+            }
+            return dayjs(value);
+        }
+        , z.custom<dayjs.Dayjs>((value) => {
+            if (!dayjs.isDayjs(value)) {
+                return `Ngày tháng không hợp lệ`;
+            }
+            return value;
+        }
+        ).optional()
+    );
+
+
+
 
 /*
 eg: {Doctor:{Id:1}} => {"Doctor.Id":1}
 */
-export const removeDotObject = (data:{[key:string]:any}) => {
+export const removeDotObject = (data: { [key: string]: any }) => {
     const formattedData: { [key: string]: { [key: string]: any } } = {};
     for (const key in data) {
         if (data.hasOwnProperty(key)) {

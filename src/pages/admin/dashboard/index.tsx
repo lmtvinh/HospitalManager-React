@@ -63,7 +63,7 @@ const generateFakeData = (length = 10) => {
                   Weekly Appointments
                 </Typography>
                 <Chart
-                  options={lineChartOptions}
+                  options={lineChartOptions as any}
                   series={[{ name: 'Appointments', data: appointmentsData }]}
                   type="line"
                   height={300}
@@ -80,7 +80,7 @@ const generateFakeData = (length = 10) => {
                   Weekly Revenue
                 </Typography>
                 <Chart
-                  options={lineChartOptions}
+                  options={lineChartOptions as any}
                   series={[{ name: 'Revenue', data: revenueData }]}
                   type="line"
                   height={300}
@@ -97,7 +97,7 @@ const generateFakeData = (length = 10) => {
                   Appointments by Type
                 </Typography>
                 <Chart
-                  options={barChartOptions}
+                  options={barChartOptions as any}
                   series={[{ name: 'Patients', data: patientsData }]}
                   type="bar"
                   height={300}
