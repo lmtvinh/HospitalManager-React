@@ -20,6 +20,7 @@ import { Appointment, GetAppointmentsParams } from '@/types';
 import { camelCaseToPascalCase } from '@/utils/string-utils';
 import dayjs from 'dayjs';
 import CreateModal from '../../diagnosis/components/create-modal';
+import DetailModal from '../components/detail-modal';
 export default function useAppointmentTable() {
     const [filter, setFilter] = React.useState<GetAppointmentsParams>({
         Page: 0,
@@ -122,7 +123,14 @@ export default function useAppointmentTable() {
                 getActions: (params: GridRowParams<Appointment>) => {
                     const id = params.row.appointmentId as number;
                     return [
-                        <GridActionsCellItem showInMenu icon={<ViewIcon />} label="Xem" onClick={() => {}} />,
+                        <GridActionsCellItem
+                            showInMenu
+                            icon={<ViewIcon />}
+                            label="Xem"
+                            onClick={() => {
+                                dialogs.open(DetailModal, id);
+                            }}
+                        />,
                         <GridActionsCellItem
                             sx={{
                                 width: '200px',

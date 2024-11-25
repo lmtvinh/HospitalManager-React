@@ -10,45 +10,44 @@ import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
 import { DoctorUpdate, DoctorUpdateSchema } from '../validations';
 import DoctorForm from './doctor-form';
-import { useGetDoctor, usePutDoctor } from '@/services/api';
+import { getGetDoctorsQueryKey, useGetDoctor, usePutDoctor } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
-
     const form = useForm<DoctorUpdate>({
         defaultValues: getDefaultValue(DoctorUpdateSchema),
-        resolver: zodResolver(DoctorUpdateSchema)
-    })
-    const queryClient = useQueryClient()
-    const { show } = useNotifications()
+        resolver: zodResolver(DoctorUpdateSchema),
+    });
+    const queryClient = useQueryClient();
+    const { show } = useNotifications();
 
-    const { data, isLoading } = useGetDoctor(payload)
+    const { data, isLoading } = useGetDoctor(payload);
 
     React.useEffect(() => {
         if (data) {
-            form.reset(data.data as any)
+            form.reset(data.data as any);
         }
-    }, [data])
+    }, [data]);
 
     const { mutateAsync, isPending } = usePutDoctor({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['doctors']
-                })
+                    queryKey: getGetDoctorsQueryKey(),
+                });
                 show('Cập nhật bác sĩ thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
-                })
-            }
-        }
-    })
+                });
+            },
+        },
+    });
     const onClosed = () => {
-        onClose()
-        form.reset()
-    }
+        onClose();
+        form.reset();
+    };
     const onSubmit = async (data: DoctorUpdate) => {
-        await mutateAsync({ data, id: payload })
-        onClosed()
-    }
+        await mutateAsync({ data, id: payload });
+        onClosed();
+    };
 
     return (
         <Dialog
@@ -57,7 +56,6 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             onClose={onClosed}
             aria-labelledby="customized-dialog-title"
             open={open}
-
         >
             <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                 Cập nhật bác sĩ
@@ -80,20 +78,13 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button
-                    disabled={isPending}
-                    autoFocus type='reset' variant='outlined' onClick={onClosed}>
+                <Button disabled={isPending} autoFocus type="reset" variant="outlined" onClick={onClosed}>
                     Đóng
                 </Button>
-                <LoadingButton
-
-                    autoFocus type='submit' variant='contained'
-                    loading={isPending}
-                >
+                <LoadingButton autoFocus type="submit" variant="contained" loading={isPending}>
                     Lưu
                 </LoadingButton>
             </DialogActions>
         </Dialog>
-
-    )
+    );
 }

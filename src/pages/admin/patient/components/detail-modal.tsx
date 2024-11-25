@@ -1,11 +1,13 @@
-import { useGetDoctor } from '@/services/api';
 import { Dialog, DialogContent, Typography, Grid, DialogTitle, IconButton } from '@mui/material';
 import { DialogProps } from '@toolpad/core';
 import GridCloseIcon from '@mui/icons-material/Close';
-import { DoctorDTO } from '@/types';
+import { PatientDTO } from '@/types';
+import dayjs from 'dayjs';
+import { Gender, GenderLabel } from '@/services/enums/gender';
+import { useGetPatient } from '@/services/api';
 
 export default function DetailModal({ payload, open, onClose }: DialogProps<number>) {
-    const { data, isLoading } = useGetDoctor(payload, {
+    const { data, isLoading } = useGetPatient(payload, {
         query: {
             select: (data) => data.data,
         },
@@ -24,7 +26,7 @@ export default function DetailModal({ payload, open, onClose }: DialogProps<numb
     return (
         <Dialog onClose={onClose as any} open={open} fullWidth maxWidth="sm">
             <DialogTitle>
-                <Typography variant="h5">Chi tiết bác sĩ #{data?.doctorId}</Typography>
+                <Typography variant="h5">Chi tiết bệnh nhân #{data?.patientId}</Typography>
                 <IconButton
                     aria-label="close"
                     onClick={onClose as any}
@@ -43,13 +45,14 @@ export default function DetailModal({ payload, open, onClose }: DialogProps<numb
                     padding: 3,
                 }}
             >
-                <DoctorDetail doctor={data!} />
+                <PatientDetail patient={data!} />
             </DialogContent>
         </Dialog>
     );
 }
 
-export function DoctorDetail({ doctor, isShort }: { doctor: DoctorDTO; isShort?: boolean }) {
+export function PatientDetail({ patient, isShort }: { patient: PatientDTO; isShort?: boolean }) {
+    console.log(patient);
     return (
         <Grid container spacing={1}>
             <Grid item xs={4}>
@@ -58,15 +61,15 @@ export function DoctorDetail({ doctor, isShort }: { doctor: DoctorDTO; isShort?:
                 </Typography>
             </Grid>
             <Grid item xs={8}>
-                <Typography variant="body2">{doctor?.name}</Typography>
+                <Typography variant="body2">{patient?.name}</Typography>
             </Grid>
             <Grid item xs={4}>
                 <Typography variant="body2" fontWeight="bold">
-                    Số điện thoại:
+                    Ngày sinh:
                 </Typography>
             </Grid>
             <Grid item xs={8}>
-                <Typography variant="body2">{doctor?.phoneNumber}</Typography>
+                <Typography variant="body2">{dayjs(patient?.dateOfBirth).format('DD/MM/YYYY')}</Typography>
             </Grid>
             <Grid item xs={4}>
                 <Typography variant="body2" fontWeight="bold">
@@ -74,32 +77,34 @@ export function DoctorDetail({ doctor, isShort }: { doctor: DoctorDTO; isShort?:
                 </Typography>
             </Grid>
             <Grid item xs={8}>
-                <Typography variant="body2">{doctor?.email}</Typography>
+                <Typography variant="body2">{patient?.email}</Typography>
             </Grid>
-            {doctor?.department?.departmentName && (
-                <>
-                    <Grid item xs={4}>
-                        <Typography variant="body2" fontWeight="bold">
-                            Chuyên khoa:
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Typography variant="body2">{doctor?.department?.departmentName}</Typography>
-                    </Grid>
-                </>
-            )}
-            {!isShort && (
-                <>
-                    <Grid item xs={4}>
-                        <Typography variant="body2" fontWeight="bold">
-                            Giới thiệu
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Typography variant="body2">{doctor?.specialization}</Typography>
-                    </Grid>
-                </>
-            )}
+            <Grid item xs={4}>
+                <Typography variant="body2" fontWeight="bold">
+                    Số điện thoại:
+                </Typography>
+            </Grid>
+            <Grid item xs={8}>
+                <Typography variant="body2">{patient?.phoneNumber}</Typography>
+            </Grid>
+
+            <Grid item xs={4}>
+                <Typography variant="body2" fontWeight="bold">
+                    Giới tính:
+                </Typography>
+            </Grid>
+            <Grid item xs={8}>
+                <Typography variant="body2">{GenderLabel[patient?.gender as Gender] || 'Nam'}</Typography>
+            </Grid>
+
+            <Grid item xs={4}>
+                <Typography variant="body2" fontWeight="bold">
+                    Mã bảo hiểm:
+                </Typography>
+            </Grid>
+            <Grid item xs={8}>
+                <Typography variant="body2">{patient?.healthInsurance}</Typography>
+            </Grid>
         </Grid>
     );
 }
