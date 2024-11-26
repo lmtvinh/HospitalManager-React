@@ -3,6 +3,7 @@ import { Autocomplete, Checkbox, TextField } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { doctorsClient } from '@/services/mock';
 import { TimePickerComponent } from '@syncfusion/ej2-react-calendars';
+import { ChangedEventArgs } from '@syncfusion/ej2-calendars';
 import './main.css';
 
 interface DoctorFormProps {
@@ -133,12 +134,12 @@ export default function DoctorScheduleForm({ form, type }: DoctorFormProps) {
 									{/* TimePicker cho Giờ bắt đầu */}
 									<TimePickerComponent
 										placeholder="Chọn giờ bắt đầu"
-										value={item.startTime ? stringToDate(item.startTime) : null}
+										value={item.startTime ? stringToDate(item.startTime) : undefined}
 										format="HH:mm"
 										step={30}
 										min={new Date(0, 0, 0, 8, 0)} // Giới hạn thời gian từ 8:00
 										max={new Date(0, 0, 0, 16, 0)} // Đến 16:00
-										onChange={(e) => {
+										onChange={(e: ChangedEventArgs) => {
 											const startTime = e.value?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) || '';
 											handleTimeChange(item.day, 'startTime', startTime);
 										}}
@@ -147,12 +148,12 @@ export default function DoctorScheduleForm({ form, type }: DoctorFormProps) {
 									{/* TimePicker cho Giờ kết thúc */}
 									<TimePickerComponent
 										placeholder="Chọn giờ kết thúc"
-										value={item.endTime ? stringToDate(item.endTime) : null}
+										value={item.endTime ? stringToDate(item.endTime) : undefined}
 										format="HH:mm"
 										step={30}
 										min={item.startTime ? stringToDate(item.startTime) : new Date(0, 0, 0, 8, 0)}
 										max={new Date(0, 0, 0, 16, 0)}
-										onChange={(e) => {
+										onChange={(e: ChangedEventArgs) => {
 											const endTime = e.value?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) || '';
 											handleTimeChange(item.day, 'endTime', endTime);
 										}}
