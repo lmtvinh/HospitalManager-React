@@ -15,9 +15,12 @@ const Testimonials: React.FC = () => {
             <div className="container">
                 <div className="row align-items-center">
                     <div className="col-lg-5 info" data-aos="fade-up" data-aos-delay="100">
-                        <h3>Testimonials</h3>
+                        <h3>Đánh giá của khách hàng</h3>
                         <p>
-                            Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+                            Những đánh giá từ khách hàng của chúng tôi là nguồn cảm hứng lớn nhất.
+                            Dưới đây là những lời nhận xét chân thực từ những người đã trải nghiệm
+                            sản phẩm và dịch vụ của chúng tôi. Chúng tôi rất vui mừng khi nhận được
+                            sự hài lòng và góp ý từ các bạn để không ngừng hoàn thiện.
                         </p>
                     </div>
 
@@ -37,7 +40,7 @@ const Testimonials: React.FC = () => {
                                     name="Saul Goodman"
                                     position="CEO & Founder"
                                     stars={5}
-                                    description="Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper."
+                                    description="Dịch vụ tuyệt vời! Đội ngũ hỗ trợ chuyên nghiệp và sản phẩm hoàn toàn vượt qua mong đợi của tôi. Tôi rất hài lòng và chắc chắn sẽ giới thiệu đến bạn bè và đồng nghiệp."
                                 />
                             </SwiperSlide>
                             <SwiperSlide>
@@ -45,8 +48,8 @@ const Testimonials: React.FC = () => {
                                     src={testimonial2}
                                     name="Sara Wilsson"
                                     position="Designer"
-                                    stars={5}
-                                    description="Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa."
+                                    stars={4}
+                                    description="Đội ngũ rất tận tâm và sản phẩm chất lượng cao. Tôi chỉ mong rằng thời gian giao hàng nhanh hơn một chút, nhưng nhìn chung rất hài lòng!"
                                 />
                             </SwiperSlide>
                             <SwiperSlide>
@@ -55,7 +58,7 @@ const Testimonials: React.FC = () => {
                                     name="Jena Karlis"
                                     position="Store Owner"
                                     stars={5}
-                                    description="Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim."
+                                    description="Tôi thật sự ấn tượng với sự chuyên nghiệp và hỗ trợ nhiệt tình từ đội ngũ. Một trải nghiệm xuất sắc mà tôi sẽ không bao giờ quên."
                                 />
                             </SwiperSlide>
                             <SwiperSlide>
@@ -64,7 +67,7 @@ const Testimonials: React.FC = () => {
                                     name="Matt Brandon"
                                     position="Freelancer"
                                     stars={5}
-                                    description="Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam."
+                                    description="Tôi chưa bao giờ thấy một dịch vụ nào chu đáo và nhanh chóng đến vậy. Mọi thứ đều vượt quá mong đợi, chắc chắn tôi sẽ quay lại."
                                 />
                             </SwiperSlide>
                             <SwiperSlide>
@@ -72,8 +75,8 @@ const Testimonials: React.FC = () => {
                                     src={testimonial5}
                                     name="John Larson"
                                     position="Entrepreneur"
-                                    stars={5}
-                                    description="Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid."
+                                    stars={4}
+                                    description="Chất lượng sản phẩm tuyệt vời, hỗ trợ khách hàng rất tốt. Một số chi tiết nhỏ cần cải thiện, nhưng tổng thể rất đáng giá."
                                 />
                             </SwiperSlide>
                         </Swiper>

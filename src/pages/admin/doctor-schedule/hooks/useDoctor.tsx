@@ -54,7 +54,6 @@ export default function useDoctor() {
             { field: 'dayOfWeek', headerName: 'Số ngày làm việc', width: 150 },
             { field: 'startTime', headerName: 'Bắt đầu', width: 150 },
             { field: 'endTime', headerName: 'Kết thúc', width: 150 },
-            // { field: 'department', headerName: 'Phòng khám', width: 150, valueGetter: (value:Department) => value.departmentName },
             {
                 field: 'actions',
                 type: 'actions',

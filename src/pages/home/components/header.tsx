@@ -2,6 +2,7 @@ import Dropdown from "@/components/dropdown";
 import { Button } from "react-bootstrap";
 import { useBoolean } from "usehooks-ts";
 import AuthModal from "./auth-modal";
+import UserMenu from "./usermenu";
 const Header = () => {
     const { toggle, value } = useBoolean(false);
 
@@ -23,33 +24,6 @@ const Header = () => {
                             <span>1800 5678</span>
                         </i>
                     </div>
-                    {/* <div className="social-links d-none d-md-flex align-items-center">
-                        <a href="#" className="twitter"><i className="bi bi-twitter-x"></i></a>
-                        <a
-                            href="#"
-                            className="twitter"
-                        >
-                            <i className="bi bi-twitter-x"></i>
-                        </a>
-                        <a
-                            href="#"
-                            className="facebook"
-                        >
-                            <i className="bi bi-facebook"></i>
-                        </a>
-                        <a
-                            href="#"
-                            className="instagram"
-                        >
-                            <i className="bi bi-instagram"></i>
-                        </a>
-                        <a
-                            href="#"
-                            className="linkedin"
-                        >
-                            <i className="bi bi-linkedin"></i>
-                        </a>
-                    </div> */}
                 </div>
             </div>
 
@@ -112,23 +86,6 @@ const Header = () => {
                                     Liên hệ
                                 </a>
                             </li>
-                            {/* <Dropdown
-                                title="Dropdown"
-                                items={[
-                                    { href: "#dropdown1", label: "dropdown 1" },
-                                    { href: "#dropdown2", label: "dropdown 2" },
-                                ]}
-                            >
-
-                            </Dropdown>
-                            <li>
-                                <a
-                                    title="Contact"
-                                    href="#contact"
-                                    className="text-decoration-none"
-                                >
-                                </a>
-                            </li> */}
                         </ul>
                     </nav>
                     <Button
@@ -137,6 +94,7 @@ const Header = () => {
                     >
                         Đăng nhập
                     </Button>
+                    <UserMenu />
                 </div>
             </div>
         </header>
