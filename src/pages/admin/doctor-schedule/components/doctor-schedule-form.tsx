@@ -20,14 +20,16 @@ const dayOfWeek = [
 	{ value: 'sunday', label: 'Chủ nhật' },
 ];
 
-const stringToDate = (timeString: string): Date | undefined => {
-	if (!timeString) return undefined; // Đổi null thành undefined
+function stringToDate(timeString: string | null | undefined): Date {
+	if (typeof timeString !== 'string' || !timeString) return new Date();
 	const [hours, minutes] = timeString.split(':').map(Number);
+	if (isNaN(hours) || isNaN(minutes)) return new Date();
 	const date = new Date();
-	date.setHours(hours);
-	date.setMinutes(minutes);
+	date.setHours(hours, minutes, 0, 0);
 	return date;
-};
+}
+
+
 
 
 export default function DoctorScheduleForm({ form, type }: DoctorFormProps) {
@@ -91,6 +93,7 @@ export default function DoctorScheduleForm({ form, type }: DoctorFormProps) {
 						onChange(updated);
 					};
 
+					const newLocal = null;
 					return (
 						<>
 							<Autocomplete
@@ -123,26 +126,40 @@ export default function DoctorScheduleForm({ form, type }: DoctorFormProps) {
 								renderInput={(params) => <TextField {...params} label="Chọn ngày làm" variant="outlined" />}
 							/>
 
-							{/* Hiển thị thời gian làm việc cho từng ngày */}
 							{value.map((item: { day: string; startTime: string; endTime: string }) => (
 								<div key={item.day} style={{ marginTop: '16px' }}>
 									<span>{dayOfWeek.find((d) => d.value === item.day)?.label}</span>
+
+									{/* TimePicker cho Giờ bắt đầu */}
 									<TimePickerComponent
-										placeholder="Giờ bắt đầu"
-										value={stringToDate(item.startTime)}
+										placeholder="Chọn giờ bắt đầu"
+										value={item.startTime ? stringToDate(item.startTime) : null}
 										format="HH:mm"
 										step={30}
-										onChange={(e: { target: { value: string; }; }) => handleTimeChange(item.day, 'startTime', e.target.value)}
+										min={new Date(0, 0, 0, 8, 0)} // Giới hạn thời gian từ 8:00
+										max={new Date(0, 0, 0, 16, 0)} // Đến 16:00
+										onChange={(e) => {
+											const startTime = e.value?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) || '';
+											handleTimeChange(item.day, 'startTime', startTime);
+										}}
 									/>
+
+									{/* TimePicker cho Giờ kết thúc */}
 									<TimePickerComponent
-										placeholder="Giờ kết thúc"
-										value={stringToDate(item.endTime)}
+										placeholder="Chọn giờ kết thúc"
+										value={item.endTime ? stringToDate(item.endTime) : null}
 										format="HH:mm"
 										step={30}
-										onChange={(e: { target: { value: string; }; }) => handleTimeChange(item.day, 'endTime', e.target.value)}
+										min={item.startTime ? stringToDate(item.startTime) : new Date(0, 0, 0, 8, 0)}
+										max={new Date(0, 0, 0, 16, 0)}
+										onChange={(e) => {
+											const endTime = e.value?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) || '';
+											handleTimeChange(item.day, 'endTime', endTime);
+										}}
 									/>
 								</div>
 							))}
+
 						</>
 					);
 				}}
