@@ -105,11 +105,19 @@ export default function AuthModal({ show, onHide }: Props) {
         onHide();
         setActiveTab(null);
     };
+    const [isRegisterDetail, setRegisterDetail] = React.useState(false);
+    const [formData, setFormData] = React.useState({
+
+    })
     return (
         <Modal className="home mt-4" show={show} onHide={handleClose}>
             <Modal.Body className='mt-2'>
                 {activeTab === 'login' && <LoginForm type={type} nameIdentifier={nameIdentifier} />}
-                {activeTab === 'register' && <RegisterForm type={type} nameIdentifier={nameIdentifier} />}
+                {activeTab === 'register' && (
+                    <div>
+                        <RegisterForm type={type} nameIdentifier={nameIdentifier} />
+                    </div>
+                )}
                 {activeTab == null && (
                     <Container>
                         <Header>
@@ -126,8 +134,33 @@ export default function AuthModal({ show, onHide }: Props) {
                                 margin-bottom: 1rem;
                             `}
                         >
-                            Dùng số điện thoại, email, hoặc phương thức khác để đăng nhập hoặc đăng kí.
+                            Dùng số điện thoại, email, hoặc phương thức khác để đăng nhập hoặc {''}
+                            <Button
+                                href="#"
+                                css={css`
+                                color: #000000 !important;
+                                background-color: transparent !important;
+                                border: none !important;
+                                margin-bottom: 2px;
+                                margin-left: -10px;
+                                font-weight: 500;
+                            `}
+                                onClick={() => setActiveTab('register')}
+                            >
+                                đăng kí
+                            </Button>
                         </p>
+
+                        <div
+                            css={
+                                css`
+                                display: flex;
+                                margin-bottom: 1rem;
+                                `
+                            }
+                        >
+
+                        </div>
 
                         <div
                             css={css`
@@ -167,7 +200,9 @@ export default function AuthModal({ show, onHide }: Props) {
                                 Hoặc tiếp tục bằng
                             </p>
                             <SocialLoginContainer>
-                                <SocialButton>
+                                <SocialButton
+                                    onClick={() => (window.location.href = "/api/Account/login/google")}
+                                >
                                     <FontAwesomeIcon
                                         icon={faGoogle}
                                         css={css`
