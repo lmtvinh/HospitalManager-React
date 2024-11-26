@@ -1,21 +1,43 @@
 import { RouterProvider } from 'react-router-dom';
 import router from './routes';
-import {
-  QueryClient,
-  QueryClientProvider
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NotificationsProvider } from '@toolpad/core/useNotifications';
 import { DialogsProvider } from '@toolpad/core/useDialogs';
-const queryClient = new QueryClient()
+import useUserStore from './stores/user-store';
+import React from 'react';
+import { getCurrentUser } from './services/api';
+import dayjs from 'dayjs';
+const queryClient = new QueryClient();
 const App = () => {
-  return <NotificationsProvider>
-    <DialogsProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </DialogsProvider>
-  </NotificationsProvider>
-    ;
+    const { token, logout, setProfile } = useUserStore();
+    React.useEffect(() => {
+        console.log(token?.accessToken);
+        if (!token?.accessToken) return logout();
+        const expired = dayjs(token?.accessTokenExpirationAt).isBefore(dayjs());
+        console.log(expired);
+        if (expired) return logout();
+        getCurrentUser({
+            headers: {
+                Authorization: `Bearer ${token?.accessToken}`,
+            },
+        })
+            .then((data) => {
+                setProfile(data.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                logout();
+            });
+    }, [token?.accessToken]);
+    return (
+        <NotificationsProvider>
+            <DialogsProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RouterProvider router={router} />
+                </QueryClientProvider>
+            </DialogsProvider>
+        </NotificationsProvider>
+    );
 };
 
 export default App;

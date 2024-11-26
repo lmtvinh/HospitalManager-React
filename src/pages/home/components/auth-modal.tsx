@@ -112,12 +112,8 @@ export default function AuthModal({ show, onHide }: Props) {
     return (
         <Modal className="home mt-4" show={show} onHide={handleClose}>
             <Modal.Body className='mt-2'>
-                {activeTab === 'login' && <LoginForm type={type} nameIdentifier={nameIdentifier} />}
-                {activeTab === 'register' && (
-                    <div>
-                        <RegisterForm type={type} nameIdentifier={nameIdentifier} />
-                    </div>
-                )}
+                {activeTab === 'login' && <LoginForm type={type}  onDone={handleClose} nameIdentifier={nameIdentifier} />}
+                {activeTab === 'register' && <RegisterForm type={type} onDone={handleClose} nameIdentifier={nameIdentifier} />}
                 {activeTab == null && (
                     <Container>
                         <Header>
@@ -201,7 +197,7 @@ export default function AuthModal({ show, onHide }: Props) {
                             </p>
                             <SocialLoginContainer>
                                 <SocialButton
-                                    onClick={() => (window.location.href = "/api/Account/login/google")}
+                                onClick={() => window.location.href = '/api/Account/login/google'}
                                 >
                                     <FontAwesomeIcon
                                         icon={faGoogle as any}

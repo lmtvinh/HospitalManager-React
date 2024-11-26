@@ -1,11 +1,10 @@
-import Dropdown from "@/components/dropdown";
 import { Button } from "react-bootstrap";
 import { useBoolean } from "usehooks-ts";
 import AuthModal from "./auth-modal";
 import UserMenu from "./usermenu";
 const Header = () => {
     const { toggle, value } = useBoolean(false);
-
+    
     return (
         <header id="header" className="header sticky-top">
             <AuthModal onHide={toggle} show={value} />

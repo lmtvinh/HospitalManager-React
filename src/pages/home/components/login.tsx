@@ -6,6 +6,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ValidationMessages } from '@/utils/form-utils';
 import { useLogin } from '@/services/api';
+import useUserStore from '@/stores/user-store';
+import dayjs from 'dayjs';
 
 const FormContainer = styled.div`
     max-width: 400px;
@@ -20,6 +22,7 @@ export enum IdentityType {
 interface LoginFormProps {
     nameIdentifier: string;
     type?: IdentityType;
+    onDone?: () => void;
 }
 
 const LoginSchema = z.object({
@@ -28,17 +31,19 @@ const LoginSchema = z.object({
 });
 type LoginFormValues = z.infer<typeof LoginSchema>;
 
-export default function LoginForm({ nameIdentifier, type }: LoginFormProps) {
+export default function LoginForm({ nameIdentifier, type,onDone }: LoginFormProps) {
     const {
         control,
         handleSubmit,
         formState: { errors },
+        setError,
         setValue,
+
     } = useForm<LoginFormValues>({
         resolver: zodResolver(LoginSchema),
     });
     const { mutate, isPending } = useLogin();
-
+    const {setProfile, setToken} = useUserStore()
     React.useEffect(() => {
         setValue('nameIdentifier', nameIdentifier);
     }, [nameIdentifier, type]);
@@ -46,11 +51,25 @@ export default function LoginForm({ nameIdentifier, type }: LoginFormProps) {
     const onSubmit = async (data: LoginFormValues) => {
         mutate({ data },{
             onError: (error) => {
-                console.log(error);
+                if(error.code == '401') {
+                    setError('root', {
+                        type: 'manual',
+                        message: 'Sai mật khẩu hoặc email'
+                    })
+                    return
+                }else{
+                    setError('root', {
+                        type: 'manual',
+                        message: 'Có lỗi xảy ra, vui lòng thử lại sau'
+                    })
+                }
             },
             onSuccess: (data) => {
-                // todo: setToken to store
-                console.log(data);
+                setToken({
+                    accessToken: data.data.token!.token!,
+                    expirationAt: dayjs(data.data.token?.expires).toDate(),
+                });
+                onDone?.()
             }
         })
     };

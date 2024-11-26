@@ -45,8 +45,9 @@ const useUserStore = create<UserState>()(
                             isAuthenticated: true,
                             token: { accessToken: token.accessToken, accessTokenExpirationAt: token.expirationAt },
                         });
+                    } else {
+                        set({ isAuthenticated: false, token: undefined });
                     }
-                    set({ isAuthenticated: false, token: undefined });
                 },
                 setIsFetching: (isFetching) => set({ isFetching }),
                 logout: () => {
