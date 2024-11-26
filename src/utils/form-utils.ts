@@ -64,6 +64,9 @@ export const mustBeDayjs = (field: string) =>
             return dayjs(value);
         }
         , z.custom<dayjs.Dayjs>((value) => {
+            if (!value) {
+                return `Ngày tháng không hợp lệ`;
+            }
             if (!dayjs.isDayjs(value)) {
                 return `Ngày tháng không hợp lệ`;
             }

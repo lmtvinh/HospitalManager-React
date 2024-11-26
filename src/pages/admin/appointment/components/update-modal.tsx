@@ -8,19 +8,20 @@ import { useNotifications } from '@toolpad/core/useNotifications';
 import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
-import { DoctorUpdate, DoctorUpdateSchema } from '../validations';
-import DoctorForm from './appointment-form';
-import { useGetDoctor, usePutDoctor } from '@/services/api';
+import AppointmentForm from './appointment-form';
+import { getGetAppointmentsQueryKey, useGetAppointment, usePutAppointment } from '@/services/api';
+import { Appointment, AppointmentSchema } from '../validations';
+import dayjs from 'dayjs';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
-    const form = useForm<DoctorUpdate>({
-        defaultValues: getDefaultValue(DoctorUpdateSchema),
-        resolver: zodResolver(DoctorUpdateSchema)
+    const form = useForm<Appointment>({
+        defaultValues: getDefaultValue(AppointmentSchema),
+        resolver: zodResolver(AppointmentSchema)
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
 
-    const { data, isLoading } = useGetDoctor(payload)
+    const { data, isLoading } = useGetAppointment(payload)
 
     React.useEffect(() => {
         if (data) {
@@ -28,13 +29,13 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         }
     }, [data])
 
-    const { mutateAsync, isPending } = usePutDoctor({
+    const { mutateAsync, isPending } = usePutAppointment({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['doctors']
+                    queryKey: getGetAppointmentsQueryKey()
                 })
-                show('Cập nhật bác sĩ thành công', {
+                show('Cập nhật lịch hẹn thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
@@ -45,8 +46,12 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         onClose()
         form.reset()
     }
-    const onSubmit = async (data: DoctorUpdate) => {
-        await mutateAsync({ data, id: payload })
+    const onSubmit = async (data: Appointment) => {
+        await mutateAsync({ data:{
+            ...data,
+            appointmentDate: data.appointmentDate?.toISOString(),
+            appointmentTime: dayjs(data.appointmentDate).format('HH:mm')
+        }, id: payload })
         onClosed()
     }
 
@@ -60,7 +65,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
 
         >
             <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                Cập nhật bác sĩ
+                Cập nhật lịch hẹn
             </DialogTitle>
             <IconButton
                 aria-label="close"
@@ -76,7 +81,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             </IconButton>
             <DialogContent dividers>
                 <Stack gap={3} minWidth={400}>
-                    <DoctorForm form={form} />
+                    <AppointmentForm form={form} />
                 </Stack>
             </DialogContent>
             <DialogActions>

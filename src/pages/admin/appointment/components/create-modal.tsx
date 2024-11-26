@@ -4,28 +4,29 @@ import { useBoolean } from 'usehooks-ts';
 import AddIcon from '@mui/icons-material/Add';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DoctorRegistration, DoctorRegistrationSchema } from '../validations';
 import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { getDefaultValue } from '@/utils/form-utils';
-import DoctorForm from './appointment-form';
-import { useDoctorsRegister } from '@/services/api';
+import AppointmentForm from './appointment-form';
+import { getGetAppointmentsQueryKey, usePostAppointment } from '@/services/api';
+import { Appointment, AppointmentSchema } from '../validations';
+import dayjs from 'dayjs';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean()
-    const form = useForm<DoctorRegistration>({
-        defaultValues: getDefaultValue(DoctorRegistrationSchema),
-        resolver: zodResolver(DoctorRegistrationSchema)
+    const form = useForm<Appointment>({
+        defaultValues: getDefaultValue(AppointmentSchema),
+        resolver: zodResolver(AppointmentSchema)
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
-    const { mutateAsync, isPending } = useDoctorsRegister({
+    const { mutateAsync, isPending } = usePostAppointment({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['doctors']
+                    queryKey: getGetAppointmentsQueryKey()
                 })
-                show('Tạo mới chuyên khoa thành công', {
+                show('Tạo mới  lịch hẹn thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
@@ -36,8 +37,12 @@ export default function CreateModal() {
         setFalse()
         form.reset()
     }
-    const onSubmit = async (data: DoctorRegistration) => {
-        await mutateAsync({data})
+    const onSubmit = async (data: Appointment) => {
+        await mutateAsync({data:{
+            ...data,
+            appointmentDate: data.appointmentDate?.toISOString(),
+            appointmentTime: dayjs(data.appointmentDate).format('HH:mm')
+        }})
         onClosed()
     }
 
@@ -55,7 +60,7 @@ export default function CreateModal() {
 
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Tạo mới bác sĩ
+                    Tạo mới lịch hẹn
                 </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -71,7 +76,7 @@ export default function CreateModal() {
                 </IconButton>
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
-                        <DoctorForm type='create' form={form} />
+                        <AppointmentForm type='create' form={form} />
                     </Stack>
                 </DialogContent>
                 <DialogActions>

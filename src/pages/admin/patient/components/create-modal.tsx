@@ -9,8 +9,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { getDefaultValue } from '@/utils/form-utils';
-import DoctorForm from './doctor-form';
-import { useDoctorsRegister } from '@/services/api';
+import PatientForm from './patient-form';
+import { usePatientRegister } from '@/services/api';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean()
     const form = useForm<Patient>({
@@ -19,13 +19,13 @@ export default function CreateModal() {
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
-    const { mutateAsync, isPending } = useDoctorsRegister({
+    const { mutateAsync, isPending } = usePatientRegister({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['doctors']
+                    queryKey: ['Patients']
                 })
-                show('Tạo mới chuyên khoa thành công', {
+                show('Tạo mới bệnh nhân thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
@@ -37,7 +37,10 @@ export default function CreateModal() {
         form.reset()
     }
     const onSubmit = async (data: Patient) => {
-        await mutateAsync({data})
+        await mutateAsync({data:{
+            ...data,
+            dateOfBirth: data.dateOfBirth?.toISOString()
+        }})
         onClosed()
     }
 
@@ -55,7 +58,7 @@ export default function CreateModal() {
 
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Tạo mới bác sĩ
+                    Tạo mới hồ sơ bệnh nhân
                 </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -71,7 +74,7 @@ export default function CreateModal() {
                 </IconButton>
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
-                        <DoctorForm type='create' form={form} />
+                        <PatientForm type='create' form={form} />
                     </Stack>
                 </DialogContent>
                 <DialogActions>

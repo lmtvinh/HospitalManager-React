@@ -1,11 +1,14 @@
 import React from 'react';
-import { Menu, MenuItem, IconButton, Typography, Divider } from '@mui/material';
+import { Menu, MenuItem, IconButton, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Button } from 'react-bootstrap';
+import useUserStore from '@/stores/user-store';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserMenu() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const { profile, logout } = useUserStore();
+    const navigate = useNavigate();
     const handleMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(e.currentTarget);
     };
@@ -15,24 +18,25 @@ export default function UserMenu() {
     };
 
     const handleLogout = () => {
-        // 
+        //
+        logout();
         handleMenuClose();
-    }
+    };
 
     return (
         <div>
             <IconButton
                 onClick={handleMenuOpen}
-                color='inherit'
-                size='large'
-                aria-controls='user-menu'
-                aria-haspopup='true'
+                color="inherit"
+                size="large"
+                aria-controls="user-menu"
+                aria-haspopup="true"
             >
-                <AccountCircleIcon fontSize='large' />
+                <AccountCircleIcon fontSize="large" />
             </IconButton>
 
             <Menu
-                id='user-menu'
+                id="user-menu"
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
@@ -40,24 +44,27 @@ export default function UserMenu() {
                     style: { width: 250 },
                 }}
             >
-                <MenuItem disabled>
+                <MenuItem >
                     <div>
-                        <Typography variant='subtitle1' fontWeight="bold" className='text-black'>
-                            abc
+                        <Typography variant="subtitle1" fontWeight="bold" className="text-black">
+                            {profile?.patient?.name || profile?.doctor?.name}
                         </Typography>
-                        <a
-                            className='text-decoration-none text-black'
-                            href=''
-                        >
+                        <a className="text-decoration-none text-black" href="">
                             Chỉnh sửa thông tin
                         </a>
                     </div>
                 </MenuItem>
+                {profile?.roles?.includes('doctor') && (
+                    <MenuItem onClick={() => navigate('/admin')}>
+                        <LogoutIcon sx={{ marginRight: 1 }} />
+                        Quản lý
+                    </MenuItem>
+                )}
                 <MenuItem onClick={handleLogout}>
                     <LogoutIcon sx={{ marginRight: 1 }} />
                     Đăng Xuất
                 </MenuItem>
             </Menu>
         </div>
-    )
+    );
 }
