@@ -2,8 +2,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 
 import FormInput from '@/pages/admin/components/form/FormInput';
 import { Autocomplete, TextField } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { departmentsClient } from '@/services/mock';
+import { useGetDepartments } from '@/services/api';
 
 interface DoctorFormProps {
 	form: UseFormReturn<any>;
@@ -11,10 +10,13 @@ interface DoctorFormProps {
 }
 
 export default function DoctorForm({ form, type }: DoctorFormProps) {
-	const { data, isLoading } = useQuery({
-		queryKey: ['departments'],
-		queryFn: () => departmentsClient.departmentsAll(),
-	})
+	const { data, isLoading } = useGetDepartments({
+		PageSize: 100000,
+	}, {
+		query: {
+			select: data => data.data.data,
+		}
+	});
 
 	return (
 		<>
@@ -34,7 +36,7 @@ export default function DoctorForm({ form, type }: DoctorFormProps) {
 							};
 						}) || []}
 						loading={isLoading}
-						renderInput={(params) => <TextField {...params} label="Phòng khám" variant='outlined' />}
+						renderInput={(params) => <TextField {...params} label="Chuyên khoa" variant='outlined' />}
 						onChange={(_, data) => {
 							onChange(data?.value);
 						}}
@@ -51,7 +53,7 @@ export default function DoctorForm({ form, type }: DoctorFormProps) {
 
 			<FormInput control={form.control} name="phoneNumber" label="Số điện thoại" variant="outlined" />
 			<FormInput control={form.control} name="specialization" label="Chuyên khoa" variant="outlined" />
-			{/* <FormInput control={form.control} name="departmentId" label="Mã phòng khám" variant="outlined" disabled /> */}
+			{/* <FormInput control={form.control} name="departmentId" label="Mã chuyên khoa" variant="outlined" disabled /> */}
 
 		</>
 	);

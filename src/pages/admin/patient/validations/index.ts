@@ -1,23 +1,20 @@
 import z from 'zod'
 import { mustBeOptionalNumber, mustBePhoneNumber, ValidationMessages } from '@/utils/form-utils'
+import { Gender } from '@/services/enums/gender'
 
-export const DoctorRegistrationSchema = z.object({
-    departmentId: mustBeOptionalNumber('Mã phòng khám'),
-    doctorId: mustBeOptionalNumber('Mã bác sĩ'),
-    email: z.string().email(ValidationMessages.email('Email')),
-    name: z.string().min(1, ValidationMessages.required('Tên bác sĩ')).max(255, ValidationMessages.maxLength('Tên bác sĩ', 255)),
-    phoneNumber: mustBePhoneNumber(),
-    specialization: z.string().min(1, ValidationMessages.required('Chuyên khoa')).max(1000, ValidationMessages.maxLength('Chuyên khoa', 1000)),
-    password: z.string().refine((value) => {
-        const STRONG_PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
-        return STRONG_PASSWORD.test(value)
-    }, {
-        message: 'Mật khẩu phải chứa ít nhất 6 ký tự, 1 chữ hoa, 1 chữ thường và 1 số'
-    })
-})
+export const PatientSchema = z.object({
+    dateOfBirth: z.string().refine((value) => value.length > 0, { message: ValidationMessages.required('Date of Birth') }),
+    email: z.string().email({ message: ValidationMessages.email('Email') }).optional(),
+    gender:z.nativeEnum(Gender).optional(),
+    healthInsurance: z.string().max(100,ValidationMessages.maxLength('Health Insurance',100)).optional(),
+    name: z.string().min(0,ValidationMessages.minLength('Name',0)).max(100,ValidationMessages.maxLength('Name',100)).optional(),
+    phoneNumber: mustBePhoneNumber().optional(),
+    patientId: z.custom(mustBeOptionalNumber).optional(),
+    userId: z.string().optional(),
+})  
 
-export type DoctorRegistration = z.infer<typeof DoctorRegistrationSchema>
 
-export const DoctorUpdateSchema = DoctorRegistrationSchema.omit({ password: true })
 
-export type DoctorUpdate = z.infer<typeof DoctorUpdateSchema>
+
+export type Patient = z.infer<typeof PatientSchema>
+

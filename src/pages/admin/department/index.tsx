@@ -1,8 +1,9 @@
-import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
 import { PageContainer, PageContainerToolbar } from '@toolpad/core';
 import CreateModal from './components/create-modal';
 import useDepartment from './hooks/useDepartment';
 import DatagridPagination from '../components/datagrid-pagination';
+import { CustomQuickFilter } from '../components/datagrid-search';
 export default function ListDepartment() {
 
 
@@ -74,7 +75,7 @@ const DataGridToolbar = () => {
       alignItems: 'center',
       padding: '0 16px',
     }}>
-      <GridToolbarQuickFilter />
+      <CustomQuickFilter />
       {/* <Button
         variant="contained"
         startIcon={<FilterListIcon />}

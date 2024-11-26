@@ -58,7 +58,7 @@ export default function useDepartment() {
                 queryClient.invalidateQueries({
                     queryKey: getGetDepartmentsQueryKey()
                 })
-                show('Xóa phòng khám thành công', {
+                show('Xóa chuyên khoa thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
@@ -74,8 +74,8 @@ export default function useDepartment() {
 
     const columns: GridColDef[] = React.useMemo(() => {
         return [
-            { field: 'departmentId', headerName: 'Mã phòng khám', minWidth: 150 },
-            { field: 'departmentName', headerName: 'Tên phòng khám', flex: 1 },
+            { field: 'departmentId', headerName: 'Mã chuyên khoa', minWidth: 150 },
+            { field: 'departmentName', headerName: 'Tên chuyên khoa', flex: 1 },
             { field: 'description', headerName: 'Mô tả', flex: 1 },
             {
                 field: 'actions',
@@ -91,7 +91,7 @@ export default function useDepartment() {
                         <GridActionsCellItem showInMenu icon={<DeleteIcon />} label="Xóa" onClick={() => {
                             dialogs.confirm(
                                 <>
-                                    Bạn có chắc chắn muốn xóa phòng khám <b>{params.row.departmentName}</b> không?
+                                    Bạn có chắc chắn muốn xóa chuyên khoa <b>{params.row.departmentName}</b> không?
                                 </>,
                                 {
                                     cancelText: "Hủy",

@@ -34,7 +34,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
                 queryClient.invalidateQueries({
                     queryKey: ['departments']
                 })
-                show('Cập nhật phòng khám thành công', {
+                show('Cập nhật chuyên khoa thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
@@ -60,7 +60,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
 
         >
             <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                Tạo mới phòng khám
+                Tạo mới chuyên khoa
             </DialogTitle>
             <IconButton
                 aria-label="close"
@@ -76,7 +76,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             </IconButton>
             <DialogContent dividers>
                 <Stack gap={3} minWidth={400}>
-                    <FormInput control={form.control} name='departmentName' label='Tên phòng khám' variant='outlined' />
+                    <FormInput control={form.control} name='departmentName' label='Tên chuyên khoa' variant='outlined' />
                     <FormInput control={form.control} name='description' label='Mô tả' variant='outlined' multiline rows={3} />
 
                 </Stack>

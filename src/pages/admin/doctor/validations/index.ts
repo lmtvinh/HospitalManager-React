@@ -2,7 +2,7 @@ import z from 'zod'
 import { mustBeOptionalNumber, mustBePhoneNumber, ValidationMessages } from '@/utils/form-utils'
 
 export const DoctorRegistrationSchema = z.object({
-    departmentId: mustBeOptionalNumber('Mã phòng khám'),
+    departmentId: mustBeOptionalNumber('Mã chuyên khoa'),
     doctorId: mustBeOptionalNumber('Mã bác sĩ'),
     email: z.string().email(ValidationMessages.email('Email')),
     name: z.string().min(1, ValidationMessages.required('Tên bác sĩ')).max(255, ValidationMessages.maxLength('Tên bác sĩ', 255)),

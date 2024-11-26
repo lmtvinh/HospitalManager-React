@@ -21,22 +21,31 @@ import * as axios from 'axios';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type {
     Appointment,
+    AppointmentDTOPaginated,
     Department,
     DepartmentDTOPaginated,
     Diagnosis,
+    DiagnosisDTO,
+    DiagnosisDTOPaginated,
     Doctor,
     DoctorDTO,
     DoctorDTOPaginated,
     DoctorRegistration,
     DoctorSchedule,
     EmergencyContact,
+    GetAppointmentsParams,
     GetDepartmentsParams,
+    GetDiagnosesParams,
     GetDoctorsParams,
+    GetInvoicesParams,
+    GetPatientsParams,
     IdentityExistsParams,
     Invoice,
+    InvoicePaginated,
     LoginModel,
     LoginResponse,
     Patient,
+    PatientDTOPaginated,
     PatientRegistration,
     UserProfileDTO,
     WeatherForecast,
@@ -401,27 +410,36 @@ export function useIdentityExists<TData = Awaited<ReturnType<typeof identityExis
     return query;
 }
 
-export const getAppointments = (options?: AxiosRequestConfig): Promise<AxiosResponse<Appointment[]>> => {
-    return axios.default.get(`/api/Appointments`, options);
+export const getAppointments = (
+    params?: GetAppointmentsParams,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<AppointmentDTOPaginated>> => {
+    return axios.default.get(`/api/Appointments`, {
+        ...options,
+        params: { ...params, ...options?.params },
+    });
 };
 
-export const getGetAppointmentsQueryKey = () => {
-    return [`/api/Appointments`] as const;
+export const getGetAppointmentsQueryKey = (params?: GetAppointmentsParams) => {
+    return [`/api/Appointments`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetAppointmentsQueryOptions = <
     TData = Awaited<ReturnType<typeof getAppointments>>,
     TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}) => {
+>(
+    params?: GetAppointmentsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+) => {
     const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-    const queryKey = queryOptions?.queryKey ?? getGetAppointmentsQueryKey();
+    const queryKey = queryOptions?.queryKey ?? getGetAppointmentsQueryKey(params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getAppointments>>> = ({ signal }) =>
-        getAppointments({ signal, ...axiosOptions });
+        getAppointments(params, { signal, ...axiosOptions });
 
     return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getAppointments>>,
@@ -433,38 +451,41 @@ export const getGetAppointmentsQueryOptions = <
 export type GetAppointmentsQueryResult = NonNullable<Awaited<ReturnType<typeof getAppointments>>>;
 export type GetAppointmentsQueryError = AxiosError<unknown>;
 
-export function useGetAppointments<
-    TData = Awaited<ReturnType<typeof getAppointments>>,
-    TError = AxiosError<unknown>,
->(options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>> &
-        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetAppointments<
-    TData = Awaited<ReturnType<typeof getAppointments>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>> &
-        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetAppointments<
-    TData = Awaited<ReturnType<typeof getAppointments>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetAppointments<TData = Awaited<ReturnType<typeof getAppointments>>, TError = AxiosError<unknown>>(
+    params: undefined | GetAppointmentsParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>> &
+            Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetAppointments<TData = Awaited<ReturnType<typeof getAppointments>>, TError = AxiosError<unknown>>(
+    params?: GetAppointmentsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>> &
+            Pick<
+                UndefinedInitialDataOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>,
+                'initialData'
+            >;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetAppointments<TData = Awaited<ReturnType<typeof getAppointments>>, TError = AxiosError<unknown>>(
+    params?: GetAppointmentsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
-export function useGetAppointments<
-    TData = Awaited<ReturnType<typeof getAppointments>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetAppointmentsQueryOptions(options);
+export function useGetAppointments<TData = Awaited<ReturnType<typeof getAppointments>>, TError = AxiosError<unknown>>(
+    params?: GetAppointmentsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAppointments>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetAppointmentsQueryOptions(params, options);
 
     const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -1061,27 +1082,36 @@ export const useDeleteDepartment = <TError = AxiosError<unknown>, TContext = unk
     return useMutation(mutationOptions);
 };
 
-export const getDiagnoses = (options?: AxiosRequestConfig): Promise<AxiosResponse<Diagnosis[]>> => {
-    return axios.default.get(`/api/Diagnoses`, options);
+export const getDiagnoses = (
+    params?: GetDiagnosesParams,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<DiagnosisDTOPaginated>> => {
+    return axios.default.get(`/api/Diagnoses`, {
+        ...options,
+        params: { ...params, ...options?.params },
+    });
 };
 
-export const getGetDiagnosesQueryKey = () => {
-    return [`/api/Diagnoses`] as const;
+export const getGetDiagnosesQueryKey = (params?: GetDiagnosesParams) => {
+    return [`/api/Diagnoses`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetDiagnosesQueryOptions = <
     TData = Awaited<ReturnType<typeof getDiagnoses>>,
     TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}) => {
+>(
+    params?: GetDiagnosesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+) => {
     const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-    const queryKey = queryOptions?.queryKey ?? getGetDiagnosesQueryKey();
+    const queryKey = queryOptions?.queryKey ?? getGetDiagnosesQueryKey(params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getDiagnoses>>> = ({ signal }) =>
-        getDiagnoses({ signal, ...axiosOptions });
+        getDiagnoses(params, { signal, ...axiosOptions });
 
     return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getDiagnoses>>,
@@ -1093,38 +1123,38 @@ export const getGetDiagnosesQueryOptions = <
 export type GetDiagnosesQueryResult = NonNullable<Awaited<ReturnType<typeof getDiagnoses>>>;
 export type GetDiagnosesQueryError = AxiosError<unknown>;
 
-export function useGetDiagnoses<
-    TData = Awaited<ReturnType<typeof getDiagnoses>>,
-    TError = AxiosError<unknown>,
->(options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>> &
-        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetDiagnoses<
-    TData = Awaited<ReturnType<typeof getDiagnoses>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>> &
-        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetDiagnoses<
-    TData = Awaited<ReturnType<typeof getDiagnoses>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetDiagnoses<TData = Awaited<ReturnType<typeof getDiagnoses>>, TError = AxiosError<unknown>>(
+    params: undefined | GetDiagnosesParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>> &
+            Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetDiagnoses<TData = Awaited<ReturnType<typeof getDiagnoses>>, TError = AxiosError<unknown>>(
+    params?: GetDiagnosesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>> &
+            Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetDiagnoses<TData = Awaited<ReturnType<typeof getDiagnoses>>, TError = AxiosError<unknown>>(
+    params?: GetDiagnosesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
-export function useGetDiagnoses<
-    TData = Awaited<ReturnType<typeof getDiagnoses>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetDiagnosesQueryOptions(options);
+export function useGetDiagnoses<TData = Awaited<ReturnType<typeof getDiagnoses>>, TError = AxiosError<unknown>>(
+    params?: GetDiagnosesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDiagnoses>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetDiagnosesQueryOptions(params, options);
 
     const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -1168,7 +1198,7 @@ export const usePostDiagnosis = <TError = AxiosError<unknown>, TContext = unknow
     return useMutation(mutationOptions);
 };
 
-export const getDiagnosis = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<Diagnosis>> => {
+export const getDiagnosis = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<DiagnosisDTO>> => {
     return axios.default.get(`/api/Diagnoses/${id}`, options);
 };
 
@@ -1955,6 +1985,69 @@ export const useDeleteDoctorSchedule = <TError = AxiosError<unknown>, TContext =
     return useMutation(mutationOptions);
 };
 
+export const buildICrateDoctorSchedule = (
+    doctorSchedule: DoctorSchedule[],
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<DoctorSchedule>> => {
+    return axios.default.post(`/api/DoctorSchedules/Bulk`, doctorSchedule, options);
+};
+
+export const getBuildICrateDoctorScheduleMutationOptions = <
+    TError = AxiosError<unknown>,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        TError,
+        { data: DoctorSchedule[] },
+        TContext
+    >;
+    axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+    TError,
+    { data: DoctorSchedule[] },
+    TContext
+> => {
+    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        { data: DoctorSchedule[] }
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return buildICrateDoctorSchedule(data, axiosOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type BuildICrateDoctorScheduleMutationResult = NonNullable<
+    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>
+>;
+export type BuildICrateDoctorScheduleMutationBody = DoctorSchedule[];
+export type BuildICrateDoctorScheduleMutationError = AxiosError<unknown>;
+
+export const useBuildICrateDoctorSchedule = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        TError,
+        { data: DoctorSchedule[] },
+        TContext
+    >;
+    axios?: AxiosRequestConfig;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+    TError,
+    { data: DoctorSchedule[] },
+    TContext
+> => {
+    const mutationOptions = getBuildICrateDoctorScheduleMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+
 export const getEmergencyContacts = (options?: AxiosRequestConfig): Promise<AxiosResponse<EmergencyContact[]>> => {
     return axios.default.get(`/api/EmergencyContacts`, options);
 };
@@ -2276,27 +2369,36 @@ export const useDeleteEmergencyContact = <TError = AxiosError<unknown>, TContext
     return useMutation(mutationOptions);
 };
 
-export const getInvoices = (options?: AxiosRequestConfig): Promise<AxiosResponse<Invoice[]>> => {
-    return axios.default.get(`/api/Invoices`, options);
+export const getInvoices = (
+    params?: GetInvoicesParams,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<InvoicePaginated>> => {
+    return axios.default.get(`/api/Invoices`, {
+        ...options,
+        params: { ...params, ...options?.params },
+    });
 };
 
-export const getGetInvoicesQueryKey = () => {
-    return [`/api/Invoices`] as const;
+export const getGetInvoicesQueryKey = (params?: GetInvoicesParams) => {
+    return [`/api/Invoices`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetInvoicesQueryOptions = <
     TData = Awaited<ReturnType<typeof getInvoices>>,
     TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}) => {
+>(
+    params?: GetInvoicesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+) => {
     const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-    const queryKey = queryOptions?.queryKey ?? getGetInvoicesQueryKey();
+    const queryKey = queryOptions?.queryKey ?? getGetInvoicesQueryKey(params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getInvoices>>> = ({ signal }) =>
-        getInvoices({ signal, ...axiosOptions });
+        getInvoices(params, { signal, ...axiosOptions });
 
     return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getInvoices>>,
@@ -2308,35 +2410,38 @@ export const getGetInvoicesQueryOptions = <
 export type GetInvoicesQueryResult = NonNullable<Awaited<ReturnType<typeof getInvoices>>>;
 export type GetInvoicesQueryError = AxiosError<unknown>;
 
-export function useGetInvoices<TData = Awaited<ReturnType<typeof getInvoices>>, TError = AxiosError<unknown>>(options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>> &
-        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetInvoices<
-    TData = Awaited<ReturnType<typeof getInvoices>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>> &
-        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetInvoices<
-    TData = Awaited<ReturnType<typeof getInvoices>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetInvoices<TData = Awaited<ReturnType<typeof getInvoices>>, TError = AxiosError<unknown>>(
+    params: undefined | GetInvoicesParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>> &
+            Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetInvoices<TData = Awaited<ReturnType<typeof getInvoices>>, TError = AxiosError<unknown>>(
+    params?: GetInvoicesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>> &
+            Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetInvoices<TData = Awaited<ReturnType<typeof getInvoices>>, TError = AxiosError<unknown>>(
+    params?: GetInvoicesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
-export function useGetInvoices<
-    TData = Awaited<ReturnType<typeof getInvoices>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetInvoicesQueryOptions(options);
+export function useGetInvoices<TData = Awaited<ReturnType<typeof getInvoices>>, TError = AxiosError<unknown>>(
+    params?: GetInvoicesParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoices>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetInvoicesQueryOptions(params, options);
 
     const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -2529,27 +2634,36 @@ export const useDeleteInvoice = <TError = AxiosError<unknown>, TContext = unknow
     return useMutation(mutationOptions);
 };
 
-export const getPatients = (options?: AxiosRequestConfig): Promise<AxiosResponse<Patient[]>> => {
-    return axios.default.get(`/api/Patients`, options);
+export const getPatients = (
+    params?: GetPatientsParams,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<PatientDTOPaginated>> => {
+    return axios.default.get(`/api/Patients`, {
+        ...options,
+        params: { ...params, ...options?.params },
+    });
 };
 
-export const getGetPatientsQueryKey = () => {
-    return [`/api/Patients`] as const;
+export const getGetPatientsQueryKey = (params?: GetPatientsParams) => {
+    return [`/api/Patients`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetPatientsQueryOptions = <
     TData = Awaited<ReturnType<typeof getPatients>>,
     TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}) => {
+>(
+    params?: GetPatientsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+) => {
     const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-    const queryKey = queryOptions?.queryKey ?? getGetPatientsQueryKey();
+    const queryKey = queryOptions?.queryKey ?? getGetPatientsQueryKey(params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getPatients>>> = ({ signal }) =>
-        getPatients({ signal, ...axiosOptions });
+        getPatients(params, { signal, ...axiosOptions });
 
     return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getPatients>>,
@@ -2561,35 +2675,38 @@ export const getGetPatientsQueryOptions = <
 export type GetPatientsQueryResult = NonNullable<Awaited<ReturnType<typeof getPatients>>>;
 export type GetPatientsQueryError = AxiosError<unknown>;
 
-export function useGetPatients<TData = Awaited<ReturnType<typeof getPatients>>, TError = AxiosError<unknown>>(options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>> &
-        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetPatients<
-    TData = Awaited<ReturnType<typeof getPatients>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>> &
-        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>, 'initialData'>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetPatients<
-    TData = Awaited<ReturnType<typeof getPatients>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetPatients<TData = Awaited<ReturnType<typeof getPatients>>, TError = AxiosError<unknown>>(
+    params: undefined | GetPatientsParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>> &
+            Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetPatients<TData = Awaited<ReturnType<typeof getPatients>>, TError = AxiosError<unknown>>(
+    params?: GetPatientsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>> &
+            Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetPatients<TData = Awaited<ReturnType<typeof getPatients>>, TError = AxiosError<unknown>>(
+    params?: GetPatientsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
-export function useGetPatients<
-    TData = Awaited<ReturnType<typeof getPatients>>,
-    TError = AxiosError<unknown>,
->(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetPatientsQueryOptions(options);
+export function useGetPatients<TData = Awaited<ReturnType<typeof getPatients>>, TError = AxiosError<unknown>>(
+    params?: GetPatientsParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPatients>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetPatientsQueryOptions(params, options);
 
     const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

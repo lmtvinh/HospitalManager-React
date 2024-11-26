@@ -25,7 +25,7 @@ export default function CreateModal() {
                 queryClient.invalidateQueries({
                     queryKey: ['departments']
                 })
-                show('Tạo mới phòng khám thành công', {
+                show('Tạo mới chuyên khoa thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
@@ -55,7 +55,7 @@ export default function CreateModal() {
 
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Tạo mới phòng khám
+                    Tạo mới chuyên khoa
                 </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -72,7 +72,7 @@ export default function CreateModal() {
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
 
-                        <FormInput control={form.control} name='departmentName' label='Tên phòng khám' variant='outlined' />
+                        <FormInput control={form.control} name='departmentName' label='Tên chuyên khoa' variant='outlined' />
                         <FormInput control={form.control} name='description' label='Mô tả' variant='outlined' multiline rows={3} />
 
                     </Stack>
