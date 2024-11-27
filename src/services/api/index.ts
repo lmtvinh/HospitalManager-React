@@ -257,7 +257,7 @@ export function useLoginWithGoogle<
     return query;
 }
 
-export const googleResponse = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+export const googleResponse = (options?: AxiosRequestConfig): Promise<AxiosResponse<LoginResponse>> => {
     return axios.default.get(`/api/Account/google-response`, options);
 };
 

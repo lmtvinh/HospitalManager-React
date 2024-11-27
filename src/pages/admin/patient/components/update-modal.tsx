@@ -9,8 +9,8 @@ import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
 import { Patient, PatientSchema } from '../validations';
-import DoctorForm from './doctor-form';
-import { useGetDoctor, usePutDoctor } from '@/services/api';
+import PatientForm from './patient-form';
+import { getGetPatientsQueryKey, useGetPatient, usePutPatient } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
 
     const form = useForm<Patient>({
@@ -19,8 +19,8 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
     })
     const queryClient = useQueryClient()
     const { show } = useNotifications()
-
-    const { data, isLoading } = useGetDoctor(payload)
+    console.log(payload)
+    const { data, isLoading } = useGetPatient(payload)
 
     React.useEffect(() => {
         if (data) {
@@ -28,13 +28,13 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         }
     }, [data])
 
-    const { mutateAsync, isPending } = usePutDoctor({
+    const { mutateAsync, isPending } = usePutPatient({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['doctors']
+                    queryKey: getGetPatientsQueryKey()
                 })
-                show('Cập nhật bác sĩ thành công', {
+                show('Cập nhật bệnh nhân thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 })
@@ -46,7 +46,11 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
         form.reset()
     }
     const onSubmit = async (data: Patient) => {
-        await mutateAsync({ data, id: payload })
+        await mutateAsync({ data:{
+            ...data,
+            dateOfBirth: data.dateOfBirth?.toISOString(),
+            patientId: payload
+        }, id: payload })
         onClosed()
     }
 
@@ -60,7 +64,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
 
         >
             <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                Cập nhật bác sĩ
+                Cập nhật bệnh nhân
             </DialogTitle>
             <IconButton
                 aria-label="close"
@@ -76,7 +80,7 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             </IconButton>
             <DialogContent dividers>
                 <Stack gap={3} minWidth={400}>
-                    <DoctorForm form={form} />
+                    <PatientForm form={form} />
                 </Stack>
             </DialogContent>
             <DialogActions>

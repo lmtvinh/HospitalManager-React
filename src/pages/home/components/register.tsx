@@ -14,9 +14,6 @@ const FormContainer = styled.div`
     padding: 20px;
 `;
 
-
-
-
 export enum IdentityType {
     Email = 0,
     Phone = 1,
@@ -25,6 +22,7 @@ export enum IdentityType {
 interface RegisterFormProps {
     nameIdentifier?: string;
     type?: IdentityType;
+    onDone?: () => void;
 }
 
 const RegisterSchema = z
@@ -65,7 +63,7 @@ const RegisterSchema = z
 
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
 
-export default function RegisterForm({ nameIdentifier, type }: RegisterFormProps) {
+export default function RegisterForm({ nameIdentifier, type, onDone }: RegisterFormProps) {
     const {
         control,
         handleSubmit,
@@ -89,8 +87,8 @@ export default function RegisterForm({ nameIdentifier, type }: RegisterFormProps
 
     const onSubmit = async (data: RegisterFormValues) => {
         const res = await mutateAsync({ data });
-        console.log(res);
-    };
+        onDone?.();
+        };
     return (
         <FormContainer>
             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -250,9 +248,7 @@ export default function RegisterForm({ nameIdentifier, type }: RegisterFormProps
                     <Form.Control.Feedback type="invalid">{!!errors.dateOfBirth?.message}</Form.Control.Feedback>
                 </Form.Group>
 
-                <Button disabled={isPending} variant="primary" type="submit" 
-                className='w-100'
-                >
+                <Button disabled={isPending} variant="primary" type="submit" className="w-100">
                     Đăng ký
                 </Button>
             </Form>
