@@ -2,59 +2,64 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import { GridCloseIcon } from '@mui/x-data-grid';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { doctorsClient } from '@/services/mock';
+import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import { getDefaultValue } from '@/utils/form-utils';
-import { DoctorUpdate, DoctorUpdateSchema } from '../validations';
-import DoctorForm from './doctor-schedule-form';
+import { DoctorSchedule, DoctorScheduleSchema } from '../validations';
+import DoctorScheduleForm from './doctor-schedule-form';
+import {
+    getGetAllDoctorSchedulesQueryKey,
+    getGetDoctorSchedulesQueryKey,
+    useGetDoctorSchedule,
+    usePutDoctorSchedule,
+} from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
-
-    const form = useForm<DoctorUpdate>({
-        defaultValues: getDefaultValue(DoctorUpdateSchema),
-        resolver: zodResolver(DoctorUpdateSchema)
-    })
-    const queryClient = useQueryClient()
-    const { show } = useNotifications()
-
-    const { data, isLoading } = useQuery({
-        queryKey: ['doctors', payload],
-        queryFn: () => doctorsClient.doctorsGET(payload),
-        enabled: open && !!payload
-    })
+    const form = useForm<DoctorSchedule>({
+        resolver: zodResolver(DoctorScheduleSchema),
+    });
+    const queryClient = useQueryClient();
+    const { show } = useNotifications();
+    console.log(payload);
+    const { data, isLoading } = useGetDoctorSchedule(payload);
 
     React.useEffect(() => {
         if (data) {
-            form.reset(data)
+            form.reset(data.data as any);
         }
-    }, [data])
+    }, [data]);
 
-    const { mutateAsync, isPending } = useMutation({
-        mutationKey: ['doctor', 'create'],
-        mutationFn: (data: DoctorUpdate) => {
-            return doctorsClient.doctorsPUT(payload, data)
+    const { mutateAsync, isPending } = usePutDoctorSchedule({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: getGetAllDoctorSchedulesQueryKey(),
+                });
+                show('Cập nhật bệnh nhân thành công', {
+                    autoHideDuration: 3000,
+                    severity: 'success',
+                });
+            },
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['doctors']
-            })
-            show('Cập nhật bác sĩ thành công', {
-                autoHideDuration: 3000,
-                severity: 'success',
-            })
-        }
-    })
+    });
     const onClosed = () => {
-        onClose()
-        form.reset()
-    }
-    const onSubmit = async (data: DoctorUpdate) => {
-        await mutateAsync(data)
-        onClosed()
-    }
+        onClose();
+        form.reset();
+    };
+    const onSubmit = async (data: DoctorSchedule) => {
+        await mutateAsync({
+            data: {
+                ...data,
+                startTime: data.startTime?.format('HH:mm:ss'),
+                endTime: data.endTime?.format('HH:mm:ss'),
+                scheduleId: payload,
+            },
+            id: payload,
+        });
+        onClosed();
+    };
 
     return (
         <Dialog
@@ -63,10 +68,9 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             onClose={onClosed}
             aria-labelledby="customized-dialog-title"
             open={open}
-
         >
             <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                Cập nhật bác sĩ
+                Cập nhật lịch làm việc
             </DialogTitle>
             <IconButton
                 aria-label="close"
@@ -82,24 +86,17 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             </IconButton>
             <DialogContent dividers>
                 <Stack gap={3} minWidth={400}>
-                    <DoctorForm form={form} />
+                    <DoctorScheduleForm form={form} />
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button
-                    disabled={isPending}
-                    autoFocus type='reset' variant='outlined' onClick={onClosed}>
+                <Button disabled={isPending} autoFocus type="reset" variant="outlined" onClick={onClosed}>
                     Đóng
                 </Button>
-                <LoadingButton
-
-                    autoFocus type='submit' variant='contained'
-                    loading={isPending}
-                >
+                <LoadingButton autoFocus type="submit" variant="contained" loading={isPending}>
                     Lưu
                 </LoadingButton>
             </DialogActions>
         </Dialog>
-
-    )
+    );
 }

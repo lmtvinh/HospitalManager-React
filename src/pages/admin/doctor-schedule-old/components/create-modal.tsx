@@ -4,47 +4,44 @@ import { useBoolean } from 'usehooks-ts';
 import AddIcon from '@mui/icons-material/Add';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DoctorScheduleSchema, DoctorSchedule } from '../validations';
-import { useQueryClient } from '@tanstack/react-query';
+import { DoctorRegistration, DoctorRegistrationSchema } from '../validations';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { doctorsClient } from '@/services/mock';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { getDefaultValue } from '@/utils/form-utils';
 import DoctorScheduleForm from './doctor-schedule-form';
-import { usePostDoctorSchedule } from '@/services/api';
 export default function CreateModal() {
-    const { toggle, value, setFalse } = useBoolean();
-    const form = useForm<DoctorSchedule>({
-        resolver: zodResolver(DoctorScheduleSchema),
-    });
-    const queryClient = useQueryClient();
-    const { show } = useNotifications();
-    const { mutateAsync, isPending } = usePostDoctorSchedule({
-        mutation: {
-            onSuccess: () => {
-                queryClient.invalidateQueries({
-                    queryKey: ['DoctorSchedules'],
-                });
-                show('Tạo mới bệnh nhân thành công', {
-                    autoHideDuration: 3000,
-                    severity: 'success',
-                });
-            },
+    const { toggle, value, setFalse } = useBoolean()
+    const form = useForm<DoctorRegistration>({
+        defaultValues: getDefaultValue(DoctorRegistrationSchema),
+        resolver: zodResolver(DoctorRegistrationSchema)
+    })
+    const queryClient = useQueryClient()
+    const { show } = useNotifications()
+    const { mutateAsync, isPending } = useMutation({
+        mutationKey: ['doctors', 'create'],
+        mutationFn: (data: DoctorRegistration) => {
+            return doctorsClient.doctorsPOST(data)
         },
-    });
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['doctors']
+            })
+            show('Tạo mới chuyên khoa thành công', {
+                autoHideDuration: 3000,
+                severity: 'success',
+            })
+        }
+    })
     const onClosed = () => {
-        setFalse();
-        form.reset();
-    };
-    const onSubmit = async (data: DoctorSchedule) => {
-        await mutateAsync({
-            data: {
-                ...data,
-                startTime: data.startTime?.format('HH:mm:ss'),
-                endTime: data.endTime?.format('HH:mm:ss'),
-            },
-        });
-        onClosed();
-    };
+        setFalse()
+        form.reset()
+    }
+    const onSubmit = async (data: DoctorRegistration) => {
+        await mutateAsync(data)
+        onClosed()
+    }
 
     return (
         <>
@@ -57,9 +54,10 @@ export default function CreateModal() {
                 onClose={onClosed}
                 aria-labelledby="customized-dialog-title"
                 open={value}
+
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Tạo mới hồ sơ bệnh nhân
+                    Tạo lịch làm việc mới
                 </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -75,18 +73,24 @@ export default function CreateModal() {
                 </IconButton>
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
-                        <DoctorScheduleForm type="create" form={form} />
+                        <DoctorScheduleForm type='create' form={form} />
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={isPending} autoFocus type="reset" variant="outlined" onClick={onClosed}>
+                    <Button
+                        disabled={isPending}
+                        autoFocus type='reset' variant='outlined' onClick={onClosed}>
                         Đóng
                     </Button>
-                    <LoadingButton autoFocus type="submit" variant="contained" loading={isPending}>
+                    <LoadingButton
+
+                        autoFocus type='submit' variant='contained'
+                        loading={isPending}
+                    >
                         Tạo mới
                     </LoadingButton>
                 </DialogActions>
             </Dialog>
         </>
-    );
+    )
 }
