@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu, MenuItem, IconButton, Typography, Divider } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 export default function UserMenu() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -45,12 +45,13 @@ export default function UserMenu() {
                         <Typography variant='subtitle1' fontWeight="bold" className='text-black'>
                             abc
                         </Typography>
-                        <a
+                        <Link
                             className='text-decoration-none text-black'
-                            href=''
+                            to="/patient-detail"
+                            state={{ patientId: 1 }}
                         >
                             Chỉnh sửa thông tin
-                        </a>
+                        </Link>
                     </div>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
