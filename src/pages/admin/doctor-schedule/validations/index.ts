@@ -1,12 +1,8 @@
 import z from 'zod';
 import {
     mustBeDayjs,
-    mustBeNumber,
-    mustBeOptionalNumber,
-    mustBePhoneNumber,
-    ValidationMessages,
+    mustBeNumber
 } from '@/utils/form-utils';
-import { Gender } from '@/services/enums/gender';
 import dayjs from 'dayjs';
 
 export const DoctorScheduleSchema = z
@@ -36,3 +32,13 @@ export const DoctorScheduleSchema = z
     );
 
 export type DoctorSchedule = z.infer<typeof DoctorScheduleSchema>;
+
+export const DoctorScheduleBulkCreateSchema = z
+.object({
+    doctorId: mustBeNumber('Mã bác sĩ'),
+    dateOfWeeks: z.array(z.number()).optional(),
+    startTimes: z.array(mustBeDayjs('Thời gian bắt đầu')).optional(),
+    endTimes: z.array(mustBeDayjs('Thời gian kết thúc')).optional(),
+});
+
+export type DoctorScheduleBulkCreate = z.infer<typeof DoctorScheduleBulkCreateSchema>;

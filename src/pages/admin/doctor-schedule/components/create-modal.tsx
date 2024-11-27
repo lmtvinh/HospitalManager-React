@@ -1,50 +1,106 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack } from '@mui/material';
+import {
+    Autocomplete,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material';
 import { GridCloseIcon } from '@mui/x-data-grid';
 import { useBoolean } from 'usehooks-ts';
 import AddIcon from '@mui/icons-material/Add';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DoctorScheduleSchema, DoctorSchedule } from '../validations';
+import { DoctorScheduleBulkCreate, DoctorScheduleBulkCreateSchema } from '../validations';
 import { useQueryClient } from '@tanstack/react-query';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
-import { getDefaultValue } from '@/utils/form-utils';
-import DoctorScheduleForm from './doctor-schedule-form';
-import { usePostDoctorSchedule } from '@/services/api';
+import {
+    getAllDoctorSchedules,
+    getGetAllDoctorSchedulesQueryKey,
+    useBulkUpdateDoctorSchedules,
+    useGetDoctors,
+} from '@/services/api';
+import { Doctor } from '@/types';
+import React from 'react';
+import { TimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+const dateOfWeekOptions = [0, 1, 2, 3, 4, 5, 6];
+
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean();
-    const form = useForm<DoctorSchedule>({
-        resolver: zodResolver(DoctorScheduleSchema),
+    const form = useForm<DoctorScheduleBulkCreate>({
+        resolver: zodResolver(DoctorScheduleBulkCreateSchema),
     });
     const queryClient = useQueryClient();
     const { show } = useNotifications();
-    const { mutateAsync, isPending } = usePostDoctorSchedule({
+    const { mutateAsync, isPending } = useBulkUpdateDoctorSchedules({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['DoctorSchedules'],
+                    queryKey: getGetAllDoctorSchedulesQueryKey(),
                 });
-                show('Tạo mới bệnh nhân thành công', {
+                show('Tạo mới thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
                 });
             },
         },
     });
+
+    React.useEffect(() => {
+        const doctorId = form.getValues('doctorId');
+        if (doctorId) {
+            async function fetchDoctorSchedules() {
+                const { data } = await getAllDoctorSchedules({
+                    'DoctorId.Equal': doctorId,
+                    PageSize: 100000,
+                });
+                const dateOfWeeks = data.data?.map((item) => item.dayOfWeek!) || [];
+                const startTimes =
+                    data.data?.map((item) => dayjs(dayjs().format('YYYY-MM-DD') + ' ' + item.startTime!)) || [];
+                const endTimes =
+                    data.data?.map((item) => dayjs(dayjs().format('YYYY-MM-DD') + ' ' + item.endTime!)) || [];
+                console.log(dateOfWeeks, startTimes, endTimes);
+                form.setValue('dateOfWeeks', dateOfWeeks);
+                form.setValue('startTimes', startTimes);
+                form.setValue('endTimes', endTimes);
+            }
+            fetchDoctorSchedules();
+        }
+    }, [form.watch('doctorId')]);
+
     const onClosed = () => {
         setFalse();
         form.reset();
     };
-    const onSubmit = async (data: DoctorSchedule) => {
+    const onSubmit = async (data: DoctorScheduleBulkCreate) => {
         await mutateAsync({
-            data: {
-                ...data,
-                startTime: data.startTime?.format('HH:mm:ss'),
-                endTime: data.endTime?.format('HH:mm:ss'),
-            },
+            doctorId: data.doctorId,
+            data:
+                data.dateOfWeeks?.map((item, index) => {
+                    return {
+                        doctorId: data.doctorId,
+                        dayOfWeek: item,
+                        startTime: data!.startTimes![index]?.format('HH:mm:ss'),
+                        endTime: data!.endTimes![index]?.format('HH:mm:ss'),
+                    };
+                }) || [],
         });
         onClosed();
     };
+    console.log(form.formState.errors);
+    const { data: doctors } = useGetDoctors({
+        PageSize: 100000,
+    });
+    const doctorOptions = React.useMemo(() => {
+        return doctors?.data.data?.map((option) => option) || [];
+    }, [doctors]);
 
     return (
         <>
@@ -75,7 +131,81 @@ export default function CreateModal() {
                 </IconButton>
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
-                        <DoctorScheduleForm type="create" form={form} />
+                        <Controller
+                            control={form.control}
+                            name="doctorId"
+                            render={({ field }) => {
+                                return (
+                                    <Autocomplete<Doctor, false>
+                                        options={doctorOptions}
+                                        getOptionLabel={(option) => option.name!}
+                                        getOptionKey={(option) => option.doctorId!}
+                                        renderInput={(params) => <TextField {...params} label="Bác sĩ" />}
+                                        value={doctorOptions.find((d) => d.doctorId === field.value) || null}
+                                        renderOption={(props, option, { selected }) => (
+                                            <MenuItem {...props} selected={selected} key={option.doctorId}>
+                                                {option.name}
+                                            </MenuItem>
+                                        )}
+                                        onChange={(event: any, newValue: Doctor | null) => {
+                                            field.onChange(newValue?.doctorId ?? undefined);
+                                        }}
+                                    />
+                                );
+                            }}
+                        ></Controller>
+                        {form.watch('doctorId') && (
+                            <Controller
+                                control={form.control}
+                                name="dateOfWeeks"
+                                render={({ field:{onChange,value,...rest} }) => {
+                                    
+                                    return (
+                                        <Autocomplete<number, true>
+                                            multiple
+                                            options={dateOfWeekOptions}
+                                            getOptionLabel={(option) =>
+                                                option == 0 ? 'Chủ nhật' : `Thứ ${option + 1}`
+                                            }
+                                            selectOnFocus
+                                            
+                                            renderInput={(params) => <TextField {...params} label="Ngày trong tuần" />}
+                                            renderOption={(props, option, { selected }) => (
+                                                <MenuItem {...props} selected={selected} key={option}>
+                                                    {option == 0 ? 'Chủ nhật' : `Thứ ${option + 1}`}
+                                                </MenuItem>
+                                            )}
+                                            onChange={(event: any, newValue: number[]) => {
+                                                onChange(newValue);
+                                            }}
+                                            value={value||[]}
+                                            {...rest}
+                                        />
+                                    );
+                                }}
+                            ></Controller>
+                        )}
+                        {form.watch('dateOfWeeks')?.map((item, index) => {
+                            return (
+                                <Stack gap={2} key={index}>
+                                    <Typography variant="h6">{item == 0 ? 'Chủ nhật' : `Thứ ${item + 1}`}</Typography>
+                                    <Controller
+                                        control={form.control}
+                                        name={`startTimes.${index}`}
+                                        render={({ field }) => {
+                                            return <TimePicker label="Bắt đầu lúc" {...field} />;
+                                        }}
+                                    ></Controller>
+                                    <Controller
+                                        control={form.control}
+                                        name={`endTimes.${index}`}
+                                        render={({ field }) => {
+                                            return <TimePicker label="Kết thúc lúc" {...field} />;
+                                        }}
+                                    ></Controller>
+                                </Stack>
+                            );
+                        })}
                     </Stack>
                 </DialogContent>
                 <DialogActions>

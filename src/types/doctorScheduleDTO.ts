@@ -4,11 +4,11 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
-import type { Doctor } from './doctor';
+import type { DoctorDTO } from './doctorDTO';
 
-export interface DoctorSchedule {
+export interface DoctorScheduleDTO {
     dayOfWeek?: number;
-    doctor?: Doctor;
+    doctor?: DoctorDTO;
     doctorId?: number;
     endTime?: string;
     scheduleId?: number;

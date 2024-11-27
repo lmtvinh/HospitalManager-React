@@ -19,10 +19,11 @@ export default function Filter({ setFilter, filter }: FilterProps) {
     const form = useForm<GetAppointmentsParams >( {
         defaultValues: filter,
     });
-    const { data: doctors } = useGetDoctors({
+
+    const { data: patients } = useGetPatients({
         PageSize: 100000,
     });
-    const { data: patients } = useGetPatients({
+    const { data: doctors } = useGetDoctors({
         PageSize: 100000,
     });
     const doctorOptions = React.useMemo(() => {
