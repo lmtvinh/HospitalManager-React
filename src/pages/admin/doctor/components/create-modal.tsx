@@ -10,7 +10,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { getDefaultValue } from '@/utils/form-utils';
 import DoctorForm from './doctor-form';
-import { getGetDoctorsQueryKey, useDoctorsRegister } from '@/services/api';
+import { getGetDoctorsQueryKey, uploadFile, useDoctorsRegister } from '@/services/api';
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean();
     const form = useForm<DoctorRegistration>({
@@ -37,7 +37,14 @@ export default function CreateModal() {
         form.reset();
     };
     const onSubmit = async (data: DoctorRegistration) => {
-        await mutateAsync({ data });
+        console.log(data);
+        const uploadRest = await uploadFile({ file: data.avatar });
+        await mutateAsync({
+            data: {
+                ...data,
+                imageUrl: uploadRest.data,
+            },
+        });
         onClosed();
     };
 

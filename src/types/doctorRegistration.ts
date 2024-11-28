@@ -11,6 +11,8 @@ export interface DoctorRegistration {
     /** @nullable */
     email?: string | null;
     /** @nullable */
+    imageUrl?: string | null;
+    /** @nullable */
     name?: string | null;
     /** @nullable */
     password?: string | null;

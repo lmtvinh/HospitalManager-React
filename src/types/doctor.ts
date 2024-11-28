@@ -24,6 +24,8 @@ export interface Doctor {
      * @nullable
      */
     email?: string | null;
+    /** @nullable */
+    imageUrl?: string | null;
     /**
      * @minLength 0
      * @maxLength 100

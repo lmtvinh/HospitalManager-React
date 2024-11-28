@@ -33,7 +33,10 @@ import type {
     DoctorDTOPaginated,
     DoctorRegistration,
     DoctorSchedule,
-    DoctorSchedulePaginated,
+    DoctorScheduleCreateDTO,
+    DoctorScheduleDTO,
+    DoctorScheduleDTOPaginated,
+    DownloadFileParams,
     EmergencyContact,
     GetAllDoctorSchedulesParams,
     GetAppointmentsParams,
@@ -50,6 +53,7 @@ import type {
     Patient,
     PatientDTOPaginated,
     PatientRegistration,
+    UploadFileBody,
     UserProfileDTO,
     WeatherForecast,
 } from '../../types';
@@ -1664,7 +1668,7 @@ export const useDoctorsRegister = <TError = AxiosError<unknown>, TContext = unkn
 export const getAllDoctorSchedules = (
     params?: GetAllDoctorSchedulesParams,
     options?: AxiosRequestConfig
-): Promise<AxiosResponse<DoctorSchedulePaginated>> => {
+): Promise<AxiosResponse<DoctorScheduleDTOPaginated>> => {
     return axios.default.get(`/api/DoctorSchedules`, {
         ...options,
         params: { ...params, ...options?.params },
@@ -1807,7 +1811,10 @@ export const usePostDoctorSchedule = <TError = AxiosError<unknown>, TContext = u
     return useMutation(mutationOptions);
 };
 
-export const getDoctorSchedule = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<DoctorSchedule>> => {
+export const getDoctorSchedule = (
+    id: number,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<DoctorScheduleDTO>> => {
     return axios.default.get(`/api/DoctorSchedules/${id}`, options);
 };
 
@@ -1902,31 +1909,31 @@ export function useGetDoctorSchedule<
 
 export const putDoctorSchedule = (
     id: number,
-    doctorSchedule: DoctorSchedule,
+    doctorScheduleCreateDTO: DoctorScheduleCreateDTO,
     options?: AxiosRequestConfig
 ): Promise<AxiosResponse<void>> => {
-    return axios.default.put(`/api/DoctorSchedules/${id}`, doctorSchedule, options);
+    return axios.default.put(`/api/DoctorSchedules/${id}`, doctorScheduleCreateDTO, options);
 };
 
 export const getPutDoctorScheduleMutationOptions = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putDoctorSchedule>>,
         TError,
-        { id: number; data: DoctorSchedule },
+        { id: number; data: DoctorScheduleCreateDTO },
         TContext
     >;
     axios?: AxiosRequestConfig;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof putDoctorSchedule>>,
     TError,
-    { id: number; data: DoctorSchedule },
+    { id: number; data: DoctorScheduleCreateDTO },
     TContext
 > => {
     const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof putDoctorSchedule>>,
-        { id: number; data: DoctorSchedule }
+        { id: number; data: DoctorScheduleCreateDTO }
     > = (props) => {
         const { id, data } = props ?? {};
 
@@ -1937,21 +1944,21 @@ export const getPutDoctorScheduleMutationOptions = <TError = AxiosError<unknown>
 };
 
 export type PutDoctorScheduleMutationResult = NonNullable<Awaited<ReturnType<typeof putDoctorSchedule>>>;
-export type PutDoctorScheduleMutationBody = DoctorSchedule;
+export type PutDoctorScheduleMutationBody = DoctorScheduleCreateDTO;
 export type PutDoctorScheduleMutationError = AxiosError<unknown>;
 
 export const usePutDoctorSchedule = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putDoctorSchedule>>,
         TError,
-        { id: number; data: DoctorSchedule },
+        { id: number; data: DoctorScheduleCreateDTO },
         TContext
     >;
     axios?: AxiosRequestConfig;
 }): UseMutationResult<
     Awaited<ReturnType<typeof putDoctorSchedule>>,
     TError,
-    { id: number; data: DoctorSchedule },
+    { id: number; data: DoctorScheduleCreateDTO },
     TContext
 > => {
     const mutationOptions = getPutDoctorScheduleMutationOptions(options);
@@ -2087,26 +2094,26 @@ export function useGetDoctorSchedules<
     return query;
 }
 
-export const buildICrateDoctorSchedule = (
+export const bulkCreateDoctorSchedules = (
     doctorSchedule: DoctorSchedule[],
     options?: AxiosRequestConfig
 ): Promise<AxiosResponse<DoctorSchedule>> => {
     return axios.default.post(`/api/DoctorSchedules/Bulk`, doctorSchedule, options);
 };
 
-export const getBuildICrateDoctorScheduleMutationOptions = <
+export const getBulkCreateDoctorSchedulesMutationOptions = <
     TError = AxiosError<unknown>,
     TContext = unknown,
 >(options?: {
     mutation?: UseMutationOptions<
-        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        Awaited<ReturnType<typeof bulkCreateDoctorSchedules>>,
         TError,
         { data: DoctorSchedule[] },
         TContext
     >;
     axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+    Awaited<ReturnType<typeof bulkCreateDoctorSchedules>>,
     TError,
     { data: DoctorSchedule[] },
     TContext
@@ -2114,38 +2121,102 @@ export const getBuildICrateDoctorScheduleMutationOptions = <
     const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
-        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        Awaited<ReturnType<typeof bulkCreateDoctorSchedules>>,
         { data: DoctorSchedule[] }
     > = (props) => {
         const { data } = props ?? {};
 
-        return buildICrateDoctorSchedule(data, axiosOptions);
+        return bulkCreateDoctorSchedules(data, axiosOptions);
     };
 
     return { mutationFn, ...mutationOptions };
 };
 
-export type BuildICrateDoctorScheduleMutationResult = NonNullable<
-    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>
+export type BulkCreateDoctorSchedulesMutationResult = NonNullable<
+    Awaited<ReturnType<typeof bulkCreateDoctorSchedules>>
 >;
-export type BuildICrateDoctorScheduleMutationBody = DoctorSchedule[];
-export type BuildICrateDoctorScheduleMutationError = AxiosError<unknown>;
+export type BulkCreateDoctorSchedulesMutationBody = DoctorSchedule[];
+export type BulkCreateDoctorSchedulesMutationError = AxiosError<unknown>;
 
-export const useBuildICrateDoctorSchedule = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
+export const useBulkCreateDoctorSchedules = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
     mutation?: UseMutationOptions<
-        Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+        Awaited<ReturnType<typeof bulkCreateDoctorSchedules>>,
         TError,
         { data: DoctorSchedule[] },
         TContext
     >;
     axios?: AxiosRequestConfig;
 }): UseMutationResult<
-    Awaited<ReturnType<typeof buildICrateDoctorSchedule>>,
+    Awaited<ReturnType<typeof bulkCreateDoctorSchedules>>,
     TError,
     { data: DoctorSchedule[] },
     TContext
 > => {
-    const mutationOptions = getBuildICrateDoctorScheduleMutationOptions(options);
+    const mutationOptions = getBulkCreateDoctorSchedulesMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+
+export const bulkUpdateDoctorSchedules = (
+    doctorId: number,
+    doctorScheduleCreateDTO: DoctorScheduleCreateDTO[],
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<DoctorSchedule>> => {
+    return axios.default.post(`/api/DoctorSchedules/Bulk/${doctorId}`, doctorScheduleCreateDTO, options);
+};
+
+export const getBulkUpdateDoctorSchedulesMutationOptions = <
+    TError = AxiosError<unknown>,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof bulkUpdateDoctorSchedules>>,
+        TError,
+        { doctorId: number; data: DoctorScheduleCreateDTO[] },
+        TContext
+    >;
+    axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof bulkUpdateDoctorSchedules>>,
+    TError,
+    { doctorId: number; data: DoctorScheduleCreateDTO[] },
+    TContext
+> => {
+    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof bulkUpdateDoctorSchedules>>,
+        { doctorId: number; data: DoctorScheduleCreateDTO[] }
+    > = (props) => {
+        const { doctorId, data } = props ?? {};
+
+        return bulkUpdateDoctorSchedules(doctorId, data, axiosOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type BulkUpdateDoctorSchedulesMutationResult = NonNullable<
+    Awaited<ReturnType<typeof bulkUpdateDoctorSchedules>>
+>;
+export type BulkUpdateDoctorSchedulesMutationBody = DoctorScheduleCreateDTO[];
+export type BulkUpdateDoctorSchedulesMutationError = AxiosError<unknown>;
+
+export const useBulkUpdateDoctorSchedules = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof bulkUpdateDoctorSchedules>>,
+        TError,
+        { doctorId: number; data: DoctorScheduleCreateDTO[] },
+        TContext
+    >;
+    axios?: AxiosRequestConfig;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof bulkUpdateDoctorSchedules>>,
+    TError,
+    { doctorId: number; data: DoctorScheduleCreateDTO[] },
+    TContext
+> => {
+    const mutationOptions = getBulkUpdateDoctorSchedulesMutationOptions(options);
 
     return useMutation(mutationOptions);
 };
@@ -2470,6 +2541,199 @@ export const useDeleteEmergencyContact = <TError = AxiosError<unknown>, TContext
 
     return useMutation(mutationOptions);
 };
+
+export const uploadFile = (
+    uploadFileBody: UploadFileBody,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<string>> => {
+    const formData = new FormData();
+    if (uploadFileBody.file !== undefined) {
+        formData.append('file', uploadFileBody.file);
+    }
+
+    return axios.default.post(`/api/File/UploadFile`, formData, options);
+};
+
+export const getUploadFileMutationOptions = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError, { data: UploadFileBody }, TContext>;
+    axios?: AxiosRequestConfig;
+}): UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError, { data: UploadFileBody }, TContext> => {
+    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadFile>>, { data: UploadFileBody }> = (props) => {
+        const { data } = props ?? {};
+
+        return uploadFile(data, axiosOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type UploadFileMutationResult = NonNullable<Awaited<ReturnType<typeof uploadFile>>>;
+export type UploadFileMutationBody = UploadFileBody;
+export type UploadFileMutationError = AxiosError<unknown>;
+
+export const useUploadFile = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError, { data: UploadFileBody }, TContext>;
+    axios?: AxiosRequestConfig;
+}): UseMutationResult<Awaited<ReturnType<typeof uploadFile>>, TError, { data: UploadFileBody }, TContext> => {
+    const mutationOptions = getUploadFileMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+
+export const viewFile = (fileName: string, options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+    return axios.default.get(`/api/File/ViewFile/${fileName}`, options);
+};
+
+export const getViewFileQueryKey = (fileName: string) => {
+    return [`/api/File/ViewFile/${fileName}`] as const;
+};
+
+export const getViewFileQueryOptions = <TData = Awaited<ReturnType<typeof viewFile>>, TError = AxiosError<unknown>>(
+    fileName: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof viewFile>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getViewFileQueryKey(fileName);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof viewFile>>> = ({ signal }) =>
+        viewFile(fileName, { signal, ...axiosOptions });
+
+    return { queryKey, queryFn, enabled: !!fileName, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof viewFile>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type ViewFileQueryResult = NonNullable<Awaited<ReturnType<typeof viewFile>>>;
+export type ViewFileQueryError = AxiosError<unknown>;
+
+export function useViewFile<TData = Awaited<ReturnType<typeof viewFile>>, TError = AxiosError<unknown>>(
+    fileName: string,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof viewFile>>, TError, TData>> &
+            Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof viewFile>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useViewFile<TData = Awaited<ReturnType<typeof viewFile>>, TError = AxiosError<unknown>>(
+    fileName: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof viewFile>>, TError, TData>> &
+            Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof viewFile>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useViewFile<TData = Awaited<ReturnType<typeof viewFile>>, TError = AxiosError<unknown>>(
+    fileName: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof viewFile>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useViewFile<TData = Awaited<ReturnType<typeof viewFile>>, TError = AxiosError<unknown>>(
+    fileName: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof viewFile>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getViewFileQueryOptions(fileName, options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const downloadFile = (
+    params?: DownloadFileParams,
+    options?: AxiosRequestConfig
+): Promise<AxiosResponse<void>> => {
+    return axios.default.get(`/api/File/DownloadFile`, {
+        ...options,
+        params: { ...params, ...options?.params },
+    });
+};
+
+export const getDownloadFileQueryKey = (params?: DownloadFileParams) => {
+    return [`/api/File/DownloadFile`, ...(params ? [params] : [])] as const;
+};
+
+export const getDownloadFileQueryOptions = <
+    TData = Awaited<ReturnType<typeof downloadFile>>,
+    TError = AxiosError<unknown>,
+>(
+    params?: DownloadFileParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getDownloadFileQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadFile>>> = ({ signal }) =>
+        downloadFile(params, { signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof downloadFile>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type DownloadFileQueryResult = NonNullable<Awaited<ReturnType<typeof downloadFile>>>;
+export type DownloadFileQueryError = AxiosError<unknown>;
+
+export function useDownloadFile<TData = Awaited<ReturnType<typeof downloadFile>>, TError = AxiosError<unknown>>(
+    params: undefined | DownloadFileParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>> &
+            Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useDownloadFile<TData = Awaited<ReturnType<typeof downloadFile>>, TError = AxiosError<unknown>>(
+    params?: DownloadFileParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>> &
+            Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>, 'initialData'>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useDownloadFile<TData = Awaited<ReturnType<typeof downloadFile>>, TError = AxiosError<unknown>>(
+    params?: DownloadFileParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useDownloadFile<TData = Awaited<ReturnType<typeof downloadFile>>, TError = AxiosError<unknown>>(
+    params?: DownloadFileParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>>;
+        axios?: AxiosRequestConfig;
+    }
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getDownloadFileQueryOptions(params, options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
 
 export const getInvoices = (
     params?: GetInvoicesParams,

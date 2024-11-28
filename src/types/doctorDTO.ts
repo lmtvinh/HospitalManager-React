@@ -14,6 +14,8 @@ export interface DoctorDTO {
     /** @nullable */
     email?: string | null;
     /** @nullable */
+    imageUrl?: string | null;
+    /** @nullable */
     name?: string | null;
     /** @nullable */
     phoneNumber?: string | null;

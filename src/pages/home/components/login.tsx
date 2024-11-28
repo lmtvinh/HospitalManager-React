@@ -31,47 +31,52 @@ const LoginSchema = z.object({
 });
 type LoginFormValues = z.infer<typeof LoginSchema>;
 
-export default function LoginForm({ nameIdentifier, type,onDone }: LoginFormProps) {
+export default function LoginForm({ nameIdentifier, type, onDone }: LoginFormProps) {
     const {
         control,
         handleSubmit,
         formState: { errors },
         setError,
         setValue,
-
     } = useForm<LoginFormValues>({
         resolver: zodResolver(LoginSchema),
     });
     const { mutate, isPending } = useLogin();
-    const {setProfile, setToken} = useUserStore()
+    const { setProfile, setToken } = useUserStore();
     React.useEffect(() => {
         setValue('nameIdentifier', nameIdentifier);
     }, [nameIdentifier, type]);
-
+    console.log(errors);
     const onSubmit = async (data: LoginFormValues) => {
-        mutate({ data },{
-            onError: (error) => {
-                if(error.code == '401') {
-                    setError('root', {
-                        type: 'manual',
-                        message: 'Sai mật khẩu hoặc email'
-                    })
-                    return
-                }else{
-                    setError('root', {
-                        type: 'manual',
-                        message: 'Có lỗi xảy ra, vui lòng thử lại sau'
-                    })
-                }
-            },
-            onSuccess: (data) => {
-                setToken({
-                    accessToken: data.data.token!.token!,
-                    expirationAt: dayjs(data.data.token?.expires).toDate(),
-                });
-                onDone?.()
+        mutate(
+            { data },
+            {
+                onError: (error) => {
+                    const body = error.response?.data as any;
+                    if (body?.password) {
+                        setError('password', {
+                            type: 'manual',
+                            message: 'Sai mật khẩu',
+                        });
+                        return;
+                    }
+                    if (body?.email) {
+                        setError('nameIdentifier', {
+                            type: 'manual',
+                            message: 'Email hoặc số điện thoại không tồn tại',
+                        });
+                        return;
+                    }
+                },
+                onSuccess: (data) => {
+                    setToken({
+                        accessToken: data.data.token!.token!,
+                        expirationAt: dayjs(data.data.token?.expires).toDate(),
+                    });
+                    onDone?.();
+                },
             }
-        })
+        );
     };
     return (
         <FormContainer>

@@ -4,10 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
-import type { DoctorSchedule } from './doctorSchedule';
+import type { DoctorScheduleDTO } from './doctorScheduleDTO';
 
-export interface DoctorSchedulePaginated {
+export interface DoctorScheduleDTOPaginated {
     /** @nullable */
-    data?: DoctorSchedule[] | null;
+    data?: DoctorScheduleDTO[] | null;
     totalItems?: number;
 }
