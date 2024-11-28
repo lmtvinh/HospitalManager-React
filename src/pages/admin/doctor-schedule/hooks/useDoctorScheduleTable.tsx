@@ -15,16 +15,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
 import {
-    getGetAllDoctorSchedulesQueryKey,
-    getGetDoctorSchedulesQueryKey,
-    useDeleteDoctorSchedule,
-    useGetAllDoctorSchedules,
-    useGetDoctorSchedules,
+    getGetAllDoctorSchedulesQueryKey, useDeleteDoctorSchedule,
+    useGetAllDoctorSchedules
 } from '@/services/api';
 import { Doctor, DoctorSchedule, GetAllDoctorSchedulesParams } from '@/types';
 import { camelCaseToPascalCase } from '@/utils/string-utils';
-import { Gender, GenderLabel } from '@/services/enums/gender';
 import DetailModal from '../components/detail-modal';
+import dayjs from 'dayjs';
 export default function useDoctorScheduleTable() {
     const [filter, setFilter] = React.useState<GetAllDoctorSchedulesParams>({
         Page: 0,
@@ -109,8 +106,20 @@ export default function useDoctorScheduleTable() {
                     return params == 0 ? 'Chủ nhật' : `Thứ ${params! + 1}`;
                 },
             },
-            { field: 'startTime', headerName: 'Giờ bắt đầu', width: 150 },
-            { field: 'endTime', headerName: 'Giờ kết thúc', width: 150 },
+            { field: 'startTime', headerName: 'Giờ bắt đầu', width: 150 ,
+            valueGetter: (params: string) => {
+                const time =dayjs(dayjs().format('YYYY-MM-DD') + ' ' + params);
+                return `${time.get('hour')} giờ ${time.get('minute')==0?'':time.get('minute')}  ` ;
+            }
+
+
+            },
+            { field: 'endTime', headerName: 'Giờ kết thúc', width: 150 ,
+            valueGetter: (params: string) => {
+                const time =dayjs(dayjs().format('YYYY-MM-DD') + ' ' + params);
+                return `${time.get('hour')} Giờ ${time.get('minute')==0?'':time.get('minute')}  ` ;
+            }
+            },
             {
                 field: 'actions',
                 type: 'actions',
