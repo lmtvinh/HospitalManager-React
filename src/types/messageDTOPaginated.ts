@@ -4,11 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
+import type { MessageDTO } from './messageDTO';
 
-export interface WeatherForecast {
-    date?: string;
+export interface MessageDTOPaginated {
     /** @nullable */
-    summary?: string | null;
-    temperatureC?: number;
-    readonly temperatureF?: number;
+    data?: MessageDTO[] | null;
+    totalItems?: number;
 }

@@ -5,6 +5,8 @@
  * OpenAPI spec version: v1
  */
 
-export type DownloadFileParams = {
-    fileName?: string;
+export type SendMessageParams = {
+    ticketId?: string;
+    content?: string;
+    userId?: string;
 };

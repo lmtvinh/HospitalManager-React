@@ -12,6 +12,7 @@ import Testimonials from './components/testimonials/testimonials'
 import Contact from './components/contact/contact'
 import Footer from './components/footer/footer'
 import { useBoolean } from 'usehooks-ts'
+import Chat from './components/chat'
 
 export default function HomePage() {
   const {value,toggle} = useBoolean(true)
@@ -31,6 +32,7 @@ export default function HomePage() {
       <Gallery />
       <Contact />
       <Footer />
+      <Chat />
     </div>
   )
 }

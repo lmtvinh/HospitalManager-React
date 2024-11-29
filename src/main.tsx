@@ -6,7 +6,7 @@ import vi from 'dayjs/locale/vi';
 import localeData from 'dayjs/plugin/localeData';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import dayjs from 'dayjs';
-
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 dayjs.extend(localeData);
 dayjs.extend(updateLocale);
 dayjs.locale(vi);
@@ -30,6 +30,7 @@ dayjs.updateLocale('vi', {
     weekStart: 1,
 });
 initAxios();
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <App />
