@@ -19,124 +19,236 @@ export default function PatientDetail() {
     const [patient, setPatient] = useState<Patient | null>(null);
     const [isEditing, setIsEditing] = useState(false);
 
+    const [errors, setErrors] = useState({
+        name: false,
+        dateOfBirth: false,
+        phoneNumber: false,
+        email: false,
+        gender: false,
+        healthInsurance: false,
+    });
+
+    const validateForm = () => {
+        const newErrors = {
+            name: !patient?.name,
+            dateOfBirth: !patient?.dateOfBirth,
+            phoneNumber: !patient?.phoneNumber,
+            email: !patient?.email,
+            gender: !patient?.gender,
+            healthInsurance: !patient?.healthInsurance,
+        };
+        setErrors(newErrors);
+
+        return !Object.values(newErrors).includes(true);
+    }
+
     useEffect(() => {
-        fetch("/api/patient/1")
-            .then((res) => res.json())
-            .then((data) => setPatient(data))
-            .catch((err) => console.error(err));
+        // Giả lập gọi API để lấy thông tin bệnh nhân
+        const mockPatient: Patient = {
+            patientId: 1,
+            name: 'Nguyễn Văn A',
+            dateOfBirth: '1990-01-01',
+            phoneNumber: '0987654321',
+            email: 'abc@gmail.com',
+            gender: 'Nam',
+            healthInsurance: '1234567890',
+        };
+        setPatient(mockPatient);
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setPatient((prev) => prev && { ...prev, [name]: value });
-    }
+    };
 
     const handleUpdate = () => {
-        fetch("/api/patient/1", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
+        if (!validateForm()) {
+            alert('Vui lòng nhập đầy đủ thông tin!');
+            return;
+        }
+
+        // Gửi yêu cầu cập nhật thông tin
+        fetch(`/api/patient/${patientId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(patient),
         })
             .then(() => {
-                alert("Cập nhật thành công!");
+                alert('Cập nhật thành công!');
                 setIsEditing(false);
             })
             .catch((err) => console.error(err));
-    }
+    };
 
-    if (!patient) return <Typography>Đang tải thông tin ...</Typography>
+    const handleGenderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { value } = e.target;
+        setPatient((prev) => prev && { ...prev, gender: value });
+    };
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name } = e.target;
+
+        setErrors((prevErrors) => ({ ...prevErrors, [name]: false }));
+    };
+
+
+
+    if (!patient) return <Typography>Đang tải thông tin...</Typography>;
 
     return (
-        <Box sx={{ padding: 4, maxWidth: 600, margin: "auto" }}>
-            <Typography variant='h4' mb={2}>
-                Thông tin bệnh nhân
-            </Typography>
+        <div className="container mt-4" style={{ maxWidth: "600px" }}>
+            <h4 className="mb-3 mt-2">Thông tin bệnh nhân</h4>
+            <form>
+                <div className="row g-3">
+                    {/* Họ và tên */}
+                    <div className="col-12">
+                        <label
+                            htmlFor="name"
+                            className={`form-label ${errors.name ? 'text-danger fw-bold' : ''}`}
+                        >
+                            Họ và tên
+                        </label>
+                        <input
+                            type="text"
+                            className={`form-control ${errors.name ? 'border-danger border-2' : ''}`}
+                            id="name"
+                            name="name"
+                            value={patient.name}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            onFocus={handleFocus}
+                        />
+                    </div>
 
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <TextField
-                        label="Họ và tên"
-                        name="name"
-                        value={patient.name}
-                        onChange={handleInputChange}
-                        fullWidth
-                        disabled={!isEditing}
-                    />
-                </Grid>
+                    {/* Ngày sinh */}
+                    <div className="col-12">
+                        <label
+                            htmlFor="dateOfBirth"
+                            className={`form-label ${errors.dateOfBirth ? 'text-danger fw-bold' : ''}`}
+                        >
+                            Ngày sinh
+                        </label>
+                        <input
+                            type="date"
+                            className={`form-control ${errors.dateOfBirth ? 'border-danger border-2' : ''}`}
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            value={patient.dateOfBirth}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            onFocus={handleFocus}
+                        />
+                    </div>
 
-                <Grid item xs={12}>
-                    <TextField
-                        label="Ngày sinh"
-                        name='dateOfBirth'
-                        type='date'
-                        value={patient.dateOfBirth}
-                        onChange={handleInputChange}
-                        fullWidth
-                        disabled={!isEditing}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </Grid>
+                    {/* Số điện thoại */}
+                    <div className="col-12">
+                        <label
+                            htmlFor="phoneNumber"
+                            className={`form-label ${errors.phoneNumber ? 'text-danger fw-bold' : ''}`}
+                        >
+                            Số điện thoại
+                        </label>
+                        <input
+                            type="text"
+                            className={`form-control ${errors.phoneNumber ? 'border-danger border-2' : ''}`}
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            value={patient.phoneNumber || ''}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            onFocus={handleFocus}
+                        />
+                    </div>
 
-                <Grid item xs={12}>
-                    <TextField
-                        label="Số điện thoại"
-                        name="phoneNumber"
-                        value={patient.phoneNumber || ""}
-                        onChange={handleInputChange}
-                        fullWidth
-                        disabled={!isEditing}
-                    />
-                </Grid>
+                    {/* Email */}
+                    <div className="col-12">
+                        <label
+                            htmlFor="email"
+                            className={`form-label ${errors.email ? 'text-danger fw-bold' : ''}`}
+                        >
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            className={`form-control ${errors.email ? 'border-danger border-2' : ''}`}
+                            id="email"
+                            name="email"
+                            value={patient.email || ''}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            onFocus={handleFocus}
+                            required
+                        />
+                    </div>
 
-                <Grid item xs={12}>
-                    <TextField
-                        label="Email"
-                        name='email'
-                        value={patient.email || ""}
-                        onChange={handleInputChange}
-                        fullWidth
-                        disabled={!isEditing}
-                    />
-                </Grid>
+                    {/* Giới tính */}
+                    <div className="col-md-4 form-group mt-3">
+                        <label
+                            htmlFor="gender"
+                            className={`form-label ${errors.gender ? 'text-danger fw-bold' : ''}`}
+                        >
+                            Giới tính
+                        </label>
+                        <select
+                            name="gender"
+                            id="gender"
+                            className="form-select"
+                            required
+                            value={patient.gender}
+                            onChange={handleGenderChange}
+                            disabled={!isEditing}
+                            onFocus={handleFocus}
+                        >
+                            <option value="">Chọn giới tính</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
 
-                <Grid item xs={12}>
-                    <TextField
-                        label="Giới tính"
-                        name='gender'
-                        value={patient.gender || ""}
-                        onChange={handleInputChange}
-                        fullWidth
-                        disabled={!isEditing}
-                    />
-                </Grid>
 
-                <Grid item xs={12}>
-                    <TextField
-                        label="Bảo hiểm y tế"
-                        name="healthInsurance"
-                        value={patient.healthInsurance}
-                        onChange={handleInputChange}
-                        fullWidth
-                        disabled={!isEditing}
-                    />
-                </Grid>
-            </Grid>
+                    {/* Bảo hiểm y tế */}
+                    <div className="col-12">
+                        <label
+                            htmlFor="healthInsurance"
+                            className={`form-label ${errors.healthInsurance ? 'text-danger fw-bold' : ''}`}
+                        >
+                            Bảo hiểm y tế
+                        </label>
+                        <input
+                            type="text"
+                            className={`form-control ${errors.healthInsurance ? 'border-danger border-2' : ''}`}
+                            id="healthInsurance"
+                            name="healthInsurance"
+                            value={patient.healthInsurance || ''}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            onFocus={handleFocus}
+                        />
+                    </div>
+                </div>
 
-            <Box mt={3} display="flex" justifyContent="space-between">
-                {isEditing ? (
-                    <>
-                        <Button variant="contained" color='primary' onClick={handleUpdate}>
+                {/* Nút hành động */}
+                <div className="d-flex justify-content-between mt-4">
+                    {isEditing ? (
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={handleUpdate}
+                        >
                             Cập nhật thông tin
-                        </Button>
-                    </>
-                ) : (
-                    <Button variant='contained' color="primary" onClick={() => setIsEditing(false)}>
-                        Chỉnh sửa thông tin
-                    </Button>
-                )}
-            </Box>
-        </Box>
-    )
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => setIsEditing(true)}
+                        >
+                            Chỉnh sửa thông tin
+                        </button>
+                    )}
+                </div>
+            </form>
+        </div>
+    );
 }

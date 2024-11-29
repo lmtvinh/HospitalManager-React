@@ -4,11 +4,12 @@ import Dashboard from '@/pages/admin/dashboard';
 import ListDepartment from '@/pages/admin/department';
 import DiagnosesManagementPage from '@/pages/admin/diagnosis';
 import DoctorManagementPage from '@/pages/admin/doctor';
-import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
+// import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
 import PatientManagementPage from '@/pages/admin/patient';
 import HomePage from '@/pages/home';
 import GoogleCallback from '@/pages/home/auth/google-callback';
 import HomeLayout from '@/pages/home/components/layout';
+import PatientDetail from '@/pages/home/components/patientdetail';
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 
 const routerObjects: RouteObject[] = [
@@ -24,6 +25,11 @@ const routerObjects: RouteObject[] = [
                 path: 'auth/google-response',
                 element: <GoogleCallback />,
             },
+            {
+                path: 'patient-detail/:id',
+                element: <PatientDetail />,
+            }
+
         ],
     },
     {
@@ -41,10 +47,6 @@ const routerObjects: RouteObject[] = [
             {
                 path: 'doctors',
                 element: <DoctorManagementPage />,
-            },
-            {
-                path: 'doctor-schedules',
-                element: <DoctorScheduleManagementPage />,
             },
             {
                 path: 'patients',

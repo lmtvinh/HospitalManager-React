@@ -52,10 +52,24 @@ export default function UserMenu() {
                         </Typography>
                         <Link
                             className='text-decoration-none text-black'
-                            to="/patient-detail"
+                            to="/patient-detail/"
                             state={{ patientId: 1 }}
                         >
                             Chỉnh sửa thông tin
+                        </Link>
+                    </div>
+                </MenuItem>
+                <MenuItem >
+                    <div>
+                        <Typography variant="subtitle1" fontWeight="bold" className="text-black">
+                            
+                        </Typography>
+                        <Link
+                            className='text-decoration-none text-black'
+                            to=""
+                            state={{ patientId: 1 }}
+                        >
+                            Lịch sử khám bệnh
                         </Link>
                     </div>
                 </MenuItem>
