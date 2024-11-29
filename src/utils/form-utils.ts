@@ -30,9 +30,12 @@ export const mustBeOptionalNumber = (field: string) =>
                 return ValidationMessages.number(field);
             }
             return Number(value);
-        }, z.number({
-            message: ValidationMessages.number(field),
-        }).optional()
+        },
+        z
+            .number({
+                message: ValidationMessages.number(field),
+            })
+            .optional()
     );
 export const mustBeNumber = (field: string) =>
     z.preprocess(
@@ -41,19 +44,24 @@ export const mustBeNumber = (field: string) =>
                 return ValidationMessages.number(field);
             }
             return Number(value);
-        }, z.number({
+        },
+        z.number({
             message: ValidationMessages.number(field),
         })
     );
 
-
 export const mustBePhoneNumber = (customMessage?: string) =>
-    z.string().refine((value) => {
-        return /^0[0-9]{9,10}$/.test(value);
-    }
-        , {
-            message: customMessage || `Số điện thoại không hợp lệ`,
-        }).optional();
+    z
+        .string()
+        .refine(
+            (value) => {
+                return /^0[0-9]{9,10}$/.test(value);
+            },
+            {
+                message: customMessage || `Số điện thoại không hợp lệ`,
+            }
+        )
+        .optional();
 
 export const mustBeDayjs = (field: string) =>
     z.preprocess(
@@ -62,21 +70,19 @@ export const mustBeDayjs = (field: string) =>
                 return undefined;
             }
             return dayjs(value);
-        }
-        , z.custom<dayjs.Dayjs>((value) => {
-            if (!value) {
-                return `Ngày tháng không hợp lệ`;
-            }
-            if (!dayjs.isDayjs(value)) {
-                return `Ngày tháng không hợp lệ`;
-            }
-            return value;
-        }
-        ).optional()
+        },
+        z
+            .custom<dayjs.Dayjs>((value) => {
+                if (!value) {
+                    return `Ngày tháng không hợp lệ`;
+                }
+                if (!dayjs.isDayjs(value)) {
+                    return `Ngày tháng không hợp lệ`;
+                }
+                return value;
+            })
+            .optional()
     );
-
-
-
 
 /*
 eg: {Doctor:{Id:1}} => {"Doctor.Id":1}
@@ -97,5 +103,5 @@ export const removeDotObject = (data: { [key: string]: any }) => {
             }
         }
     }
-    return formattedData
+    return formattedData;
 };

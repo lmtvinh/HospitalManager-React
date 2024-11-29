@@ -1,5 +1,13 @@
 :80 {
-    root * /usr/share/caddy
-    try_files {path} /index.html
-    file_server
+	root * /var/www/html
+	route {
+		reverse_proxy /api/* {API_SERVER} {
+			header_up Origin {host}
+			header_up X-Real-IP {remote}
+			header_up X-Forwarded-For {remote}
+			header_up X-Forwarded-Proto {scheme}
+		}
+		try_files {path} /index.html
+		file_server
+	}
 }

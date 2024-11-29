@@ -1,48 +1,74 @@
-// import { PageContainer, PageContainerToolbar } from "@toolpad/core";
-// import CreateModal from "./components/create-modal";
-// import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-// import useDoctor from "./hooks/useDoctor";
+import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
+import { PageContainer, PageContainerToolbar } from '@toolpad/core';
+import CreateModal from './components/create-modal';
+import useDoctorScheduleTable from './hooks/useDoctorScheduleTable';
+import DatagridPagination from '../components/datagrid-pagination';
+import Filter from './components/filter';
+import { CustomQuickFilter } from '../components/datagrid-search';
+export default function DoctorScheduleManagementPage() {
+    const { table, filter } = useDoctorScheduleTable();
+    return (
+        <PageContainer slots={{ toolbar: PageToolbar }}>
+            <DataGrid
+                rows={table.data?.data || []}
+                columns={table.columns}
+                onPaginationModelChange={table.handlePageChange}
+                paginationMode="server"
+                filterMode="server"
+                sortingMode="server"
+                sortModel={table.sortModel as any}
+                onSortModelChange={table.handleSortModelChange}
+                onFilterModelChange={table.handleFilterModelChange}
+                filterModel={table.filterModel}
+                paginationModel={table.pagination}
+                getRowId={(row) => row.scheduleId}
+                loading={table.isLoading}
+                disableColumnFilter
+                slots={{
+                    toolbar: DataGridToolbar,
+                    pagination: DatagridPagination,
+                }}
+                slotProps={{
+                    loadingOverlay: {
+                        variant: 'skeleton',
+                        noRowsVariant: 'skeleton',
+                    },
+                    toolbar: {
+                        showQuickFilter: true,
+                        children: <Filter setFilter={filter.set} filter={filter.value} />,
+                    },
+                }}
+                disableColumnSelector
+                rowCount={table.data?.totalItems || -1}
+                sx={{
+                    padding: '10px',
+                }}
+                disableVirtualization
+            />
+        </PageContainer>
+    );
+}
 
-// export default function DoctorScheduleManagementPage() {
-//     const { table } = useDoctor();
+interface DataGridToolbarProps extends React.ComponentProps<typeof GridToolbarContainer> {}
 
-//     return (
-//         <PageContainer
-//             slots={{ toolbar: PageToolbar }}
-//         >
+const DataGridToolbar = ({ children, ...rest }: DataGridToolbarProps) => {
+    return (
+        <GridToolbarContainer
+            sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0 16px',
+            }}
+            {...rest}
+        >
+            <CustomQuickFilter />
+            {children}
+        </GridToolbarContainer>
+    );
+};
 
-//             <DataGrid
-//                 rows={table.data}
-//                 columns={table.columns}
-//                 pagination
-//                 getRowId={(row) => row.departmentId}
-//                 loading={table.isLoading}
-//                 disableColumnFilter
-//                 slots={{
-//                     toolbar: GridToolbar,
-//                 }}
-//                 slotProps={{
-//                     loadingOverlay: {
-//                         variant: 'skeleton',
-//                         noRowsVariant: 'skeleton',
-//                     },
-//                     toolbar: {
-//                         showQuickFilter: true
-//                     },
-//                 }}
-//                 initialState={{
-//                     pagination: {
-//                         rowCount: 5,
-//                     },
-//                 }}
-//             />
-//         </PageContainer>
-
-
-//     );
-// }
-
-
+<<<<<<< HEAD
 // function PageToolbar() {
 //     return (
 //       <PageContainerToolbar>
@@ -50,3 +76,12 @@
 //       </PageContainerToolbar>
 //     );
 //   }
+=======
+function PageToolbar() {
+    return (
+        <PageContainerToolbar>
+            <CreateModal />
+        </PageContainerToolbar>
+    );
+}
+>>>>>>> 06f25afed9ca0eee865534c5a100dc0dedd34af4

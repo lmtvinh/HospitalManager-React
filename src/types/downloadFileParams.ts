@@ -5,8 +5,6 @@
  * OpenAPI spec version: v1
  */
 
-export interface TokenDTO {
-    expires?: string;
-    /** @nullable */
-    token?: string | null;
-}
+export type DownloadFileParams = {
+    fileName?: string;
+};
