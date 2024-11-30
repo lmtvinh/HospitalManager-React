@@ -5,10 +5,7 @@
  * OpenAPI spec version: v1
  */
 
-export interface DoctorScheduleCreateDTO {
-    dayOfWeek?: number;
+export type AssignDoctorParams = {
+    ticketId?: string;
     doctorId?: number;
-    endTime?: string;
-    scheduleId?: number;
-    startTime?: string;
-}
+};

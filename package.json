@@ -11,6 +11,8 @@
     "gen:api": "orval --config ./orval.config.cjs"
   },
   "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fontsource/roboto": "^5.1.0",
@@ -20,6 +22,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@hookform/resolvers": "^3.9.1",
+    "@microsoft/signalr": "^8.0.7",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
     "@mui/x-data-grid": "^7.22.1",
@@ -44,6 +47,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.1",
     "react-router-dom": "^6.27.0",
+    "react-signalr": "^0.2.24",
     "sass": "^1.80.6",
     "swiper": "^11.1.15",
     "usehooks-ts": "^3.1.0",

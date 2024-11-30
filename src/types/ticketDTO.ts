@@ -5,21 +5,19 @@
  * OpenAPI spec version: v1
  */
 import type { DoctorDTO } from './doctorDTO';
+import type { MessageDTO } from './messageDTO';
 import type { PatientDTO } from './patientDTO';
 
-export interface UserProfileDTO {
-    /** @nullable */
-    address?: string | null;
+export interface TicketDTO {
+    createdAt?: string;
     doctor?: DoctorDTO;
     /** @nullable */
-    email?: string | null;
+    doctorId?: number | null;
+    isClosed?: boolean;
+    lastMessage?: MessageDTO;
     /** @nullable */
-    id?: string | null;
+    lastMessageAt?: string | null;
     patient?: PatientDTO;
-    /** @nullable */
-    phoneNumber?: string | null;
-    /** @nullable */
-    roles?: string[] | null;
-    /** @nullable */
-    userName?: string | null;
+    patientId?: number;
+    ticketId?: string;
 }

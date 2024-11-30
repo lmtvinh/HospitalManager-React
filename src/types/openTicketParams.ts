@@ -5,6 +5,6 @@
  * OpenAPI spec version: v1
  */
 
-export type DownloadFileParams = {
-    fileName?: string;
+export type OpenTicketParams = {
+    patientId?: number;
 };

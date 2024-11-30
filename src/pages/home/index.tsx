@@ -16,6 +16,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import PatientDetail from '@/pages/home/components/patientdetail';
 import { useEffect } from 'react'
 import PatientHistory from '@/pages/home/components/patienthistory';
+import Chat from './components/chat'
 
 export default function HomePage() {
   const location = useLocation();
@@ -58,6 +59,7 @@ export default function HomePage() {
       )}
 
       <Footer />
+      <Chat />
     </div>
   );
 }

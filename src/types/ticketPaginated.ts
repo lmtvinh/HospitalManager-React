@@ -4,11 +4,10 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
+import type { Ticket } from './ticket';
 
-export interface WeatherForecast {
-    date?: string;
+export interface TicketPaginated {
     /** @nullable */
-    summary?: string | null;
-    temperatureC?: number;
-    readonly temperatureF?: number;
+    data?: Ticket[] | null;
+    totalItems?: number;
 }
