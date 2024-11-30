@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { TextField, Button, Typography, Box, Grid } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { UserContext } from '../components/context/usercontext';
+import { useUserProfile } from '@/stores/user-store';
 
 interface Patient {
-    patientId: number;
+    patientId: string;
     name: string;
     dateOfBirth: string;
     phoneNumber?: string;
@@ -14,10 +16,12 @@ interface Patient {
 
 export default function PatientDetail() {
     const location = useLocation();
-    const { patientId } = location.state || {};
+    const { patientId } = useParams<{ patientId: string }>();
 
     const [patient, setPatient] = useState<Patient | null>(null);
     const [isEditing, setIsEditing] = useState(false);
+
+    const profile = useUserProfile();
 
     const [errors, setErrors] = useState({
         name: false,
@@ -43,16 +47,18 @@ export default function PatientDetail() {
     }
 
     useEffect(() => {
-        // Giả lập gọi API để lấy thông tin bệnh nhân
+        console.log(profile);
+
         const mockPatient: Patient = {
-            patientId: 1,
-            name: 'Nguyễn Văn A',
-            dateOfBirth: '1990-01-01',
-            phoneNumber: '0987654321',
-            email: 'abc@gmail.com',
-            gender: 'Nam',
-            healthInsurance: '1234567890',
-        };
+            patientId: profile?.id ? profile.id.toString() : '',
+            name: profile?.patient?.name ? profile?.patient.name : '',
+            dateOfBirth: profile?.patient?.dateOfBirth ? profile?.patient.dateOfBirth : '',
+            phoneNumber: profile?.patient?.phoneNumber ? profile?.patient?.phoneNumber : '',
+            email: profile?.patient?.email ? profile?.patient?.email : '',
+            gender: profile?.patient?.gender ? profile?.patient?.gender : '',
+            healthInsurance: profile?.patient?.healthInsurance ? profile?.patient?.healthInsurance : '',
+        }
+
         setPatient(mockPatient);
     }, []);
 
@@ -199,7 +205,6 @@ export default function PatientDetail() {
                             disabled={!isEditing}
                             onFocus={handleFocus}
                         >
-                            <option value="">Chọn giới tính</option>
                             <option value="Nam">Nam</option>
                             <option value="Nữ">Nữ</option>
                             <option value="Khác">Khác</option>
@@ -229,7 +234,7 @@ export default function PatientDetail() {
                 </div>
 
                 {/* Nút hành động */}
-                <div className="d-flex justify-content-between mt-4">
+                <div className="d-flex justify-content-between mt-4 mb-3">
                     {isEditing ? (
                         <button
                             type="button"

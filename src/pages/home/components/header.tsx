@@ -3,6 +3,7 @@ import { useBoolean } from 'usehooks-ts';
 import AuthModal from './auth-modal';
 import UserMenu from './usermenu';
 import { useUserProfile } from '@/stores/user-store';
+import { Link } from 'react-router-dom';
 const Header = () => {
     const { toggle, value } = useBoolean(false);
     const profile = useUserProfile();
@@ -27,40 +28,40 @@ const Header = () => {
             {/* Branding */}
             <div className="branding d-flex align-items-center">
                 <div className="container position-relative d-flex align-items-center justify-content-between">
-                    <a href="index.html" className="text-decoration-none logo d-flex align-items-center me-auto">
+                    <Link to="/" className="text-decoration-none logo d-flex align-items-center me-auto">
                         <h1 className="sitename">Medilab</h1>
-                    </a>
+                    </Link>
                     <nav id="navmenu" className="navmenu">
                         <ul>
                             <li>
-                                <a href="#" className="text-decoration-none active">
+                                <Link to="/" className="text-decoration-none active">
                                     Trang chủ
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#about" className="text-decoration-none">
+                                <Link to="/#about" className="text-decoration-none">
                                     Giới thiệu
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#services" className="text-decoration-none">
+                                <Link to="/#services" className="text-decoration-none">
                                     Dịch vụ
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#departments" className="text-decoration-none">
+                                <Link to="/#departments" className="text-decoration-none">
                                     Chuyên khoa
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#doctors" className="text-decoration-none">
+                                <Link to="/#doctors" className="text-decoration-none">
                                     Bác sĩ
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#contact" className="text-decoration-none">
+                                <Link to="/#contact" className="text-decoration-none">
                                     Liên hệ
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </nav>

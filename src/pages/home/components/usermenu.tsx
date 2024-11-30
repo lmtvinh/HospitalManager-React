@@ -19,10 +19,11 @@ export default function UserMenu() {
     };
 
     const handleLogout = () => {
-        //
         logout();
         handleMenuClose();
     };
+
+    const userId = profile?.patient?.patientId?.toString() || profile?.doctor?.doctorId?.toString();
 
     return (
         <div>
@@ -52,8 +53,8 @@ export default function UserMenu() {
                         </Typography>
                         <Link
                             className='text-decoration-none text-black'
-                            to="/patient-detail/"
-                            state={{ patientId: 1 }}
+                            to={`/patient-detail/${userId}`}
+                            state={{ patientId: `${userId}` }}
                         >
                             Chỉnh sửa thông tin
                         </Link>
@@ -62,12 +63,12 @@ export default function UserMenu() {
                 <MenuItem >
                     <div>
                         <Typography variant="subtitle1" fontWeight="bold" className="text-black">
-                            
+
                         </Typography>
                         <Link
                             className='text-decoration-none text-black'
-                            to=""
-                            state={{ patientId: 1 }}
+                            to={`/patient-history/${userId}`}
+                            state={{ patientId: `${userId}` }}
                         >
                             Lịch sử khám bệnh
                         </Link>

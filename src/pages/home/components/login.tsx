@@ -1,13 +1,15 @@
 import { Form, Button } from 'react-bootstrap';
 import styled from '@emotion/styled';
 import { z } from 'zod';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ValidationMessages } from '@/utils/form-utils';
 import { useLogin } from '@/services/api';
 import useUserStore from '@/stores/user-store';
 import dayjs from 'dayjs';
+import { UserContext } from '../components/context/usercontext';
+
 
 const FormContainer = styled.div`
     max-width: 400px;
@@ -43,10 +45,14 @@ export default function LoginForm({ nameIdentifier, type, onDone }: LoginFormPro
     });
     const { mutate, isPending } = useLogin();
     const { setProfile, setToken } = useUserStore();
+    const { userId, setUserId } = useContext(UserContext);
+
+
     React.useEffect(() => {
         setValue('nameIdentifier', nameIdentifier);
     }, [nameIdentifier, type]);
     console.log(errors);
+
     const onSubmit = async (data: LoginFormValues) => {
         mutate(
             { data },
@@ -69,6 +75,9 @@ export default function LoginForm({ nameIdentifier, type, onDone }: LoginFormPro
                     }
                 },
                 onSuccess: (data) => {
+                    console.log("user", data.data.user!.id!);
+                    // Lưu userId vào UserContext
+                    setUserId(data.data.user!.id!);
                     setToken({
                         accessToken: data.data.token!.token!,
                         expirationAt: dayjs(data.data.token?.expires).toDate(),

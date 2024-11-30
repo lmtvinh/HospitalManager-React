@@ -11,26 +11,37 @@ import HomePage from '@/pages/home';
 import GoogleCallback from '@/pages/home/auth/google-callback';
 import HomeLayout from '@/pages/home/components/layout';
 import PatientDetail from '@/pages/home/components/patientdetail';
+import PatientHistory from '@/pages/home/components/patienthistory';
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 
 const routerObjects: RouteObject[] = [
     {
         path: '/',
-        element: <HomeLayout />,
+        element: <HomeLayout />, // Layout chung cho các trang home
         children: [
             {
                 path: '',
                 element: <HomePage />,
-            },
-            {
-                path: 'auth/google-response',
-                element: <GoogleCallback />,
-            },
-            {
-                path: 'patient-detail/:id',
-                element: <PatientDetail />,
+                children: [
+                    {
+                        path: '',
+                        element: <></>,
+                    },
+                    {
+                        path: 'patient-detail/:patientId',
+                        element: <PatientDetail />,
+                    },
+                    {
+                        path: 'patient-history/:patientId',
+                        element: <PatientHistory />,
+                    },
+                ],
             },
         ],
+    },
+    {
+        path: '/auth/google-response',
+        element: <GoogleCallback />, // Không kế thừa HomeLayout
     },
     {
         path: '/admin',
