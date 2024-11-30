@@ -7,6 +7,8 @@ import useUserStore from './stores/user-store';
 import React from 'react';
 import { getCurrentUser } from './services/api';
 import dayjs from 'dayjs';
+
+
 const queryClient = new QueryClient();
 const App = () => {
     const { token, logout, setProfile } = useUserStore();

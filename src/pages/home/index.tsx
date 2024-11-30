@@ -12,25 +12,52 @@ import Testimonials from './components/testimonials/testimonials'
 import Contact from './components/contact/contact'
 import Footer from './components/footer/footer'
 import { useBoolean } from 'usehooks-ts'
+import { Outlet, useLocation } from 'react-router-dom'
+import PatientDetail from '@/pages/home/components/patientdetail';
+import { useEffect } from 'react'
+import PatientHistory from '@/pages/home/components/patienthistory';
 
 export default function HomePage() {
-  const {value,toggle} = useBoolean(true)
+  const location = useLocation();
+
+  const isPatientDetailPage = location.pathname.includes('/patient-detail');
+  const isPatientHistoryPage = location.pathname.includes('/patient-history');
+
+  useEffect(() => {
+    if (window.location.hash) {
+      const elementId = window.location.hash.substring(1);
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
+
   return (
-    <div
-       css={homeStyle.container}
-    >
+    <div css={homeStyle.container}>
       <Header />
-      <Hero />
-      <About />
-      <Stat />
-      <Services />
-      <Appointment />
-      <Department />
-      <Doctor />
-      <Testimonials />
-      <Gallery />
-      <Contact />
+
+
+      {isPatientDetailPage ? (
+        <PatientDetail />
+      ) : isPatientHistoryPage ? (
+        <PatientHistory />
+      ) : (
+        <>
+          <Hero />
+          <About />
+          <Stat />
+          <Services />
+          <Appointment />
+          <Department />
+          <Doctor />
+          <Testimonials />
+          <Gallery />
+          <Contact />
+        </>
+      )}
+
       <Footer />
     </div>
-  )
+  );
 }

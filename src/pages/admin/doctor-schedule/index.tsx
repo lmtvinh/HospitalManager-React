@@ -49,7 +49,7 @@ export default function DoctorScheduleManagementPage() {
     );
 }
 
-interface DataGridToolbarProps extends React.ComponentProps<typeof GridToolbarContainer> {}
+interface DataGridToolbarProps extends React.ComponentProps<typeof GridToolbarContainer> { }
 
 const DataGridToolbar = ({ children, ...rest }: DataGridToolbarProps) => {
     return (
@@ -68,15 +68,6 @@ const DataGridToolbar = ({ children, ...rest }: DataGridToolbarProps) => {
     );
 };
 
-<<<<<<< HEAD
-// function PageToolbar() {
-//     return (
-//       <PageContainerToolbar>
-//         <CreateModal />
-//       </PageContainerToolbar>
-//     );
-//   }
-=======
 function PageToolbar() {
     return (
         <PageContainerToolbar>
@@ -84,4 +75,3 @@ function PageToolbar() {
         </PageContainerToolbar>
     );
 }
->>>>>>> 06f25afed9ca0eee865534c5a100dc0dedd34af4
