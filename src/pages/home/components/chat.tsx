@@ -8,12 +8,15 @@ import {
     MessageList,
     MessageInput,
     ConversationHeader,
-    Message
+    Message,
 } from '@chatscope/chat-ui-kit-react';
 import useTicketStore from '@/stores/message-store';
-import { useGetMessages, useGetTicket } from '@/services/api';
-import { SignalRService } from '@/services/signalR';
+import { getMessages, useGetMessages, useGetTicket } from '@/services/api';
 import { useUserProfile } from '@/stores/user-store';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import React from 'react';
+import { MessageDTO } from '@/types';
+import useSignalRStore from '@/stores/signalRStore';
 export default function Chat() {
     return ReactDOM.createPortal(<Root />, document.getElementById('root')!);
 }
@@ -22,28 +25,68 @@ function Root() {
     const { toggle, value } = useBoolean(false);
     const { currentTicket, setCurrentTicket } = useTicketStore();
     const currentUser = useUserProfile();
+    const [messageKey, setMessageKey] = React.useState(0);
+    const signalRStore = useSignalRStore();
     const { data: ticket } = useGetTicket(currentTicket?.ticketId!, {
         query: {
             enabled: !!currentTicket?.ticketId,
             select: (data) => data.data,
         },
     });
-    const { data: messages } = useGetMessages(
-        currentTicket?.ticketId!,
-        {
-            PageSize: 10,
-            Page: 1,
-        },
-        {
-            query: {
-                enabled: !!currentTicket?.ticketId,
-                select: (data) => data.data.data,
-            },
+    React.useEffect(() => {
+        if (ticket && ticket.isClosed) {
+            setCurrentTicket(undefined);
         }
-    );
+    }, [ticket]);
+    React.useEffect(() => {
+        console.log('register event', signalRStore.connection);
+        const handleNewMessage = (data: any) => {
+            console.log(data);
+            setMessageKey((prev) => prev + 1);
+        };
+
+        signalRStore.connection?.on('NewMessage', handleNewMessage);
+        return () => {
+            signalRStore.connection?.off('NewMessage', handleNewMessage);
+        };
+    }, [signalRStore.connection]);
+
+    const {
+        data: messages,
+        isFetching,
+        isFetchingNextPage,
+        fetchNextPage,
+    } = useInfiniteQuery({
+        queryKey: ['messages', currentTicket?.ticketId!, messageKey],
+        queryFn: async ({ pageParam }) => {
+            const rest = await getMessages(currentTicket?.ticketId!, { PageSize: 10, Page: pageParam });
+            return {
+                nextCursor: pageParam + 1,
+                pages: rest.data.data,
+            };
+        },
+        getNextPageParam: (lastPage: any) => lastPage.nextCursor,
+        initialData: {
+            pageParams: [1],
+            pages: [],
+        },
+        initialPageParam: 1,
+        enabled: !!currentTicket?.ticketId,
+        select: (data) => ({
+            pageParams: [...data.pageParams],
+            pages: [...data.pages],
+        }),
+    });
+    const orderedMessages = React.useMemo(() => {
+        return messages?.pages
+            .reduce((acc, page) => {
+                return [...acc, ...page.pages];
+            }, [])
+            .reverse() as MessageDTO[];
+    }, [messages.pages.length]);
 
     const handleOpenTicket = async (initMessage?: string) => {
-        SignalRService.connection
+        signalRStore.connection
             ?.invoke('OpenTicket', currentUser?.patient?.patientId, initMessage)
             .catch((err) => {
                 console.log(err);
@@ -54,8 +97,11 @@ function Root() {
     };
     const handleSendMessage = async (message: string) => {
         if (!currentTicket?.ticketId) return await handleOpenTicket(message);
+        //     public async Task<Message> SendMessage(Guid ticketId, string content, string userId)
+        signalRStore.connection
+            ?.invoke('SendMessage', currentTicket?.ticketId, message, currentUser?.id)
+            .finally(() => {});
     };
-    console.log(messages?.[0].userId, currentUser?.id);
     return (
         <div
             css={css`
@@ -83,14 +129,14 @@ function Root() {
                                 <CloseButton onClick={toggle} />
                             </ConversationHeader.Actions>
                         </ConversationHeader>
-                        <MessageList>
-                            {messages?.map((message) => (
+                        <MessageList loading={isFetching} loadingMore={isFetchingNextPage}>
+                            {orderedMessages?.map((message) => (
                                 <Message
                                     key={message.messageId}
                                     model={{
                                         sender: message.userId == currentUser?.id ? 'Bạn' : 'Hỗ trợ viên',
                                         direction: message.userId == currentUser?.id ? 'outgoing' : 'incoming',
-                                        position: 'single',
+                                        position: 'last',
                                         type: 'text',
                                         message: message.content!,
                                     }}

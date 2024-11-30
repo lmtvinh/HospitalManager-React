@@ -23,6 +23,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import PeopleIcon from '@mui/icons-material/People';
 import { THEME } from '@/configs/themes';
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import 'dayjs/locale/vi';
 const NAVIGATION: Navigation = [
     {
@@ -70,6 +71,11 @@ const NAVIGATION: Navigation = [
         title: 'Quản lý lịch hẹn',
         icon: <EventNoteIcon />,
     },
+    {
+        segment: 'admin/suport-tickets',
+        title: 'Hỗ trợ',
+        icon: <ContactSupportIcon />,
+    },
 ];
 
 const BRANDING = {
@@ -99,11 +105,7 @@ export default function AdminLayoutComponent() {
     const theme = createTheme(THEME as object, viVN, viDG);
     return (
         <ThemeProvider theme={theme}>
-            <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale='vi'
-              
-            >
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
                 <AppProvider
                     theme={theme}
                     navigation={NAVIGATION}

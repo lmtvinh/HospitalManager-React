@@ -7,10 +7,13 @@ import useUserStore from './stores/user-store';
 import React from 'react';
 import { getCurrentUser } from './services/api';
 import dayjs from 'dayjs';
-import { SignalRService } from './services/signalR';
+import useSignalRStore from './stores/signalRStore';
+
 const queryClient = new QueryClient();
 const App = () => {
     const { token, logout, setProfile } = useUserStore();
+    const signalRStore = useSignalRStore();
+
     React.useEffect(() => {
         if (!token?.accessToken) return logout();
         const expired = dayjs(token?.accessTokenExpirationAt).isBefore(dayjs());
@@ -23,14 +26,14 @@ const App = () => {
         })
             .then((data) => {
                 setProfile(data.data);
-                SignalRService.initSignalR(token?.accessToken);
+                signalRStore.initSignalR(token?.accessToken);
             })
             .catch((err) => {
                 console.log(err);
                 logout();
             });
     }, [token?.accessToken]);
-  
+
     return (
         <NotificationsProvider>
             <DialogsProvider>

@@ -4,9 +4,8 @@ import { TicketDTO } from '@/types';
 
 interface TicketState {
     currentTicket?: TicketDTO;
-    setCurrentTicket: (ticket: TicketDTO) => void;
+    setCurrentTicket: (ticket?: TicketDTO) => void;
     clearCurrentTicket: () => void;
-    
 }
 
 const INITIAL_STATE: TicketState = {

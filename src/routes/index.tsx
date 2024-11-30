@@ -6,6 +6,7 @@ import DiagnosesManagementPage from '@/pages/admin/diagnosis';
 import DoctorManagementPage from '@/pages/admin/doctor';
 // import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
 import PatientManagementPage from '@/pages/admin/patient';
+import SupportTicket from '@/pages/admin/suport-ticket';
 import HomePage from '@/pages/home';
 import GoogleCallback from '@/pages/home/auth/google-callback';
 import HomeLayout from '@/pages/home/components/layout';
@@ -28,8 +29,7 @@ const routerObjects: RouteObject[] = [
             {
                 path: 'patient-detail/:id',
                 element: <PatientDetail />,
-            }
-
+            },
         ],
     },
     {
@@ -59,6 +59,10 @@ const routerObjects: RouteObject[] = [
             {
                 path: 'diagnoses',
                 element: <DiagnosesManagementPage />,
+            },
+            {
+                path: 'suport-tickets',
+                element: <SupportTicket />,
             },
         ],
     },
