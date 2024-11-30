@@ -10,36 +10,36 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import FormInput from '../../components/form/FormInput';
 import { getDefaultValue } from '@/utils/form-utils';
-import { usePostDepartment } from '@/services/api';
+import { getGetDepartmentsQueryKey, usePostDepartment } from '@/services/api';
 export default function CreateModal() {
-    const { toggle, value, setFalse } = useBoolean()
+    const { toggle, value, setFalse } = useBoolean();
     const form = useForm<Department>({
         defaultValues: getDefaultValue(DepartmentSchema),
-        resolver: zodResolver(DepartmentSchema)
-    })
-    const queryClient = useQueryClient()
-    const { show } = useNotifications()
+        resolver: zodResolver(DepartmentSchema),
+    });
+    const queryClient = useQueryClient();
+    const { show } = useNotifications();
     const { mutateAsync, isPending } = usePostDepartment({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['departments']
-                })
+                    queryKey: getGetDepartmentsQueryKey(),
+                });
                 show('Tạo mới chuyên khoa thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
-                })
-            }
-        }
+                });
+            },
+        },
     });
     const onClosed = () => {
-        setFalse()
-        form.reset()
-    }
+        setFalse();
+        form.reset();
+    };
     const onSubmit = async (data: Department) => {
-        await mutateAsync({ data })
-        onClosed()
-    }
+        await mutateAsync({ data });
+        onClosed();
+    };
 
     return (
         <>
@@ -52,7 +52,6 @@ export default function CreateModal() {
                 onClose={onClosed}
                 aria-labelledby="customized-dialog-title"
                 open={value}
-
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                     Tạo mới chuyên khoa
@@ -71,27 +70,31 @@ export default function CreateModal() {
                 </IconButton>
                 <DialogContent dividers>
                     <Stack gap={3} minWidth={400}>
-
-                        <FormInput control={form.control} name='departmentName' label='Tên chuyên khoa' variant='outlined' />
-                        <FormInput control={form.control} name='description' label='Mô tả' variant='outlined' multiline rows={3} />
-
+                        <FormInput
+                            control={form.control}
+                            name="departmentName"
+                            label="Tên chuyên khoa"
+                            variant="outlined"
+                        />
+                        <FormInput
+                            control={form.control}
+                            name="description"
+                            label="Mô tả"
+                            variant="outlined"
+                            multiline
+                            rows={3}
+                        />
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        disabled={isPending}
-                        autoFocus type='reset' variant='outlined' onClick={onClosed}>
+                    <Button disabled={isPending} autoFocus type="reset" variant="outlined" onClick={onClosed}>
                         Đóng
                     </Button>
-                    <LoadingButton
-
-                        autoFocus type='submit' variant='contained'
-                        loading={isPending}
-                    >
+                    <LoadingButton autoFocus type="submit" variant="contained" loading={isPending}>
                         Tạo mới
                     </LoadingButton>
                 </DialogActions>
             </Dialog>
         </>
-    )
+    );
 }

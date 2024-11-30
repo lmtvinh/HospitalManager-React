@@ -38,11 +38,15 @@ export default function CreateModal() {
     };
     const onSubmit = async (data: DoctorRegistration) => {
         console.log(data);
-        const uploadRest = await uploadFile({ file: data.avatar });
+        let fileurl = undefined;
+        if (data.avatar) {
+            const uploadRest = await uploadFile({ file: data.avatar });
+            fileurl = uploadRest.data;
+        }
         await mutateAsync({
             data: {
                 ...data,
-                imageUrl: uploadRest.data,
+                imageUrl: fileurl,
             },
         });
         onClosed();

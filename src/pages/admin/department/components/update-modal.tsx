@@ -10,45 +10,44 @@ import { DialogProps } from '@toolpad/core';
 import React from 'react';
 import FormInput from '../../components/form/FormInput';
 import { getDefaultValue } from '@/utils/form-utils';
-import { useGetDepartment, usePutDepartment } from '@/services/api';
+import { getGetDepartmentsQueryKey, useGetDepartment, usePutDepartment } from '@/services/api';
 export default function UpdateModal({ open, onClose, payload }: DialogProps<number>) {
-
     const form = useForm<Department>({
         defaultValues: getDefaultValue(DepartmentSchema),
-        resolver: zodResolver(DepartmentSchema)
-    })
-    const queryClient = useQueryClient()
-    const { show } = useNotifications()
+        resolver: zodResolver(DepartmentSchema),
+    });
+    const queryClient = useQueryClient();
+    const { show } = useNotifications();
 
-    const { data, isLoading } = useGetDepartment(payload)
+    const { data, isLoading } = useGetDepartment(payload);
 
     React.useEffect(() => {
         if (data) {
-            form.reset(data.data as any)
+            form.reset(data.data as any);
         }
-    }, [data])
+    }, [data]);
 
     const { mutateAsync, isPending } = usePutDepartment({
         mutation: {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['departments']
-                })
+                    queryKey: getGetDepartmentsQueryKey(),
+                });
                 show('Cập nhật chuyên khoa thành công', {
                     autoHideDuration: 3000,
                     severity: 'success',
-                })
-            }
-        }
-    })
+                });
+            },
+        },
+    });
     const onClosed = () => {
-        onClose()
-        form.reset()
-    }
+        onClose();
+        form.reset();
+    };
     const onSubmit = async (data: Department) => {
-        await mutateAsync({ data, id: payload })
-        onClosed()
-    }
+        await mutateAsync({ data, id: payload });
+        onClosed();
+    };
 
     return (
         <Dialog
@@ -57,7 +56,6 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             onClose={onClosed}
             aria-labelledby="customized-dialog-title"
             open={open}
-
         >
             <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                 Tạo mới chuyên khoa
@@ -76,26 +74,30 @@ export default function UpdateModal({ open, onClose, payload }: DialogProps<numb
             </IconButton>
             <DialogContent dividers>
                 <Stack gap={3} minWidth={400}>
-                    <FormInput control={form.control} name='departmentName' label='Tên chuyên khoa' variant='outlined' />
-                    <FormInput control={form.control} name='description' label='Mô tả' variant='outlined' multiline rows={3} />
-
+                    <FormInput
+                        control={form.control}
+                        name="departmentName"
+                        label="Tên chuyên khoa"
+                        variant="outlined"
+                    />
+                    <FormInput
+                        control={form.control}
+                        name="description"
+                        label="Mô tả"
+                        variant="outlined"
+                        multiline
+                        rows={3}
+                    />
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button
-                    disabled={isPending}
-                    autoFocus type='reset' variant='outlined' onClick={onClosed}>
+                <Button disabled={isPending} autoFocus type="reset" variant="outlined" onClick={onClosed}>
                     Đóng
                 </Button>
-                <LoadingButton
-
-                    autoFocus type='submit' variant='contained'
-                    loading={isPending}
-                >
+                <LoadingButton autoFocus type="submit" variant="contained" loading={isPending}>
                     Lưu
                 </LoadingButton>
             </DialogActions>
         </Dialog>
-
-    )
+    );
 }
