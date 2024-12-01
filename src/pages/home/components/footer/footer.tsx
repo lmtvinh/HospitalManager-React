@@ -7,7 +7,7 @@ import InfoItem from './infoItem';
 
 const Footer: FC = () => {
     return (
-        <footer id="footer" className="footer light-background pb-5">
+        <footer id="footer" className="footer light-background pb-5 mb-0">
             <div className="container footer-top">
                 <div className="row gy-4">
                     <div className="col-lg-4 col-md-6 footer-about">
@@ -47,19 +47,19 @@ const Footer: FC = () => {
                             <h4>Useful Links</h4>
                             <ul>
                                 <li>
-                                    <Button href="#" children="Home" className='btn-link-footer'/>
+                                    <Button href="#" children="Home" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#about" children="About us" className='btn-link-footer'/>
+                                    <Button href="#about" children="About us" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#service" children="Services" className='btn-link-footer'/>
+                                    <Button href="#service" children="Services" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#" children="Terms of service" className='btn-link-footer'/>
+                                    <Button href="#" children="Terms of service" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#" children="Privacy policy" className='btn-link-footer'/>
+                                    <Button href="#" children="Privacy policy" className='btn-link-footer' />
                                 </li>
                             </ul>
                         </div>

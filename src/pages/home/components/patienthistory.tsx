@@ -50,9 +50,9 @@ export default function PatientHistory() {
         return <Typography className="container">Đang tải lịch sử khám...</Typography>
     }
 
-    // if (appointments.length === 0) {
-    //     return <Typography className="container">Không có lịch sử khám nào.</Typography>
-    // }
+    if (appointments.length === 0) {
+        return <Typography className="container">Không có lịch sử khám nào.</Typography>
+    }
 
     return (
         <Box sx={{ padding: 4, maxWidth: 800, margin: "auto" }}>
@@ -66,7 +66,7 @@ export default function PatientHistory() {
                             <TableCell><strong>Chuyên khoa</strong></TableCell>
                             <TableCell><strong>Bác sĩ</strong></TableCell>
                             <TableCell><strong>Trạng thái</strong></TableCell>
-                            <TableCell><strong>Dịch vụ sử dụng</strong></TableCell>
+                            <TableCell><strong>Ghi chú của bác sĩ</strong></TableCell>
                             <TableCell><strong>Chi phí</strong></TableCell>
                             <TableCell><strong>Ngày lập hồ sơ</strong></TableCell>
                         </TableRow>
