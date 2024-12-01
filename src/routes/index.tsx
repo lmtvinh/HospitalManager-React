@@ -4,6 +4,7 @@ import Dashboard from '@/pages/admin/dashboard';
 import ListDepartment from '@/pages/admin/department';
 import DiagnosesManagementPage from '@/pages/admin/diagnosis';
 import DoctorManagementPage from '@/pages/admin/doctor';
+import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
 // import DoctorScheduleManagementPage from '@/pages/admin/doctor-schedule';
 import PatientManagementPage from '@/pages/admin/patient';
 import SupportTicket from '@/pages/admin/suport-ticket';
@@ -74,6 +75,10 @@ const routerObjects: RouteObject[] = [
             {
                 path: 'suport-tickets',
                 element: <SupportTicket />,
+            },
+            {
+                path: 'doctor-schedules',
+                element: <DoctorScheduleManagementPage />,
             },
         ],
     },
