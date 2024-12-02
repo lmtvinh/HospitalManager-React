@@ -27,12 +27,19 @@ function Root() {
     const currentUser = useUserProfile();
     const [messageKey, setMessageKey] = React.useState(0);
     const signalRStore = useSignalRStore();
-    const { data: ticket } = useGetTicket(currentTicket?.ticketId!, {
+    const { data: ticket, error } = useGetTicket(currentTicket?.ticketId!, {
         query: {
             enabled: !!currentTicket?.ticketId,
             select: (data) => data.data,
         },
     });
+    React.useEffect(() => {
+        if (error) {
+            if (error.status == 404) {
+                setCurrentTicket(undefined);
+            }
+        }
+    }, [error]);
     React.useEffect(() => {
         if (ticket && ticket.isClosed) {
             setCurrentTicket(undefined);

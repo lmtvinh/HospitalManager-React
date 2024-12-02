@@ -106,19 +106,21 @@ export default function AuthModal({ show, onHide }: Props) {
         setActiveTab(null);
     };
     const [isRegisterDetail, setRegisterDetail] = React.useState(false);
-    const [formData, setFormData] = React.useState({
-
-    })
+    const [formData, setFormData] = React.useState({});
     return (
         <Modal className="home mt-4" show={show} onHide={handleClose}>
-            <Modal.Body className='mt-2'>
-                {activeTab === 'login' && <LoginForm type={type}  onDone={handleClose} nameIdentifier={nameIdentifier} />}
-                {activeTab === 'register' && <RegisterForm type={type} onDone={handleClose} nameIdentifier={nameIdentifier} />}
+            <Modal.Body className="mt-2">
+                {activeTab === 'login' && (
+                    <LoginForm type={type} onDone={handleClose} nameIdentifier={nameIdentifier} />
+                )}
+                {activeTab === 'register' && (
+                    <RegisterForm type={type} onDone={handleClose} nameIdentifier={nameIdentifier} />
+                )}
                 {activeTab == null && (
                     <Container>
                         <Header>
                             {/* <img src="https://placewaifu.com/image/150/40" alt="hellobacsi" width={150} height={40} /> */}
-                            <h3 className='fs-2'>Medilab</h3>
+                            <h3 className="fs-2">Medilab</h3>
                             <CloseButton aria-label="Close">
                                 <CloseIcon onClick={handleClose} />
                             </CloseButton>
@@ -134,13 +136,13 @@ export default function AuthModal({ show, onHide }: Props) {
                             <Button
                                 href="#"
                                 css={css`
-                                color: #000000 !important;
-                                background-color: transparent !important;
-                                border: none !important;
-                                margin-bottom: 2px;
-                                margin-left: -10px;
-                                font-weight: 500;
-                            `}
+                                    color: #000000 !important;
+                                    background-color: transparent !important;
+                                    border: none !important;
+                                    margin-bottom: 2px;
+                                    margin-left: -10px;
+                                    font-weight: 500;
+                                `}
                                 onClick={() => setActiveTab('register')}
                             >
                                 đăng kí
@@ -148,15 +150,11 @@ export default function AuthModal({ show, onHide }: Props) {
                         </p>
 
                         <div
-                            css={
-                                css`
+                            css={css`
                                 display: flex;
                                 margin-bottom: 1rem;
-                                `
-                            }
-                        >
-
-                        </div>
+                            `}
+                        ></div>
 
                         <div
                             css={css`
@@ -196,24 +194,21 @@ export default function AuthModal({ show, onHide }: Props) {
                                 Hoặc tiếp tục bằng
                             </p>
                             <SocialLoginContainer>
-                                <SocialButton
-                                onClick={() => window.location.href = '/api/Account/login/google'}
-                                >
+                                <SocialButton onClick={() => (window.location.href = '/api/Account/login/google')}>
                                     <FontAwesomeIcon
                                         icon={faGoogle as any}
                                         css={css`
                                             color: #f4511e;
-                                            `}
+                                        `}
                                     />
                                     Google
                                 </SocialButton>
-                                <SocialButton>
+                                <SocialButton onClick={() => (window.location.href = '/api/Account/login/facebook')}>
                                     <FontAwesomeIcon
-                                    
                                         icon={faFacebookF as any}
                                         css={css`
-                                            color: #0866ff
-                                            `}
+                                            color: #0866ff;
+                                        `}
                                     />
                                     Facebook
                                 </SocialButton>
@@ -227,8 +222,8 @@ export default function AuthModal({ show, onHide }: Props) {
                                         <FontAwesomeIcon
                                             icon={faPhone}
                                             css={css`
-                                                color: #979595
-                                                `}
+                                                color: #979595;
+                                            `}
                                         />
                                         SĐT
                                     </SocialButton>

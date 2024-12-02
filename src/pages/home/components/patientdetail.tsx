@@ -3,6 +3,7 @@ import { TextField, Button, Typography, Box, Grid } from '@mui/material';
 import { useLocation, useParams } from 'react-router-dom';
 import { UserContext } from '../components/context/usercontext';
 import { useUserProfile } from '@/stores/user-store';
+import { usePutPatient } from '@/services/api';
 
 interface Patient {
     patientId: string;
@@ -17,7 +18,7 @@ interface Patient {
 export default function PatientDetail() {
     const location = useLocation();
     const { patientId } = useParams<{ patientId: string }>();
-
+    const { mutateAsync: putPatient } = usePutPatient();
     const [patient, setPatient] = useState<Patient | null>(null);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -44,20 +45,20 @@ export default function PatientDetail() {
         setErrors(newErrors);
 
         return !Object.values(newErrors).includes(true);
-    }
+    };
 
     useEffect(() => {
         console.log(profile);
 
         const mockPatient: Patient = {
             patientId: profile?.id ? profile.id.toString() : '',
-            name: profile?.patient?.name ? profile?.patient.name : '',
-            dateOfBirth: profile?.patient?.dateOfBirth ? profile?.patient.dateOfBirth : '',
-            phoneNumber: profile?.patient?.phoneNumber ? profile?.patient?.phoneNumber : '',
-            email: profile?.patient?.email ? profile?.patient?.email : '',
-            gender: profile?.patient?.gender ? profile?.patient?.gender : '',
-            healthInsurance: profile?.patient?.healthInsurance ? profile?.patient?.healthInsurance : '',
-        }
+            name: profile?.patient?.name || '',
+            dateOfBirth: profile?.patient?.dateOfBirth || '',
+            phoneNumber: profile?.patient?.phoneNumber || '',
+            email: profile?.patient?.email || '',
+            gender: profile?.patient?.gender || '',
+            healthInsurance: profile?.patient?.healthInsurance || '',
+        };
 
         setPatient(mockPatient);
     }, []);
@@ -73,11 +74,17 @@ export default function PatientDetail() {
             return;
         }
 
-        // Gửi yêu cầu cập nhật thông tin
-        fetch(`/api/patient/${patientId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(patient),
+        putPatient({
+            data: {
+                dateOfBirth: patient?.dateOfBirth,
+                email: patient?.email,
+                gender: patient?.gender,
+                healthInsurance: patient?.healthInsurance,
+                phoneNumber: patient?.phoneNumber,
+                patientId: Number(patientId || 0) || 0,
+                name: patient?.name,
+            },
+            id: Number(patientId || 0) || 0,
         })
             .then(() => {
                 alert('Cập nhật thành công!');
@@ -97,21 +104,16 @@ export default function PatientDetail() {
         setErrors((prevErrors) => ({ ...prevErrors, [name]: false }));
     };
 
-
-
     if (!patient) return <Typography>Đang tải thông tin...</Typography>;
 
     return (
-        <div className="container mt-4" style={{ maxWidth: "600px" }}>
+        <div className="container mt-4" style={{ maxWidth: '600px' }}>
             <h4 className="mb-3 mt-2">Thông tin bệnh nhân</h4>
             <form>
                 <div className="row g-3">
                     {/* Họ và tên */}
                     <div className="col-12">
-                        <label
-                            htmlFor="name"
-                            className={`form-label ${errors.name ? 'text-danger fw-bold' : ''}`}
-                        >
+                        <label htmlFor="name" className={`form-label ${errors.name ? 'text-danger fw-bold' : ''}`}>
                             Họ và tên
                         </label>
                         <input
@@ -168,10 +170,7 @@ export default function PatientDetail() {
 
                     {/* Email */}
                     <div className="col-12">
-                        <label
-                            htmlFor="email"
-                            className={`form-label ${errors.email ? 'text-danger fw-bold' : ''}`}
-                        >
+                        <label htmlFor="email" className={`form-label ${errors.email ? 'text-danger fw-bold' : ''}`}>
                             Email
                         </label>
                         <input
@@ -181,7 +180,7 @@ export default function PatientDetail() {
                             name="email"
                             value={patient.email || ''}
                             onChange={handleInputChange}
-                            disabled={!isEditing}
+                            disabled
                             onFocus={handleFocus}
                             required
                         />
@@ -189,10 +188,7 @@ export default function PatientDetail() {
 
                     {/* Giới tính */}
                     <div className="col-md-4 form-group mt-3">
-                        <label
-                            htmlFor="gender"
-                            className={`form-label ${errors.gender ? 'text-danger fw-bold' : ''}`}
-                        >
+                        <label htmlFor="gender" className={`form-label ${errors.gender ? 'text-danger fw-bold' : ''}`}>
                             Giới tính
                         </label>
                         <select
@@ -205,12 +201,10 @@ export default function PatientDetail() {
                             disabled={!isEditing}
                             onFocus={handleFocus}
                         >
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                            <option value="Khác">Khác</option>
+                            <option value="MALE">Nam</option>
+                            <option value="FEMALE">Nữ</option>
                         </select>
                     </div>
-
 
                     {/* Bảo hiểm y tế */}
                     <div className="col-12">
@@ -236,19 +230,11 @@ export default function PatientDetail() {
                 {/* Nút hành động */}
                 <div className="d-flex justify-content-between mt-4 mb-3">
                     {isEditing ? (
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={handleUpdate}
-                        >
+                        <button type="button" className="btn btn-primary" onClick={handleUpdate}>
                             Cập nhật thông tin
                         </button>
                     ) : (
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => setIsEditing(true)}
-                        >
+                        <button type="button" className="btn btn-primary" onClick={() => setIsEditing(true)}>
                             Chỉnh sửa thông tin
                         </button>
                     )}

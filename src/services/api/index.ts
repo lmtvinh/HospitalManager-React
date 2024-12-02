@@ -430,6 +430,150 @@ export function useIdentityExists<TData = Awaited<ReturnType<typeof identityExis
     return query;
 }
 
+export const loginWithFacebook = (options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
+    return axios.default.get(`/api/Account/login/facebook`, options);
+};
+
+export const getLoginWithFacebookQueryKey = () => {
+    return [`/api/Account/login/facebook`] as const;
+};
+
+export const getLoginWithFacebookQueryOptions = <
+    TData = Awaited<ReturnType<typeof loginWithFacebook>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithFacebook>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getLoginWithFacebookQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof loginWithFacebook>>> = ({ signal }) =>
+        loginWithFacebook({ signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof loginWithFacebook>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type LoginWithFacebookQueryResult = NonNullable<Awaited<ReturnType<typeof loginWithFacebook>>>;
+export type LoginWithFacebookQueryError = AxiosError<unknown>;
+
+export function useLoginWithFacebook<
+    TData = Awaited<ReturnType<typeof loginWithFacebook>>,
+    TError = AxiosError<unknown>,
+>(options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithFacebook>>, TError, TData>> &
+        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof loginWithFacebook>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useLoginWithFacebook<
+    TData = Awaited<ReturnType<typeof loginWithFacebook>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithFacebook>>, TError, TData>> &
+        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof loginWithFacebook>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useLoginWithFacebook<
+    TData = Awaited<ReturnType<typeof loginWithFacebook>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithFacebook>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useLoginWithFacebook<
+    TData = Awaited<ReturnType<typeof loginWithFacebook>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof loginWithFacebook>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getLoginWithFacebookQueryOptions(options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const facebookResponse = (options?: AxiosRequestConfig): Promise<AxiosResponse<LoginResponse>> => {
+    return axios.default.get(`/api/Account/facebook-response`, options);
+};
+
+export const getFacebookResponseQueryKey = () => {
+    return [`/api/Account/facebook-response`] as const;
+};
+
+export const getFacebookResponseQueryOptions = <
+    TData = Awaited<ReturnType<typeof facebookResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof facebookResponse>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getFacebookResponseQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof facebookResponse>>> = ({ signal }) =>
+        facebookResponse({ signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof facebookResponse>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type FacebookResponseQueryResult = NonNullable<Awaited<ReturnType<typeof facebookResponse>>>;
+export type FacebookResponseQueryError = AxiosError<unknown>;
+
+export function useFacebookResponse<
+    TData = Awaited<ReturnType<typeof facebookResponse>>,
+    TError = AxiosError<unknown>,
+>(options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof facebookResponse>>, TError, TData>> &
+        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof facebookResponse>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useFacebookResponse<
+    TData = Awaited<ReturnType<typeof facebookResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof facebookResponse>>, TError, TData>> &
+        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof facebookResponse>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useFacebookResponse<
+    TData = Awaited<ReturnType<typeof facebookResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof facebookResponse>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useFacebookResponse<
+    TData = Awaited<ReturnType<typeof facebookResponse>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof facebookResponse>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getFacebookResponseQueryOptions(options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
 export const getAppointments = (
     params?: GetAppointmentsParams,
     options?: AxiosRequestConfig
