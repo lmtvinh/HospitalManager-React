@@ -4,6 +4,7 @@ import doctor1 from '@/assets/img/doctors/doctors-1.jpg';
 import doctor2 from '@/assets/img/doctors/doctors-2.jpg';
 import doctor3 from '@/assets/img/doctors/doctors-3.jpg';
 import doctor4 from '@/assets/img/doctors/doctors-4.jpg';
+import { useGetDoctors } from '@/services/api';
 
 interface SocialLinks {
     twitter?: string;
@@ -13,6 +14,10 @@ interface SocialLinks {
 }
 
 const Doctor: React.FC = () => {
+    const {data:doctors} = useGetDoctors({
+        Page: 1,
+        PageSize: 6
+    })
     return (
         <section id="doctors" className="doctors section">
             <div className="container section-title" data-aos="fade-up">

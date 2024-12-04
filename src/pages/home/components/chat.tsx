@@ -11,7 +11,7 @@ import {
     Message,
 } from '@chatscope/chat-ui-kit-react';
 import useTicketStore from '@/stores/message-store';
-import { getMessages, useGetMessages, useGetTicket } from '@/services/api';
+import { getMessages, useGetTicket } from '@/services/api';
 import { useUserProfile } from '@/stores/user-store';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import React from 'react';
@@ -27,6 +27,7 @@ function Root() {
     const currentUser = useUserProfile();
     const [messageKey, setMessageKey] = React.useState(0);
     const signalRStore = useSignalRStore();
+    const isPatient = !!currentUser?.patient;
     const { data: ticket, error } = useGetTicket(currentTicket?.ticketId!, {
         query: {
             enabled: !!currentTicket?.ticketId,
@@ -118,7 +119,7 @@ function Root() {
                 right: 0;
             `}
         >
-            {!value && <Button onClick={toggle}>Hỗ trợ</Button>}
+            {!value && isPatient && <Button onClick={toggle}>Hỗ trợ</Button>}
             {value && (
                 <MainContainer style={{ width: '400px', height: '600px' }}>
                     <ChatContainer>

@@ -5,19 +5,16 @@
  * OpenAPI spec version: v1
  */
 
-export interface DoctorRegistration {
-    /** @nullable */
-    departmentId?: number | null;
+export interface MakeAppointmentRequest {
+    appointmentDate?: string;
+    appointmentId?: number;
+    doctorId?: number;
     /** @nullable */
     email?: string | null;
     /** @nullable */
-    imageUrl?: string | null;
-    /** @nullable */
     name?: string | null;
     /** @nullable */
-    password?: string | null;
+    patientId?: number | null;
     /** @nullable */
     phoneNumber?: string | null;
-    /** @nullable */
-    specialization?: string | null;
 }

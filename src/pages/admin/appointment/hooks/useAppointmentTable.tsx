@@ -21,6 +21,7 @@ import { camelCaseToPascalCase } from '@/utils/string-utils';
 import dayjs from 'dayjs';
 import CreateModal from '../../diagnosis/components/create-modal';
 import DetailModal from '../components/detail-modal';
+import { AppointmentStatusLabels } from '@/services/enums/AppointmentStatus';
 export default function useAppointmentTable() {
     const [filter, setFilter] = React.useState<GetAppointmentsParams>({
         Page: 0,
@@ -115,7 +116,11 @@ export default function useAppointmentTable() {
                 width: 150,
                 valueGetter: (_, record: Appointment) => record?.doctor?.name,
             },
-            { field: 'status', headerName: 'Trạng thái', width: 150 },
+            { field: 'status', headerName: 'Trạng thái', width: 150 ,
+                valueGetter: (_, record: Appointment) => {
+                    return AppointmentStatusLabels[record.status as keyof typeof AppointmentStatusLabels]|| 'Không xác định';
+                },
+            },
             {
                 field: 'actions',
                 type: 'actions',
