@@ -6,6 +6,7 @@
  */
 
 export interface DepartmentDTO {
+    [x: string]: any;
     departmentId?: number;
     /** @nullable */
     departmentName?: string | null;
