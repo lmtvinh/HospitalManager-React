@@ -1,4 +1,11 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useGetDepartments, useGetFreeDoctors, useMakeAppointment } from '@/services/api';
+import { useUserProfile } from '@/stores/user-store';
+import { Autocomplete, TextField } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import React from 'react';
+import { Form } from 'react-bootstrap';
+import { Controller, useForm } from 'react-hook-form';
 
 interface FormData {
     name: string;
@@ -10,47 +17,74 @@ interface FormData {
     message: string;
 }
 
+// public int AppointmentId { get; set; }
+// public int DoctorId { get; set; }
+
+// public DateTime AppointmentDate { get; set; }
+// public int? PatientId { get; set; }
+
+// public string? Email { get; set; }
+// public string? PhoneNumber { get; set; }
+// public string? Name { get; set; }
+
 const Appointment: React.FC = () => {
-    const [formData, setFormData] = useState<FormData>({
-        name: '',
-        email: '',
-        phone: '',
-        date: '',
-        department: '',
-        doctor: '',
-        message: '',
+    const { register, watch, handleSubmit, control } = useForm();
+    const { data: departments } = useGetDepartments({
+        Page: 1,
+        PageSize: 10000,
     });
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+    const canSelectDoctor = !!watch('date') && !!watch('departmentId');
+    const profile = useUserProfile();
+    const { data: doctors, isLoading: loadingDoctors } = useGetFreeDoctors(
+        {
+            AppointmentDate: dayjs(watch('date')).toISOString(),
+            DepartmentId: watch('departmentId'),
+        },
+        {
+            query: {
+                enabled: canSelectDoctor,
+            },
+        }
+    );
+    console.log(canSelectDoctor, doctors?.data);
+    const { mutateAsync, isPending: isMakingAppointment, error, isSuccess } = useMakeAppointment();
+    const onSubmit = async (formData: any) => {
+        try {
+            await mutateAsync({
+                data: {
+                    appointmentDate: dayjs(formData.date).toISOString(),
+                    doctorId: Number(formData.doctorId),
+                    email: formData.email,
+                    phoneNumber: formData.phone,
+                    patientId: profile?.patient?.patientId,
+                    name: formData.name,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+        }
     };
-
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        console.log(formData);
-    }
-
     return (
         <section id="appointment" className="appointment section">
             <div className="container section-title" data-aos="fade-up">
-                <h2>Appointment</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+                <h2>Đặt lịch hẹn</h2>
+                <p>
+                    {' '}
+                    Để đặt lịch hẹn, vui lòng điền vào biểu mẫu dưới đây. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.
+                </p>
             </div>
 
             <div className="container" data-aos="fade-up" data-aos-delay="100">
-                <form onSubmit={handleSubmit} className="php-email-form">
+                <form className="php-email-form" onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
                         <div className="col-md-4 form-group">
                             <input
                                 type="text"
-                                name="name"
                                 className="form-control"
                                 id="name"
-                                placeholder="Your Name"
+                                placeholder="Họ và tên"
                                 required
-                                value={formData.name}
-                                onChange={handleChange}
+                                {...register('name')}
                             />
                         </div>
 
@@ -58,12 +92,10 @@ const Appointment: React.FC = () => {
                             <input
                                 type="email"
                                 className="form-control"
-                                name="email"
                                 id="email"
-                                placeholder="Your Email"
+                                placeholder="Địa chỉ email"
                                 required
-                                value={formData.email}
-                                onChange={handleChange}
+                                {...register('email')}
                             />
                         </div>
 
@@ -71,60 +103,105 @@ const Appointment: React.FC = () => {
                             <input
                                 type="tel"
                                 className="form-control"
-                                name="phone"
                                 id="phone"
-                                placeholder="Your Phone"
+                                placeholder="Số điện thoại"
                                 required
-                                value={formData.phone}
-                                onChange={handleChange}
+                                {...register('phone')}
                             />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-md-4 form-group mt-3">
-                            <input
-                                type="datetime-local"
-                                name="date"
-                                className="form-control datepicker"
-                                id="date"
-                                required
-                                value={formData.date}
-                                onChange={handleChange}
+                            <Controller
+                                name="departmentId"
+                                control={control}
+                                render={({ field: { onBlur, onChange, value, ...rest } }) => {
+                                    const selected =
+                                        departments?.data.data?.find((item) => item.departmentId === value) || null;
+                                    return (
+                                        <Autocomplete
+                                            sx={{
+                                                width: '100%',
+                                                border: 'var(--bs-border-width) solid var(--bs-border-color)',
+                                            }}
+                                            options={
+                                                departments?.data.data?.map((option) => {
+                                                    return {
+                                                        value: option.departmentId,
+                                                        label: option.departmentName,
+                                                    };
+                                                }) || []
+                                            }
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    sx={{
+                                                        paddingTop: 0,
+                                                        paddingBottom: 0,
+                                                    }}
+                                                    placeholder="Chuyên khoa"
+                                                    variant="outlined"
+                                                />
+                                            )}
+                                            onChange={(_, data) => {
+                                                onChange(data?.value);
+                                            }}
+                                            onBlur={onBlur}
+                                            value={{ value: selected?.departmentId, label: selected?.departmentName }}
+                                            getOptionKey={(option) => option.value || ''}
+                                            getOptionLabel={(option) => option.label || ''}
+                                            {...rest}
+                                        />
+                                    );
+                                }}
                             />
                         </div>
                         <div className="col-md-4 form-group mt-3">
-                            <select
-                                name="department"
-                                id="department"
-                                className="form-select"
-                                required
-                                value={formData.department}
-                                onChange={handleChange}
-                            >
-                                <option value="">Select Department</option>
-                                <option value="Department 1">Department 1</option>
-                                <option value="Department 2">Department 2</option>
-                                <option value="Department 3">Department 3</option>
-                            </select>
+                            <Controller
+                                control={control}
+                                name="date"
+                                render={({ field: { value, onChange, ...rest } }) => (
+                                    <DateTimePicker
+                                        minDateTime={dayjs().add(1, 'day').startOf('date')}
+                                        label="Ngày hẹn"
+                                        dayOfWeekFormatter={(dayOfWeek) => dayOfWeek.format('dd')}
+                                        sx={{
+                                            width: '100%',
+                                            border: 'var(--bs-border-width) solid var(--bs-border-color)',
+                                        }}
+                                        className=""
+                                        value={value || undefined}
+                                        onChange={(e) => onChange(e)}
+                                        {...rest}
+                                    />
+                                )}
+                            />
                         </div>
                         <div className="col-md-4 form-group mt-3">
-                            <select
-                                name="doctor"
+                            <Form.Select
+                                aria-label="Default select example"
+                                css={{ cursor: canSelectDoctor ? 'pointer' : 'not-allowed' }}
                                 id="doctor"
                                 className="form-select"
                                 required
-                                value={formData.doctor}
-                                onChange={handleChange}
+                                {...register('doctorId')}
                             >
-                                <option value="">Select Doctor</option>
-                                <option value="Doctor 1">Doctor 1</option>
-                                <option value="Doctor 2">Doctor 2</option>
-                                <option value="Doctor 3">Doctor 3</option>
-                            </select>
+                                <option value="">
+                                    {loadingDoctors && 'Đang tải...'}
+                                    {doctors?.data.length === 0 && 'Không có bác sĩ nào trống'}
+                                    {!canSelectDoctor && 'Chọn khoa và ngày trước'}
+                                    {doctors && doctors.data.length > 0 && 'Chọn bác sĩ'}
+                                </option>
+                                {doctors?.data?.map((doctor) => (
+                                    <option key={doctor.doctorId} value={doctor.doctorId}>
+                                        {doctor.name}
+                                    </option>
+                                ))}
+                            </Form.Select>
                         </div>
                     </div>
-                    <div className="form-group mt-3">
+                    {/* <div className="form-group mt-3">
                         <textarea
                             className="form-control"
                             name="message"
@@ -133,21 +210,27 @@ const Appointment: React.FC = () => {
                             value={formData.message}
                             onChange={handleChange}
                         ></textarea>
-                    </div>
+                    </div> */}
                     <div className="mt-3">
-                        <div className="loading">Loading</div>
-                        <div className="error-message"></div>
-                        <div className="sent-message">
-                            Your appointment request has been sent successfully. Thank you!
-                        </div>
+                        {isMakingAppointment && <div className="loading">Loading</div>}
+                        {!!error?.response?.data && (
+                            <div className="error-message">{error.response.data as string}</div>
+                        )}
+                        {isSuccess && (
+                            <div className="sent-message">
+                                Bạn đã đặt lịch thành công. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.
+                            </div>
+                        )}
                         <div className="text-center">
-                            <button type="submit">Make an Appointment</button>
+                            <button disabled={isMakingAppointment} type="submit">
+                                Đặt lịch
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
         </section>
     );
-}
+};
 
 export default Appointment;

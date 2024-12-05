@@ -6,7 +6,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { AppProvider } from '@toolpad/core/react-router-dom';
 import { Navigation, Router } from '@toolpad/core';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { viVN } from '@mui/material/locale';
@@ -22,7 +21,6 @@ import EmergencyIcon from '@mui/icons-material/Emergency';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PeopleIcon from '@mui/icons-material/People';
 import { THEME } from '@/configs/themes';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import 'dayjs/locale/vi';
 const NAVIGATION: Navigation = [
@@ -105,7 +103,6 @@ export default function AdminLayoutComponent() {
     const theme = createTheme(THEME as object, viVN, viDG);
     return (
         <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
                 <AppProvider
                     theme={theme}
                     navigation={NAVIGATION}
@@ -118,7 +115,6 @@ export default function AdminLayoutComponent() {
                         <Outlet />
                     </DashboardLayout>
                 </AppProvider>
-            </LocalizationProvider>
         </ThemeProvider>
     );
 }

@@ -5,6 +5,7 @@
  * OpenAPI spec version: v1
  */
 
-export type DownloadFileParams = {
-    fileName?: string;
+export type GetFreeDoctorsParams = {
+    AppointmentDate?: string;
+    DepartmentId?: number;
 };

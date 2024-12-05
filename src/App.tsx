@@ -8,7 +8,8 @@ import React from 'react';
 import { getCurrentUser } from './services/api';
 import dayjs from 'dayjs';
 import useSignalRStore from './stores/signalRStore';
-
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 const queryClient = new QueryClient();
 const App = () => {
     const { token, logout, setProfile } = useUserStore();
@@ -36,11 +37,13 @@ const App = () => {
 
     return (
         <NotificationsProvider>
-            <DialogsProvider>
-                <QueryClientProvider client={queryClient}>
-                    <RouterProvider router={router} />
-                </QueryClientProvider>
-            </DialogsProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
+                <DialogsProvider>
+                    <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={router} />
+                    </QueryClientProvider>
+                </DialogsProvider>
+            </LocalizationProvider>
         </NotificationsProvider>
     );
 };

@@ -5,10 +5,7 @@
  * OpenAPI spec version: v1
  */
 
-export interface WeatherForecast {
-    date?: string;
+export interface StatusRequest {
     /** @nullable */
-    summary?: string | null;
-    temperatureC?: number;
-    readonly temperatureF?: number;
+    status?: string | null;
 }

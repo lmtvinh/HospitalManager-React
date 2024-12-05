@@ -188,6 +188,7 @@ body {
 }
 
 .home{
+
   a {
     color: $color_2;
     text-decoration: none;
@@ -285,7 +286,6 @@ body {
   }
   .php-email-form {
     .error-message {
-      display: none;
       background: #df1529;
       color: $color_5;
       text-align: left;
@@ -294,7 +294,6 @@ body {
       font-weight: 600;
     }
     .sent-message {
-      display: none;
       color: $color_5;
       background: #059652;
       text-align: center;
@@ -303,7 +302,6 @@ body {
       font-weight: 600;
     }
     .loading {
-      display: none;
       background: var(--surface-color);
       text-align: center;
       padding: 15px;
@@ -903,7 +901,7 @@ body {
         border-radius: 0;
         box-shadow: none;
         font-size: 14px;
-        padding: 10px !important;
+        padding: 10px ;
         height: 44px;
         &:focus {
           border-color: $border-color_1;
@@ -1749,5 +1747,5 @@ body {
       }
     }
   }
-  
+
 }
