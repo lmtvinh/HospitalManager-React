@@ -4,11 +4,11 @@
  * Hopital Management System Api
  * OpenAPI spec version: v1
  */
-import type { Invoice } from './invoice';
+import type { InvoiceDTO } from './invoiceDTO';
 
-export interface InvoicePaginated {
+export interface InvoiceDTOPaginated {
     /** @nullable */
-    data?: Invoice[] | null;
+    data?: InvoiceDTO[] | null;
     nextPage?: number;
     totalItems?: number;
 }

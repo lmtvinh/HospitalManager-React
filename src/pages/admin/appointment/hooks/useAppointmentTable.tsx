@@ -15,13 +15,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ViewIcon from '@mui/icons-material/Visibility';
 import UpdateModal from '../components/update-modal';
-import { getGetAppointmentsQueryKey, useDeleteAppointment, useGetAppointments } from '@/services/api';
+import {
+    getGetAppointmentsQueryKey,
+    useDeleteAppointment,
+    useGetAppointments,
+    useUpdateAppointmentStatus,
+} from '@/services/api';
 import { Appointment, GetAppointmentsParams } from '@/types';
 import { camelCaseToPascalCase } from '@/utils/string-utils';
 import dayjs from 'dayjs';
 import CreateModal from '../../diagnosis/components/create-modal';
 import DetailModal from '../components/detail-modal';
-import { AppointmentStatusLabels } from '@/services/enums/AppointmentStatus';
+import { AppointmentStatus, AppointmentStatusLabels } from '@/services/enums/AppointmentStatus';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 export default function useAppointmentTable() {
     const [filter, setFilter] = React.useState<GetAppointmentsParams>({
         Page: 0,
@@ -66,7 +72,6 @@ export default function useAppointmentTable() {
     );
     const { show } = useNotifications();
     const queryClient = useQueryClient();
-
     const { mutateAsync } = useDeleteAppointment({
         mutation: {
             onSuccess: () => {
@@ -80,6 +85,7 @@ export default function useAppointmentTable() {
             },
         },
     });
+    const { mutateAsync: updateAppointmentStatus } = useUpdateAppointmentStatus();
 
     const dialogs = useDialogs();
     const handleEdit = (id: number) => {
@@ -87,6 +93,21 @@ export default function useAppointmentTable() {
     };
     const handleDiagnosis = (id: number) => {
         dialogs.open(CreateModal.FromDialog, { initAppointmentId: id });
+    };
+    const handleUpdateStatus = async (id: number, status: AppointmentStatus) => {
+        await updateAppointmentStatus({
+            id,
+            data: {
+                status,
+            },
+        });
+        queryClient.invalidateQueries({
+            queryKey: getGetAppointmentsQueryKey(),
+        });
+        show('Cập nhật trạng thái lịch hẹn thành công', {
+            autoHideDuration: 3000,
+            severity: 'success',
+        });
     };
 
     const columns: GridColDef[] = React.useMemo(() => {
@@ -116,9 +137,15 @@ export default function useAppointmentTable() {
                 width: 150,
                 valueGetter: (_, record: Appointment) => record?.doctor?.name,
             },
-            { field: 'status', headerName: 'Trạng thái', width: 150 ,
+            {
+                field: 'status',
+                headerName: 'Trạng thái',
+                width: 150,
                 valueGetter: (_, record: Appointment) => {
-                    return AppointmentStatusLabels[record.status as keyof typeof AppointmentStatusLabels]|| 'Không xác định';
+                    return (
+                        AppointmentStatusLabels[record.status as keyof typeof AppointmentStatusLabels] ||
+                        'Không xác định'
+                    );
                 },
             },
             {
@@ -127,6 +154,66 @@ export default function useAppointmentTable() {
                 width: 100,
                 getActions: (params: GridRowParams<Appointment>) => {
                     const id = params.row.appointmentId as number;
+                    const status = params.row.status as AppointmentStatus;
+                    const changeStatusActions=[]
+                    const isScheduled = Object.values(AppointmentStatus).includes(status);
+                    if (!isScheduled) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Đã đặt',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.SCHEDULED),
+                        });
+                    }
+                    if (status === AppointmentStatus.SCHEDULED) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Check-in',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.CHECKED_IN),
+                        });
+                    }
+                    if (status === AppointmentStatus.CHECKED_IN) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Khám',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.IN_PROGRESS),
+                        });
+                    }
+                    if (status === AppointmentStatus.IN_PROGRESS) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Hoàn thành',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.COMPLETED),
+                        });
+                    }
+                    if (status === AppointmentStatus.SCHEDULED) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Xác nhận',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.CONFIRMED),
+                        });
+                    }
+                    if (status === AppointmentStatus.CONFIRMED) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Check-in',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.CHECKED_IN),
+                        });
+                    }
+                    if (status === AppointmentStatus.SCHEDULED) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Hủy',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.CANCELLED),
+                        });
+                    }
+                    if (status === AppointmentStatus.SCHEDULED) {
+                        changeStatusActions.push({
+                            icon: <ChangeCircleIcon  />,
+                            label: 'Không đến',
+                            onClick: () => handleUpdateStatus(id, AppointmentStatus.NO_SHOW),
+                        });
+                    }
+                    
                     return [
                         <GridActionsCellItem
                             showInMenu
@@ -136,11 +223,20 @@ export default function useAppointmentTable() {
                                 dialogs.open(DetailModal, id);
                             }}
                         />,
+                        ...changeStatusActions.map((action) => (
+                            <GridActionsCellItem
+                                showInMenu
+                                icon={action.icon}
+                                label={action.label}
+                                onClick={action.onClick}
+                            />
+                        )),
                         <GridActionsCellItem
                             sx={{
                                 width: '200px',
                             }}
                             showInMenu
+                            hidden={status === AppointmentStatus.COMPLETED||status === AppointmentStatus.CANCELLED||status === AppointmentStatus.NO_SHOW}
                             icon={<EditIcon />}
                             label="Sửa"
                             onClick={() => handleEdit(id)}
@@ -150,6 +246,7 @@ export default function useAppointmentTable() {
                                 width: '200px',
                             }}
                             showInMenu
+                            hidden={status === AppointmentStatus.COMPLETED||status === AppointmentStatus.CANCELLED||status === AppointmentStatus.NO_SHOW}
                             icon={<MonitorWeightIcon />}
                             label="Chẩn đoán"
                             onClick={() => handleDiagnosis(id)}
@@ -158,6 +255,7 @@ export default function useAppointmentTable() {
                             showInMenu
                             icon={<DeleteIcon />}
                             label="Xóa"
+                            hidden={status === AppointmentStatus.COMPLETED||status === AppointmentStatus.CHECKED_IN||status === AppointmentStatus.IN_PROGRESS||status === AppointmentStatus.CONFIRMED}
                             onClick={() => {
                                 dialogs.confirm(
                                     <>

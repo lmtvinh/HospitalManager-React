@@ -54,7 +54,8 @@ import type {
     GetUnAssignedTicketsParams,
     IdentityExistsParams,
     Invoice,
-    InvoicePaginated,
+    InvoiceDTO,
+    InvoiceDTOPaginated,
     LoginModel,
     LoginResponse,
     MakeAppointmentRequest,
@@ -3096,7 +3097,7 @@ export function useDownloadFile<TData = Awaited<ReturnType<typeof downloadFile>>
 export const getInvoices = (
     params?: GetInvoicesParams,
     options?: AxiosRequestConfig
-): Promise<AxiosResponse<InvoicePaginated>> => {
+): Promise<AxiosResponse<InvoiceDTOPaginated>> => {
     return axios.default.get(`/api/Invoices`, {
         ...options,
         params: { ...params, ...options?.params },
@@ -3206,7 +3207,7 @@ export const usePostInvoice = <TError = AxiosError<unknown>, TContext = unknown>
     return useMutation(mutationOptions);
 };
 
-export const getInvoice = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<Invoice>> => {
+export const getInvoice = (id: number, options?: AxiosRequestConfig): Promise<AxiosResponse<InvoiceDTO>> => {
     return axios.default.get(`/api/Invoices/${id}`, options);
 };
 

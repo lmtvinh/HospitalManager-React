@@ -9,7 +9,6 @@ import type { EmergencyContact } from './emergencyContact';
 import type { Invoice } from './invoice';
 
 export interface PatientDTO {
-    [x: string]: string | undefined;
     /** @nullable */
     appointments?: Appointment[] | null;
     dateOfBirth?: string;
