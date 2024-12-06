@@ -155,65 +155,65 @@ export default function useAppointmentTable() {
                 getActions: (params: GridRowParams<Appointment>) => {
                     const id = params.row.appointmentId as number;
                     const status = params.row.status as AppointmentStatus;
-                    const changeStatusActions=[]
+                    const changeStatusActions = [];
                     const isScheduled = Object.values(AppointmentStatus).includes(status);
                     if (!isScheduled) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Đã đặt',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.SCHEDULED),
                         });
                     }
                     if (status === AppointmentStatus.SCHEDULED) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Check-in',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.CHECKED_IN),
                         });
                     }
                     if (status === AppointmentStatus.CHECKED_IN) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Khám',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.IN_PROGRESS),
                         });
                     }
                     if (status === AppointmentStatus.IN_PROGRESS) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Hoàn thành',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.COMPLETED),
                         });
                     }
                     if (status === AppointmentStatus.SCHEDULED) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Xác nhận',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.CONFIRMED),
                         });
                     }
                     if (status === AppointmentStatus.CONFIRMED) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Check-in',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.CHECKED_IN),
                         });
                     }
                     if (status === AppointmentStatus.SCHEDULED) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Hủy',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.CANCELLED),
                         });
                     }
                     if (status === AppointmentStatus.SCHEDULED) {
                         changeStatusActions.push({
-                            icon: <ChangeCircleIcon  />,
+                            icon: <ChangeCircleIcon />,
                             label: 'Không đến',
                             onClick: () => handleUpdateStatus(id, AppointmentStatus.NO_SHOW),
                         });
                     }
-                    
+
                     return [
                         <GridActionsCellItem
                             showInMenu
@@ -236,7 +236,11 @@ export default function useAppointmentTable() {
                                 width: '200px',
                             }}
                             showInMenu
-                            hidden={status === AppointmentStatus.COMPLETED||status === AppointmentStatus.CANCELLED||status === AppointmentStatus.NO_SHOW}
+                            hidden={
+                                status === AppointmentStatus.COMPLETED ||
+                                status === AppointmentStatus.CANCELLED ||
+                                status === AppointmentStatus.NO_SHOW
+                            }
                             icon={<EditIcon />}
                             label="Sửa"
                             onClick={() => handleEdit(id)}
@@ -246,16 +250,21 @@ export default function useAppointmentTable() {
                                 width: '200px',
                             }}
                             showInMenu
-                            hidden={status === AppointmentStatus.COMPLETED||status === AppointmentStatus.CANCELLED||status === AppointmentStatus.NO_SHOW}
+                            hidden={status !== AppointmentStatus.IN_PROGRESS}
                             icon={<MonitorWeightIcon />}
-                            label="Chẩn đoán"
+                            label="Chuẩn đoán"
                             onClick={() => handleDiagnosis(id)}
                         />,
                         <GridActionsCellItem
                             showInMenu
                             icon={<DeleteIcon />}
                             label="Xóa"
-                            hidden={status === AppointmentStatus.COMPLETED||status === AppointmentStatus.CHECKED_IN||status === AppointmentStatus.IN_PROGRESS||status === AppointmentStatus.CONFIRMED}
+                            hidden={
+                                status === AppointmentStatus.COMPLETED ||
+                                status === AppointmentStatus.CHECKED_IN ||
+                                status === AppointmentStatus.IN_PROGRESS ||
+                                status === AppointmentStatus.CONFIRMED
+                            }
                             onClick={() => {
                                 dialogs.confirm(
                                     <>

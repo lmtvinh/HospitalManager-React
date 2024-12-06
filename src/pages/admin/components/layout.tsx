@@ -44,11 +44,11 @@ const NAVIGATION: Navigation = [
         title: 'Lịch làm việc bác sĩ',
         icon: <ScheduleIcon />,
     },
-    {
-        segment: 'admin/emergency-contacts',
-        title: 'Liên hệ khẩn cấp',
-        icon: <EmergencyIcon />,
-    },
+    // {
+    //     segment: 'admin/emergency-contacts',
+    //     title: 'Liên hệ khẩn cấp',
+    //     icon: <EmergencyIcon />,
+    // },
     {
         segment: 'admin/invoices',
         title: 'Hóa đơn',
@@ -103,18 +103,18 @@ export default function AdminLayoutComponent() {
     const theme = createTheme(THEME as object, viVN, viDG);
     return (
         <ThemeProvider theme={theme}>
-                <AppProvider
-                    theme={theme}
-                    navigation={NAVIGATION}
-                    branding={BRANDING}
-                    router={router}
-                    window={window}
-                    // authentication={AUTHENTICATION}
-                >
-                    <DashboardLayout>
-                        <Outlet />
-                    </DashboardLayout>
-                </AppProvider>
+            <AppProvider
+                theme={theme}
+                navigation={NAVIGATION}
+                branding={BRANDING}
+                router={router}
+                window={window}
+                // authentication={AUTHENTICATION}
+            >
+                <DashboardLayout>
+                    <Outlet />
+                </DashboardLayout>
+            </AppProvider>
         </ThemeProvider>
     );
 }
