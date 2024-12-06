@@ -4,10 +4,10 @@ import { Appointment, GetInvoicesParams, Invoice, Patient } from "@/types";
 import ViewIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import UpdateIcon from '../component/update-modal';
+import UpdateModal from '../component/update-modal';
 import DetailModal from "../component/detail-modal";
 import { useDialogs, useNotifications } from "@toolpad/core";
-import { getGetInvoicesQueryKey, getInvoices, useDeleteInvoice, useGetInvoices } from "@/services/api";
+import { getGetInvoicesQueryKey, getInvoices, useDeleteInvoice, useGetAppointment, useGetInvoices } from "@/services/api";
 import { keepPreviousData, QueryClient, useQueryClient } from "@tanstack/react-query";
 import { camelCaseToPascalCase } from "@/utils/string-utils";
 
@@ -16,6 +16,42 @@ export default function useInvoiceTable() {
         Page: 0,
         PageSize: 10,
     });
+
+    const { data, isLoading } = useGetInvoices(
+        {
+            ...filter,
+            Page: filter.Page! + 1,
+            SortBy: camelCaseToPascalCase(filter.SortBy || 'invoiceId'),
+        },
+        {
+            query: {
+                placeholderData: keepPreviousData,
+            },
+        }
+    );
+    const handlePageChange = (page: GridPaginationModel) => {
+        setFilter((pre) => ({
+            ...pre,
+            Page: page.page,
+            PageSize: page.pageSize,
+        }));
+    };
+
+    const handleFilterModelChange = (model: GridFilterModel) => {
+        setFilter((pre) => ({
+            ...pre,
+            Search: model.quickFilterValues?.[0] as string,
+        }))
+    }
+
+    const handleSortModelChange = (model: GridSortModel, details: GridCallbackDetails) => {
+        setFilter((pre) => ({
+            ...pre,
+            SortBy: model[0]?.field,
+            SortOrder: model[0]?.sort || 'asc',
+        }));
+    };
+
     const dialogs = useDialogs();
     const queryClient = useQueryClient();
     const { show } = useNotifications();
@@ -32,42 +68,6 @@ export default function useInvoiceTable() {
             },
         }
     });
-    
-    const { data, isLoading } = useGetInvoices(
-        {
-            ...filter,
-            Page: filter.Page! + 1,
-            SortBy: camelCaseToPascalCase(filter.SortBy || 'invoiceId'),
-        },
-        {
-            query: {
-                placeholderData: keepPreviousData,
-            },
-        }
-    );
-
-    const handlePageChange = (page: GridPaginationModel) => {
-        setFilter((pre) => ({
-            ...pre,
-            Page: page.page,
-            PageSize: page.pageSize,
-        }));
-    };
-    
-    const handleFilterModelChange = (model: GridFilterModel) => {
-        setFilter((pre) => ({
-            ...pre,
-            Search: model.quickFilterValues?.[0] as string,
-        }))
-    }
-
-    const handleSortModelChange = (model: GridSortModel, details: GridCallbackDetails) => {
-        setFilter((pre) => ({
-            ...pre,
-            SortBy: model[0]?.field,
-            SortOrder: model[0]?.sort || 'asc',
-        }));
-    };
 
     const columns: GridColDef[] = React.useMemo(() => {
         return [
@@ -76,71 +76,54 @@ export default function useInvoiceTable() {
                 field: 'patient',
                 headerName: 'Bệnh nhân',
                 width: 150,
-                valueGetter: (params: Patient) => {
-                    return params?.name;
-                },
+                valueGetter: (params: Patient) => params.name,
             },
             {
                 field: 'invoiceDate',
                 headerName: 'Ngày lập hóa đơn',
                 width: 150,
-                valueGetter: (params: Invoice) => {
-                    return params?.invoiceDate;
-                }
+                renderCell: (params) => {
+                    const invoiceDate = params.row.invoiceDate;
+                    if (!invoiceDate) return <span>Không có dữ liệu</span>;
+                    const [year, month, day] = invoiceDate.split('T')[0].split('-');
+                    return <span>{`${day}/${month}/${year}`}</span>;
+                },
             },
             {
-                field: 'appointmentCreatedAt',
-                headerName: 'Ngày hẹn',
-                width: 150,
+                field: 'appointment',
+                headerName: 'Ngày và giờ cuộc hẹn',
+                width: 200,
                 valueGetter: (params: Appointment) => {
-                    return params?.appointmentDate;
-                }
-            },
-            {
-                field: 'appointmentTime',
-                headerName: 'Thời gian hẹn',
-                width: 150,
-                valueGetter: (params: Appointment) => {
-                    return params?.appointmentTime;
-                }
-            },
-            {
-                field: 'appointmentStatus',
-                headerName: 'Trạng thái cuộc hẹn',
-                width: 150,
-                valueGetter: (params: Appointment) => {
-                    return params?.status;
-                }
+                    const appointmenetDate = params.appointmentDate?.toString();
+                    const [year, month, day] = appointmenetDate!.split('T')[0].split('-');
+                    const time = params.appointmentTime;
+                    return `${day}/${month}/${year} - ${time}`;
+                },
             },
             {
                 field: 'totalAmount',
                 headerName: 'Tổng tiền',
-                width: 150,
-                valueGetter: (params: Invoice) => {
-                    return params?.totalAmount;
-                }
+                width: 150
             },
             {
-                field: 'invoiceStatus',
+                field: 'status',
                 headerName: 'Trạng thái hóa đơn',
-                width: 150,
-                valueGetter: (params: Invoice) => {
-                    return params?.status;
-                }
+                width: 150
             },
             {
                 field: 'actions',
                 type: 'actions',
                 width: 100,
                 getActions: (params: GridRowParams<Invoice>) => {
-                    const id = params.row.appointmentId as number;
-                    console.log('params: ',params.row);
+                    const id = params.row.invoiceId as number;
+                    console.log('params: ', params.row);
                     return [
                         <GridActionsCellItem
                             showInMenu
                             icon={<ViewIcon />}
                             label="Xem"
                             onClick={() => {
+                                console.log("id invoice: ", id);
                                 dialogs.open(DetailModal, id);
                             }}
                         />,

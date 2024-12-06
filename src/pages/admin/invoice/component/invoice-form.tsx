@@ -1,15 +1,27 @@
-import { useGetDepartments } from "@/services/api";
+import { useGetAppointments, useGetDepartments, useGetPatient, useGetPatients } from "@/services/api";
 import { Controller, UseFormReturn } from "react-hook-form";
 import FormInput from "../../components/form/FormInput";
 import { Autocomplete, TextField } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import React from "react";
+import { Patient } from "../../patient/validations";
+import { MenuItem } from '@mui/material';
 
 interface InvoiceFormProps {
     form: UseFormReturn<any>;
     type?: 'create' | 'update';
+    initAppointmentId?: number;
 }
 
-export default function InvoiceFrom({ form, type }: InvoiceFormProps) {
-    const { data: patients, isLoading: patientsLoading } = useGetDepartments(
+export default function InvoiceFrom({ form, type, initAppointmentId }: InvoiceFormProps) {
+    React.useEffect(() => {
+        if (initAppointmentId) {
+            form.setValue('appointmentId', initAppointmentId);
+        }
+    }, [initAppointmentId]);
+
+    const { data, isLoading } = useGetAppointments(
         {
             PageSize: 100000,
         },
@@ -23,44 +35,59 @@ export default function InvoiceFrom({ form, type }: InvoiceFormProps) {
     return (
         <>
             <Controller
-                name="patientId"
+                name="appointmentId"
                 control={form.control}
                 render={({ field: { onBlur, onChange, value, ...rest } }) => {
-                    const selected = patients?.find((item) => item.patientId === value) || null;
+                    const selected = data?.find((item) => item.appointmentId === value) || null;
                     return (
                         <Autocomplete
+                            disabled={initAppointmentId != undefined}
                             disablePortal
                             options={
-                                patients?.map((option) => {
+                                data?.map((option) => {
                                     return {
-                                        value: option.patientId,
-                                        label: option.patientName
-                                    }
+                                        value: option.appointmentId,
+                                        label:
+                                            dayjs(option.appointmentDate).format('DD/MM/YYYY HH:mm') +
+                                            ' - ' +
+                                            option.patient?.name,
+                                    };
                                 }) || []
                             }
-                            loading={patientsLoading}
-                            renderInput={(params) => <TextField {...params} label="Bệnh nhân" variant="outlined" />
-                            }
+                            loading={isLoading}
+                            renderInput={(params) => <TextField {...params} label="Lịch hẹn" variant="outlined" />}
                             onChange={(_, data) => {
                                 onChange(data?.value);
                             }}
                             onBlur={onBlur}
-                            value={{ value: selected?.appointmentId, label: selected?.appointmentDate }}
-                            getOptionKey={(option) => option.value || ""}
-                            getOptionLabel={(option) => option.label || ""}
+                            value={{
+                                value: selected?.appointmentId,
+                                label: selected
+                                    ? dayjs(selected.appointmentDate).format('DD/MM/YYYY HH:mm') +
+                                    ' - ' +
+                                    selected.patient?.name
+                                    : '',
+                            }}
+                            getOptionKey={(option) => option.value || ''}
+                            getOptionLabel={(option) => option.label || ''}
                             {...rest}
                         />
                     );
                 }}
             />
 
-            <FormInput
-                control={form.control}
+            <Controller
                 name="invoiceDate"
-                label="Ngày lập hóa đơn"
-                type="datetime-local"
-                variant="outlined"
-            />
+                control={form.control}
+                render={({ field: { value, ...rest } }) => (
+                    <DatePicker
+                        label="Ngày tạo hóa đơn"
+                        value={value ? dayjs(value) : dayjs()}
+                        dayOfWeekFormatter={(dayOfWeek) => dayOfWeek.format('dd')}
+                        {...rest}
+                    />
+                )}
+            ></Controller>
 
             <FormInput
                 control={form.control}

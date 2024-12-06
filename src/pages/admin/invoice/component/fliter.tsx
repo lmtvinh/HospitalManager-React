@@ -34,6 +34,7 @@ export default function Filter({ setFilter, filter }: FilterProps) {
     };
 
     const handleClose = () => {
+        console.log("Selected Patients: ", values);
         setAnchorEl(null);
         setFilter(pre => ({
             ...pre,
@@ -80,6 +81,8 @@ export default function Filter({ setFilter, filter }: FilterProps) {
                         options={options}
                         sx={{ width: 300 }}
                         multiple
+                        value={values}
+                        onChange={(event, newValue) => setValues(newValue)}
                         getOptionLabel={(option) => option.name!}
                         getOptionKey={(option) => option.patientId!}
                         renderInput={(params) => <TextField {...params} label="Bệnh nhân" />}
@@ -89,7 +92,7 @@ export default function Filter({ setFilter, filter }: FilterProps) {
                             </MenuItem>
                         )}
                     />
-                    <Box display={'flex'} justifyContent="flex-end" gap={2}>
+                    <Box display={'flex'} justifyContent="flex-end" gap={2} sx={{ marginTop: 3 }}>
                         <Button
                             onClick={() => {
                                 setValues([]);

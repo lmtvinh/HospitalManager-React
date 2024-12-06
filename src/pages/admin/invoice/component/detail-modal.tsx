@@ -1,21 +1,21 @@
 import { getPatient, useGetInvoice } from "@/services/api";
-import { Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Grid, IconButton, Paper, Typography } from "@mui/material";
 import { GridCloseIcon } from "@mui/x-data-grid";
 import { DialogProps } from "@toolpad/core";
 import { Invoice } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-
+import { PatientDetail } from '../../patient/components/detail-modal';
+const PaperStyle = {
+    padding: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 150,
+    height: '100%',
+};
 export default function DetailModal({ payload, open, onClose }: DialogProps<number>) {
     const { data, isLoading } = useGetInvoice(payload, {
         query: {
-            select: (response) => {
-                const invoice = response.data;
-                return {
-                    ...invoice,
-                    patientId: invoice.patientId ?? 0,
-                    patient: invoice.patient ?? { name: 'Không xác định' },
-                };
-            },
+            select: (data) => data.data,
         },
     });
 
@@ -29,18 +29,6 @@ export default function DetailModal({ payload, open, onClose }: DialogProps<numb
         );
     }
 
-    if (!data) {
-        return (
-            <Dialog onClose={onClose as any} open={open} fullWidth maxWidth="sm">
-                <DialogContent>
-                    <Typography variant="body1" color="error">
-                        Không tìm thấy dữ liệu hóa đơn.
-                    </Typography>
-                </DialogContent>
-            </Dialog>
-        );
-    }
-
     return (
         <Dialog onClose={onClose as any} open={open} fullWidth maxWidth="sm">
             <DialogTitle>
@@ -49,7 +37,7 @@ export default function DetailModal({ payload, open, onClose }: DialogProps<numb
                     aria-label="close"
                     onClick={onClose as any}
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         right: 8,
                         top: 8,
                         color: (theme) => theme.palette.grey[500],
@@ -59,13 +47,23 @@ export default function DetailModal({ payload, open, onClose }: DialogProps<numb
                 </IconButton>
             </DialogTitle>
             <DialogContent sx={{ padding: 3 }}>
-                <InvoiceDetail
-                    invoice={{
-                        ...data,
-                        patientId: data?.patientId ?? 0,
-                        patient: data?.patient ?? { name: 'Không xác định' },
-                    }}
-                />
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3} sx={PaperStyle}>
+                            <Typography variant="h6" gutterBottom>
+                                Thông tin bệnh nhân
+                            </Typography>
+                            <PatientDetail patient={data?.patient as any} />
+                        </Paper>
+                    </Grid>
+                    <InvoiceDetail
+                        invoice={{
+                            ...data,
+                            patientId: data?.patientId ?? 0,
+                            patient: data?.patient ?? { name: "Không xác định" },
+                        }}
+                    />
+                </Grid>
             </DialogContent>
         </Dialog>
     );
@@ -89,7 +87,7 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                 </Typography>
             </Grid>
             <Grid item xs={8}>
-                <Typography variant="body2">{invoice?.patient?.name}</Typography>
+                <Typography variant="body2">{invoice?.patient?.name || "Không xác định"}</Typography>
             </Grid>
 
             <Grid item xs={4}>
@@ -99,10 +97,11 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
             </Grid>
             <Grid item xs={8}>
                 <Typography variant="body2">
-                    {invoice?.invoiceDate ? new Date(invoice.invoiceDate).toLocaleDateString() : 'N/A'}
+                    {invoice?.invoiceDate
+                        ? new Date(invoice.invoiceDate).toLocaleDateString()
+                        : "N/A"}
                 </Typography>
             </Grid>
-
 
             <Grid item xs={4}>
                 <Typography variant="body2" fontWeight="bold">
@@ -111,7 +110,7 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
             </Grid>
             <Grid item xs={8}>
                 <Typography variant="body2">
-                    {invoice?.totalAmount?.toString()} ₫
+                    {invoice?.totalAmount?.toLocaleString("vi-VN")} ₫
                 </Typography>
             </Grid>
 
@@ -121,14 +120,14 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                 </Typography>
             </Grid>
             <Grid item xs={8}>
-                <Typography variant="body2">{invoice?.status}</Typography>
+                <Typography variant="body2">{invoice?.status || "Không xác định"}</Typography>
             </Grid>
 
             {invoice?.appointmentId && (
                 <>
                     <Grid item xs={4}>
                         <Typography variant="body2" fontWeight="bold">
-                            Mã cuộc hẹn:
+                            Ngày và giờ cuộc hẹn:
                         </Typography>
                     </Grid>
                     <Grid item xs={8}>
