@@ -5,6 +5,7 @@
  * OpenAPI spec version: v1
  */
 import type { Patient } from './patient';
+import type { Appointment } from './appointment';
 
 export interface Invoice {
     /** @nullable */
@@ -12,6 +13,7 @@ export interface Invoice {
     invoiceDate?: string;
     invoiceId?: number;
     patient?: Patient;
+    appointment?: Appointment;
     patientId?: number;
     /**
      * @minLength 0

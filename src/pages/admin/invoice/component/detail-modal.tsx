@@ -5,6 +5,7 @@ import { DialogProps } from "@toolpad/core";
 import { Invoice } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { PatientDetail } from '../../patient/components/detail-modal';
+import dayjs from "dayjs";
 const PaperStyle = {
     padding: 2,
     display: 'flex',
@@ -56,13 +57,20 @@ export default function DetailModal({ payload, open, onClose }: DialogProps<numb
                             <PatientDetail patient={data?.patient as any} />
                         </Paper>
                     </Grid>
-                    <InvoiceDetail
-                        invoice={{
-                            ...data,
-                            patientId: data?.patientId ?? 0,
-                            patient: data?.patient ?? { name: "Không xác định" },
-                        }}
-                    />
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3} sx={PaperStyle}>
+                            <Typography variant="h6" gutterBottom>
+                                Thông tin hóa đơn
+                            </Typography>
+                            <InvoiceDetail
+                                invoice={{
+                                    ...data,
+                                    patientId: data?.patientId ?? 0,
+                                    patient: data?.patient ?? { name: "Không xác định" },
+                                }}
+                            />
+                        </Paper>
+                    </Grid>
                 </Grid>
             </DialogContent>
         </Dialog>
@@ -79,15 +87,6 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
             </Grid>
             <Grid item xs={8}>
                 <Typography variant="body2">{invoice?.invoiceId}</Typography>
-            </Grid>
-
-            <Grid item xs={4}>
-                <Typography variant="body2" fontWeight="bold">
-                    Bệnh nhân:
-                </Typography>
-            </Grid>
-            <Grid item xs={8}>
-                <Typography variant="body2">{invoice?.patient?.name || "Không xác định"}</Typography>
             </Grid>
 
             <Grid item xs={4}>
@@ -131,7 +130,10 @@ export function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                         </Typography>
                     </Grid>
                     <Grid item xs={8}>
-                        <Typography variant="body2">{invoice?.appointmentId}</Typography>
+                        <Typography variant="body2">
+                            {dayjs(invoice?.appointment?.appointmentDate).format('dddd, DD/MM/YYYY') || 'N/A'}
+                            - {invoice?.appointment?.appointmentTime?.toString()}
+                        </Typography>
                     </Grid>
                 </>
             )}

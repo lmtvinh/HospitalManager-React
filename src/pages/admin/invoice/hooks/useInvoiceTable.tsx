@@ -41,8 +41,8 @@ export default function useInvoiceTable() {
         setFilter((pre) => ({
             ...pre,
             Search: model.quickFilterValues?.[0] as string,
-        }))
-    }
+        }));
+    };
 
     const handleSortModelChange = (model: GridSortModel, details: GridCallbackDetails) => {
         setFilter((pre) => ({
@@ -186,4 +186,8 @@ export default function useInvoiceTable() {
             value: filter,
         }
     }
+}
+
+function setFilterModel(arg0: (prevModel: any) => any) {
+    throw new Error("Function not implemented.");
 }
