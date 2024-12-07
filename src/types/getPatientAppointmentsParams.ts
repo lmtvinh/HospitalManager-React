@@ -5,7 +5,7 @@
  * OpenAPI spec version: v1
  */
 
-export type GetAppointmentsParams = {
+export type GetPatientAppointmentsParams = {
     'PatientId.Equal'?: number;
     'PatientId.NotEquals'?: number;
     'PatientId.GreaterThan'?: number;
