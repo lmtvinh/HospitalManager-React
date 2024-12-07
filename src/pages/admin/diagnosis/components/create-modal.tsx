@@ -12,6 +12,7 @@ import DiagnosisForm from './diagnosis-form';
 import { getGetDiagnosesQueryKey, usePostDiagnosis } from '@/services/api';
 import { Diagnosis, DiagnosisSchema } from '../validations';
 import { DialogProps } from '@toolpad/core';
+import dayjs from 'dayjs';
 
 export default function CreateModal() {
     const { toggle, value, setFalse } = useBoolean();
@@ -39,10 +40,11 @@ function FromDialog({ payload, open, onClose }: DialogProps<{ initAppointmentId?
         form.reset();
     };
     const onSubmit = async (data: Diagnosis) => {
+        console.log(data);
         await mutateAsync({
             data: {
                 ...data,
-                diagnosisDate: data.diagnosisDate.toISOString(),
+                diagnosisDate: dayjs(data.diagnosisDate).toISOString(),
             },
         });
         onClosed();
