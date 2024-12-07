@@ -14,15 +14,15 @@ const Stat: React.FC<StatProps> = () => {
                     <StatItem
                         icon={faUserDoctor as IconDefinition}
                         count="85"
-                        title="Doctors"
+                        title="Y, Bác sĩ"
                     />
 
                     {/* Departments Stat */}
-                    <StatItem
+                    {/* <StatItem
                         icon={faHospital as IconDefinition}
                         count="85"
-                        title="Departments"
-                    />
+                        title=""
+                    /> */}
 
                     {/* Research Labs Stat */}
                     <StatItem

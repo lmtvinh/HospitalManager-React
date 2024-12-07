@@ -47,7 +47,7 @@ export default function HomePage() {
         <>
           <Hero />
           <About />
-          <Stat />
+          {/* <Stat /> */}
           <Services />
           <Appointment />
           <Department />

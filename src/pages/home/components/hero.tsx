@@ -26,20 +26,20 @@ const Hero: React.FC = () => {
             />
             <div className="container position-relative">
                 <div className="welcome position-relative" data-aos="fade-down" data-aos-delay="100">
-                    <h2>WELCOME TO MEDILAB</h2>
-                    <p>We are team of talented designers making websites with Bootstrap</p>
+                    <h2>Luôn luôn lắng nghe và thấu hiểu</h2>
+                    <p>NETHos tự hào là bệnh viện mang lại dịch vụ y tế bậc nhất</p>
                 </div>
                 <div className="content row gy-4">
                     <div className="col-lg-4 d-flex align-items-stretch">
                         <div className="why-box" data-aos="zoom-out" data-aos-delay="200">
-                            <h3>Why Choose Medilab?</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                            <h3>Tại sao nên chọn NETHos?</h3>
+                            <p>"NETHos – Tận tâm, Chuyên nghiệp, Hiện đại ..."</p>
                             <div className="text-center">
                                 <Button
                                     href="#about"
                                     className="more-btn text-decoration-none"
                                 >
-                                    <span>Learn More</span>
+                                    <span>Xem thêm</span>
                                     <i className="bi bi-chevron-right"></i>
                                 </Button>
                             </div>

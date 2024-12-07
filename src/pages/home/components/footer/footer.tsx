@@ -12,7 +12,7 @@ const Footer: FC = () => {
                 <div className="row gy-4">
                     <div className="col-lg-4 col-md-6 footer-about">
                         <Button href="index.html" className="logo d-flex align-items-center">
-                            <span className="sitename text-decoration-none">MediHos</span>
+                            <span className="sitename text-decoration-none">NETHos</span>
                         </Button>
                         <div className="footer-contact pt-3 text-start">
                             <p>273 Đ. An Dương Vương, Phường 3, Quận 5, TP Hồ Chí Minh, Việt Nam</p>
@@ -44,22 +44,22 @@ const Footer: FC = () => {
                     </div>
                     <div className='col-lg-8 col-md-6 footer-about'>
                         <div className='col-lg-2 col-md-3 footer-links text-start ms-5'>
-                            <h4>Useful Links</h4>
+                            <h4>Khác</h4>
                             <ul>
                                 <li>
-                                    <Button href="#" children="Home" className='btn-link-footer' />
+                                    <Button href="#" children="Trang chủ" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#about" children="About us" className='btn-link-footer' />
+                                    <Button href="#about" children="Giới thiệu" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#service" children="Services" className='btn-link-footer' />
+                                    <Button href="#service" children="Dịch vụ" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#" children="Terms of service" className='btn-link-footer' />
+                                    <Button href="#" children="Điều khoản dịch vụ" className='btn-link-footer' />
                                 </li>
                                 <li>
-                                    <Button href="#" children="Privacy policy" className='btn-link-footer' />
+                                    <Button href="#" children="Chính sách bảo mật" className='btn-link-footer' />
                                 </li>
                             </ul>
                         </div>

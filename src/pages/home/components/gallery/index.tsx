@@ -23,8 +23,8 @@ function Gallery() {
     return (
         <section id="gallery" className="gallery section">
             <div className="container section-title" data-aos="fade-up">
-                <h2>Gallery</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+                <h2>Những hình ảnh về NETHos</h2>
+                {/* <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p> */}
             </div>
 
             <div className="container-fluid" data-aos="fade-up" data-aos-delay="100">

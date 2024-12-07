@@ -29,7 +29,7 @@ const Header = () => {
             <div className="branding d-flex align-items-center">
                 <div className="container position-relative d-flex align-items-center justify-content-between">
                     <Link to="/" className="text-decoration-none logo d-flex align-items-center me-auto">
-                        <h1 className="sitename">Medilab</h1>
+                        <h1 className="sitename">NETHos</h1>
                     </Link>
                     <nav id="navmenu" className="navmenu">
                         <ul>

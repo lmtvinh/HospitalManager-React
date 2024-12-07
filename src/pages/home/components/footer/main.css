@@ -30,3 +30,6 @@
     color: #696e70 !important;
     border: none !important;
 }
+li {
+    width: max-content;
+}
