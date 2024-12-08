@@ -1,11 +1,20 @@
-import { Autocomplete, Box, Button, MenuItem, Popover, Slider, TextField, Typography } from '@mui/material';
 import React, { useId } from "react";
-import { useGetPatients } from "@/services/api";
-import { GetInvoicesParams } from "@/types";
-import { Patient } from "@/types";
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { Controller, useForm } from 'react-hook-form';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import {
+    Autocomplete,
+    Box,
+    Button,
+    MenuItem,
+    Popover,
+    Slider,
+    TextField,
+    Typography,
+} from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import { useGetInvoices, useGetPatients } from "@/services/api";
+import { GetInvoicesParams, Invoice, Patient } from "@/types";
+import { Controller, useForm } from "react-hook-form";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import { removeDotObject } from "@/utils/form-utils";
 
 interface FilterProps {
     setFilter: React.Dispatch<React.SetStateAction<GetInvoicesParams>>;
@@ -14,7 +23,6 @@ interface FilterProps {
 
 export default function Filter({ setFilter, filter }: FilterProps) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-    const [values, setValues] = React.useState<Patient[]>([]);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -22,34 +30,15 @@ export default function Filter({ setFilter, filter }: FilterProps) {
 
     const handleClose = () => {
         setAnchorEl(null);
-        setFilter(pre => ({
-            ...pre,
-            Page: 0,
-            "PatientId.In": values.map(v => v.patientId!)
-        }))
-    };
-
-    
-    const [selectedPatients, setSelectedPatients] = React.useState<Patient[]>([]);
-
-    const handleResetFilter = () => {
-        reset(); // Reset react-hook-form values
-        setSelectedPatients([]);
-        setPriceRange([0, 54990000]);
-        setFilter({ Page: 0, PageSize: 10 }); // Reset filter
-        handleClose();
     };
 
     const open = Boolean(anchorEl);
     const id = useId();
     const usedId = open ? id : undefined;
+
     const { control, reset, handleSubmit } = useForm<GetInvoicesParams>({
         defaultValues: { ...filter },
     });
-    const [priceRange, setPriceRange] = React.useState<number[]>([0, 54990000]);
-    const handlePriceChange = (event: Event, newValue: number | number[]) => {
-        setPriceRange(newValue as number[]);
-    };
 
     const { data: patients } = useGetPatients({
         PageSize: 10000,
@@ -58,6 +47,78 @@ export default function Filter({ setFilter, filter }: FilterProps) {
     const patientOptions = React.useMemo(() => {
         return patients?.data.data?.map((option) => option) || [];
     }, [patients]);
+
+    const { data: invoicesData } = useGetInvoices({
+        ...filter,
+        Page: 1,
+        PageSize: 10000,
+    });
+
+    const [priceRange, setPriceRange] = React.useState<number[]>([0, 54990000]);
+
+    const minMaxPrice = React.useMemo(() => {
+        if (!invoicesData?.data?.data || invoicesData.data.data.length === 0) {
+            return [0, 54990000];
+        }
+
+        const prices = invoicesData.data.data
+            .map((invoice: Invoice) => invoice.totalAmount)
+            .filter((amount): amount is number => amount !== undefined);
+
+        if (prices.length === 0) {
+            return [0, 54990000];
+        }
+
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+
+        // Cập nhật giá trị mặc định của thanh trượt
+        setPriceRange([minPrice, maxPrice]);
+
+        return [minPrice, maxPrice];
+    }, [invoicesData]);
+
+
+    // In ra giá trị min và max để kiểm tra
+    console.log("Min-Max Price:", minMaxPrice);
+
+    const handlePriceChange = (event: Event, newValue: number | number[]) => {
+        if (Array.isArray(newValue)) {
+            setPriceRange(newValue);
+        }
+    };
+
+    const onReset = () => {
+        reset(
+            {},
+            {
+                keepValues: false,
+            }
+        );
+        setFilter({
+            Page: 0,
+            PageSize: 10,
+        });
+        handleClose();
+    };
+
+    const [invoiceDateTime, serInvoiceDateTime] = React.useState<Date | null>(null);
+
+    const onSubmit = (data: any) => {
+        // Gộp giá trị bộ lọc từ các trường
+        const updatedFilter = {
+            ...filter,
+            "PatientId.Equal": data["PatientId.Equal"],
+            "InvoiceDate.GreaterThanOrEqual": data["InvoiceDate.GreaterThanOrEqual"],
+            "TotalAmount.GreaterThanOrEqual": priceRange[0],
+            "TotalAmount.LessThanOrEqual": priceRange[1],
+        };
+
+        // Gọi API hoặc cập nhật bộ lọc
+        setFilter(updatedFilter);
+        handleClose(); // Đóng Popover sau khi áp dụng
+    };
+
 
     return (
         <>
@@ -75,51 +136,60 @@ export default function Filter({ setFilter, filter }: FilterProps) {
                 anchorEl={anchorEl}
                 onClose={handleClose}
                 anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
+                    vertical: "bottom",
+                    horizontal: "left",
                 }}
                 transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left'
+                    vertical: "top",
+                    horizontal: "left",
                 }}
             >
                 <Box
+                    component={"form"}
                     sx={{ padding: 3 }}
-                    display={'flex'}
-                    flexDirection={'column'}
+                    display={"flex"}
+                    onSubmit={handleSubmit(onSubmit)}
+                    flexDirection={"column"}
                     gap={2}
                 >
-                    <Typography variant='h6'>Bộ lọc</Typography>
+                    <Typography variant="h6">Bộ lọc</Typography>
                     <Controller
                         control={control}
                         name="PatientId.Equal"
-                        render={({ field }) => {
-                            return (
-                                <Autocomplete<Patient, false>
-                                    options={patientOptions}
-                                    sx={{ width: 300 }}
-                                    getOptionLabel={(option) => option.name!}
-                                    getOptionKey={(option) => option.patientId!}
-                                    renderInput={(params) => <TextField {...params} label="Bệnh nhân" />}
-                                    value={patientOptions.find((d) => d.patientId === field.value) || null}
-                                    renderOption={(props, option, { selected }) => (
-                                        <MenuItem {...props} selected={selected}>
-                                            {option.name}
-                                        </MenuItem>
-                                    )}
-                                    onChange={(event: any, newValue: Patient | null) => {
-                                        field.onChange(newValue?.patientId ?? undefined);
-                                    }}
-                                />
-                            );
-                        }}
+                        render={({ field }) => (
+                            <Autocomplete<Patient, false>
+                                options={patientOptions}
+                                sx={{ width: 300 }}
+                                getOptionLabel={(option) => option.name!}
+                                renderInput={(params) => <TextField {...params} label="Bệnh nhân" />}
+                                value={patientOptions.find(
+                                    (d) => d.patientId === field.value
+                                ) || null}
+                                renderOption={(props, option, { selected }) => (
+                                    <MenuItem {...props} selected={selected}>
+                                        {option.name}
+                                    </MenuItem>
+                                )}
+                                onChange={(event: any, newValue: Patient | null) => {
+                                    field.onChange(newValue?.patientId ?? undefined);
+                                }}
+                            />
+                        )}
                     ></Controller>
                     <Controller
                         control={control}
                         name="InvoiceDate.GreaterThanOrEqual"
-                        render={({ field }) => {
-                            return <DateTimePicker label='Ngày lập hóa đơn' />;
-                        }}
+                        render={({ field: { onChange, value, ...field } }) => (
+                            <DateTimePicker
+                                label="Ngày lập hóa đơn từ"
+                                value={value || null}
+                                onChange={(newValue) => {
+                                    onChange(newValue);
+                                    serInvoiceDateTime(newValue);
+                                }}
+                                {...field}
+                            />
+                        )}
                     ></Controller>
                     <Box
                         sx={{
@@ -135,11 +205,11 @@ export default function Filter({ setFilter, filter }: FilterProps) {
                             Tổng tiền
                         </Typography>
                         <Slider
-                            value={priceRange}
-                            onChange={handlePriceChange}
+                            value={priceRange} // Giá trị hiện tại
+                            onChange={(e, newValue) => setPriceRange(newValue as number[])} // Cập nhật giá trị
                             valueLabelDisplay="on"
-                            min={0}
-                            max={54990000}
+                            min={minMaxPrice[0]} // Giá trị nhỏ nhất cố định
+                            max={minMaxPrice[1]} // Giá trị lớn nhất cố định
                             step={1000000}
                             sx={{ color: "#00ab55" }}
                         />
@@ -148,21 +218,14 @@ export default function Filter({ setFilter, filter }: FilterProps) {
                             justifyContent="space-between"
                             sx={{ marginTop: 1 }}
                         >
-                            <Typography>0đ</Typography>
-                            <Typography>54.990.000đ</Typography>
+                            <Typography>{minMaxPrice[0]}đ</Typography>
+                            <Typography>{minMaxPrice[1]}đ</Typography>
                         </Box>
                     </Box>
 
-                    <Box display={'flex'} justifyContent="flex-end" gap={2} sx={{ marginTop: 3 }}>
-                        <Button
-                            onClick={() => {
-                                setValues([]);
-                                handleClose();
-                            }}
-                        >
-                            Xóa bộ lọc
-                        </Button>
-                        <Button onClick={handleClose} variant='contained' color='primary'>
+                    <Box display={"flex"} justifyContent="flex-end" gap={2} sx={{ marginTop: 3 }}>
+                        <Button onClick={onReset}>Xóa bộ lọc</Button>
+                        <Button type="submit" variant="contained" color="primary">
                             Áp dụng
                         </Button>
                     </Box>

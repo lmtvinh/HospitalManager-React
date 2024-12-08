@@ -11,7 +11,7 @@ export default function InvoiceManagerPage() {
     return (
         <PageContainer slots={{ toolbar: PageToolbar }}>
             <DataGrid
-                rows={table.data?.data || []}
+                rows={table.data.data as { status: string; patientId: number; invoiceDate: string; totalAmount: number; appointmentId?: number }[]}
                 columns={table.columns}
                 onPaginationModelChange={table.handlePageChange}
                 paginationMode="server"
@@ -22,7 +22,7 @@ export default function InvoiceManagerPage() {
                 onFilterModelChange={table.handleFilterModelChange}
                 filterModel={table.filterModel}
                 paginationModel={table.pagination}
-                getRowId={(row) => row.invoiceId}
+                getRowId={(row) => row.patientId}
                 loading={table.isLoading}
                 disableColumnFilter
                 slots={{
