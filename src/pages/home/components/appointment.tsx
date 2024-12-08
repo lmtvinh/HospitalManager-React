@@ -37,7 +37,7 @@ const Appointment: React.FC = () => {
     const profile = useUserProfile();
     const { data: doctors, isLoading: loadingDoctors } = useGetFreeDoctors(
         {
-            AppointmentDate: dayjs(watch('date')).toISOString(),
+            AppointmentDate: dayjs(watch('date')).add(7, 'hour').toISOString(),
             DepartmentId: watch('departmentId'),
         },
         {
@@ -52,7 +52,7 @@ const Appointment: React.FC = () => {
         try {
             await mutateAsync({
                 data: {
-                    appointmentDate: dayjs(formData.date).toISOString(),
+                    appointmentDate: dayjs(formData.date).add(7, 'hour').toISOString(),
                     doctorId: Number(formData.doctorId),
                     email: formData.email,
                     phoneNumber: formData.phone,
