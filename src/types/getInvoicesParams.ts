@@ -65,4 +65,5 @@ export type GetInvoicesParams = {
     Take?: number;
     SortBy?: string;
     SortOrder?: string;
+    Search?: string;
 };

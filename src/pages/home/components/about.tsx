@@ -18,10 +18,10 @@ const About: React.FC = () => {
                         data-aos-delay="200"
                     >
                         <Image src={backgroundImg} className="img-fluid" alt="" />
-                        <Button
-                            href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
+                        <a
+                            href="https://www.youtube.com/watch?v=UCseAstoxtU"
                             className="glightbox pulsating-play-btn"
-                        />
+                        ></a>
                     </div>
                     <div
                         className="col-lg-6 content"

@@ -34,7 +34,7 @@ const Department: React.FC = () => {
                                 { id: "departments-tab-5", label: "Da liêu - Thẩm mỹ da" },
                                 { id: "departments-tab-6", label: "Cơ xương khớp" }
                             ].map(tab => (
-                                <li key={tab.id} className="nav-item mw-100">
+                                <li key={tab.id} className="nav-item mw-100 w-100">
                                     <Button
                                         className={`nav-link col-12 text-start ${activeTab === tab.id ? "active show" : ""}`}
                                         data-bs-toggle="tab"

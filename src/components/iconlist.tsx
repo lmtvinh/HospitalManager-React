@@ -13,10 +13,9 @@ function IconList({ icon, title, description }: IconListProps) {
         <li className="d-flex align-items-start">
             <FontAwesomeIcon
                 icon={icon}
-                className="custom-icon-list col-1"
+                className="custom-icon-list col-1 me-2"
                 css={css`
                     font-size: 30px;
-                    
                     `}
             />
             <div>

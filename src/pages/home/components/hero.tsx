@@ -33,13 +33,13 @@ const Hero: React.FC = () => {
                     <div className="col-lg-4 d-flex align-items-stretch">
                         <div className="why-box" data-aos="zoom-out" data-aos-delay="200">
                             <h3>Tại sao nên chọn NETHos?</h3>
-                            <p>"NETHos – Tận tâm, Chuyên nghiệp, Hiện đại ..."</p>
+                            <p>"NETHos – Tận tâm, Chuyên nghiệp, Hiện đại."</p>
                             <div className="text-center">
                                 <Button
                                     href="#about"
                                     className="more-btn text-decoration-none"
                                 >
-                                    <span>Xem thêm</span>
+                                    <span>Đặt lịch ngay</span>
                                     <i className="bi bi-chevron-right"></i>
                                 </Button>
                             </div>
@@ -52,22 +52,22 @@ const Hero: React.FC = () => {
                                 <IconBox
                                     dadelay="300"
                                     icon={<i className="bi bi-clipboard-data"></i>}
-                                    title="Corporis voluptates officia eiusmod"
-                                    description="Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip"
+                                    title="Tận tâm"
+                                    description="Luôn luôn nhiệt tình chăm sóc, hỗ trợ tất cả mọi người khi đến với NETHos"
                                 />
 
                                 <IconBox
                                     dadelay="400"
                                     icon={<i className="bi bi-gem"></i>}
-                                    title=""
-                                    description=""
+                                    title="Chuyên nghiệp"
+                                    description="Đội ngũ y bác sĩ đạt tiêu chuẩn hàng đầu."
                                 />
 
                                 <IconBox
                                     dadelay="500"
                                     icon={<i className="bi bi-inboxes"></i>}
-                                    title=""
-                                    description=""
+                                    title="Hiện đại"
+                                    description="Các công nghệ, kiến thức và chuyên môn của bác sĩ luôn được cập nhật."
                                 />
                             </div>
                         </div>

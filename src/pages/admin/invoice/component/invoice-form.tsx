@@ -1,15 +1,14 @@
-import { useGetAppointments, useGetDepartments, useGetPatient, useGetPatients } from "@/services/api";
+import { useGetAppointments } from "@/services/api";
 import { Controller, UseFormReturn } from "react-hook-form";
 import FormInput from "../../components/form/FormInput";
 import { Autocomplete, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import React from "react";
-import { Patient } from "../../patient/validations";
-import { MenuItem } from '@mui/material';
+import { Invoice } from "../validations";
 
 interface InvoiceFormProps {
-    form: UseFormReturn<any>;
+    form: UseFormReturn<Invoice>;
     type?: 'create' | 'update';
     initAppointmentId?: number;
 }
@@ -39,6 +38,7 @@ export default function InvoiceFrom({ form, type, initAppointmentId }: InvoiceFo
                 control={form.control}
                 render={({ field: { onBlur, onChange, value, ...rest } }) => {
                     const selected = data?.find((item) => item.appointmentId === value) || null;
+
                     return (
                         <Autocomplete
                             disabled={initAppointmentId != undefined}
@@ -51,24 +51,34 @@ export default function InvoiceFrom({ form, type, initAppointmentId }: InvoiceFo
                                             dayjs(option.appointmentDate).format('DD/MM/YYYY HH:mm') +
                                             ' - ' +
                                             option.patient?.name,
+                                        patientId: option.patientId, // Thêm patientId vào options
                                     };
                                 }) || []
                             }
                             loading={isLoading}
                             renderInput={(params) => <TextField {...params} label="Lịch hẹn" variant="outlined" />}
-                            onChange={(_, data) => {
-                                onChange(data?.value);
+                            onChange={(_, selectedOption) => {
+                                if (selectedOption) {
+                                    onChange(selectedOption.value);
+                                    form.setValue('patientId', selectedOption.patientId || 0);
+                                } else {
+                                    onChange(null);
+                                    form.setValue('patientId', 0);
+                                }
                             }}
                             onBlur={onBlur}
-                            value={{
-                                value: selected?.appointmentId,
-                                label: selected
-                                    ? dayjs(selected.appointmentDate).format('DD/MM/YYYY HH:mm') +
-                                    ' - ' +
-                                    selected.patient?.name
-                                    : '',
-                            }}
-                            getOptionKey={(option) => option.value || ''}
+                            value={
+                                selected
+                                    ? {
+                                        value: selected.appointmentId,
+                                        label:
+                                            dayjs(selected.appointmentDate).format('DD/MM/YYYY HH:mm') +
+                                            ' - ' +
+                                            selected.patient?.name,
+                                        patientId: selected.patientId,
+                                    }
+                                    : null
+                            }
                             getOptionLabel={(option) => option.label || ''}
                             {...rest}
                         />
@@ -76,26 +86,38 @@ export default function InvoiceFrom({ form, type, initAppointmentId }: InvoiceFo
                 }}
             />
 
+
             <Controller
                 name="invoiceDate"
                 control={form.control}
                 render={({ field: { value, ...rest } }) => (
                     <DatePicker
                         label="Ngày tạo hóa đơn"
-                        value={value ? dayjs(value) : dayjs()}
-                        dayOfWeekFormatter={(dayOfWeek) => dayOfWeek.format('dd')}
+                        value={value ? dayjs(value) : null}
+                        dayOfWeekFormatter={(date) => date.format('dd')}
                         {...rest}
                     />
                 )}
             ></Controller>
 
-            <FormInput
-                control={form.control}
+            <Controller
                 name="totalAmount"
-                label="Tổng tiền"
-                type="number"
-                variant="outlined"
+                control={form.control}
+                render={({ field: { onChange, value, ...rest } }) => (
+                    <TextField
+                        {...rest}
+                        label="Tổng tiền"
+                        type="number"
+                        value={value ?? ''} // Đảm bảo giá trị ban đầu không bị lỗi undefined
+                        onChange={(e) => {
+                            const val = parseFloat(e.target.value) || 0; // Chuyển đổi sang số
+                            onChange(val);
+                        }}
+                        variant="outlined"
+                    />
+                )}
             />
+
 
             <FormInput
                 control={form.control}

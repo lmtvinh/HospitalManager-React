@@ -1,4 +1,4 @@
-import { getPatient, useGetInvoice } from "@/services/api";
+import { useGetInvoice } from "@/services/api";
 import { Dialog, DialogContent, DialogTitle, Grid, IconButton, Paper, Typography } from "@mui/material";
 import { GridCloseIcon } from "@mui/x-data-grid";
 import { DialogProps } from "@toolpad/core";

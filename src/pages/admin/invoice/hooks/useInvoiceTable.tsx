@@ -8,7 +8,7 @@ import { useDialogs, useNotifications } from "@toolpad/core";
 import { getGetInvoicesQueryKey, getInvoices, useDeleteInvoice, useGetAppointment, useGetInvoices } from "@/services/api";
 import { keepPreviousData, QueryClient, useQueryClient } from "@tanstack/react-query";
 import { camelCaseToPascalCase } from "@/utils/string-utils";
-import { InvoiceDTO } from "../validations";
+import { InvoiceDTO } from "@/types";
 
 export default function useInvoiceTable() {
     const [filter, setFilter] = React.useState<GetInvoicesParams>({
@@ -16,7 +16,6 @@ export default function useInvoiceTable() {
         PageSize: 10,
     });
 
-    console.log("Filter: ", filter);
     const handlePageChange = (page: GridPaginationModel) => {
         setFilter((pre) => ({
             ...pre,
@@ -26,8 +25,6 @@ export default function useInvoiceTable() {
     };
 
     const handleFilterModelChange = (model: GridFilterModel) => {
-        console.log("New Filter Model: ", model);
-
         const updatedFilter: GetInvoicesParams = {
             ...filter,
             Search: model.quickFilterValues?.[0] as string,
@@ -38,10 +35,7 @@ export default function useInvoiceTable() {
             if (dateFilter) {
                 updatedFilter["InvoiceDate.Equal"] = dateFilter.value;
             }
-        }
 
-
-        if (model.items) {
             const priceFilter = model.items.find(item => item.field === 'totalAmount');
             if (priceFilter) {
                 const priceRange = priceFilter.value as number[];
@@ -74,8 +68,6 @@ export default function useInvoiceTable() {
         }));
     };
 
-    console.log("filter", filter);
-
     const { data, isLoading } = useGetInvoices(
         {
             ...filter,
@@ -92,8 +84,6 @@ export default function useInvoiceTable() {
             },
         }
     );
-
-    console.log("Data from useGetInvoices: ", data);
 
     const dialogs = useDialogs();
     const { show } = useNotifications();

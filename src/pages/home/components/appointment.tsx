@@ -17,16 +17,6 @@ interface FormData {
     message: string;
 }
 
-// public int AppointmentId { get; set; }
-// public int DoctorId { get; set; }
-
-// public DateTime AppointmentDate { get; set; }
-// public int? PatientId { get; set; }
-
-// public string? Email { get; set; }
-// public string? PhoneNumber { get; set; }
-// public string? Name { get; set; }
-
 const Appointment: React.FC = () => {
     const { register, watch, handleSubmit, control } = useForm();
     const { data: departments } = useGetDepartments({
@@ -201,16 +191,6 @@ const Appointment: React.FC = () => {
                             </Form.Select>
                         </div>
                     </div>
-                    {/* <div className="form-group mt-3">
-                        <textarea
-                            className="form-control"
-                            name="message"
-                            rows={5}
-                            placeholder="Message (Optional)"
-                            value={formData.message}
-                            onChange={handleChange}
-                        ></textarea>
-                    </div> */}
                     <div className="mt-3">
                         {isMakingAppointment && <div className="loading">Loading</div>}
                         {!!error?.response?.data && (

@@ -37,8 +37,6 @@ export default function HomePage() {
   return (
     <div css={homeStyle.container}>
       <Header />
-
-
       {isPatientDetailPage ? (
         <PatientDetail />
       ) : isPatientHistoryPage ? (

@@ -79,9 +79,6 @@ export default function Filter({ setFilter, filter }: FilterProps) {
     }, [invoicesData]);
 
 
-    // In ra giá trị min và max để kiểm tra
-    console.log("Min-Max Price:", minMaxPrice);
-
     const handlePriceChange = (event: Event, newValue: number | number[]) => {
         if (Array.isArray(newValue)) {
             setPriceRange(newValue);

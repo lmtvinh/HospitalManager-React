@@ -32,6 +32,7 @@ function FromDialog({ payload, open, onClose }: DialogProps<{ initAppointmentId?
         defaultValues: getDefaultValue(DiagnosisSchema),
         resolver: zodResolver(DiagnosisSchema),
     });
+
     const queryClient = useQueryClient();
     const { show } = useNotifications();
 
@@ -40,7 +41,7 @@ function FromDialog({ payload, open, onClose }: DialogProps<{ initAppointmentId?
         form.reset();
     };
     const onSubmit = async (data: Diagnosis) => {
-        console.log(data);
+        console.log('Prepared data for API:', data);
         await mutateAsync({
             data: {
                 ...data,
