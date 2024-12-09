@@ -26,6 +26,7 @@ import type {
     AppointmentDTOPaginated,
     AssignDoctorParams,
     CloseTicketParams,
+    DashboardDTO,
     Department,
     DepartmentDTOPaginated,
     Diagnosis,
@@ -665,19 +666,24 @@ export function useGetAppointments<TData = Awaited<ReturnType<typeof getAppointm
 }
 
 export const postAppointment = (
-    appointment: Appointment,
+    appointmentDTO: AppointmentDTO,
     options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Appointment>> => {
-    return axios.default.post(`/api/Appointments`, appointment, options);
+    return axios.default.post(`/api/Appointments`, appointmentDTO, options);
 };
 
 export const getPostAppointmentMutationOptions = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof postAppointment>>, TError, { data: Appointment }, TContext>;
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postAppointment>>,
+        TError,
+        { data: AppointmentDTO },
+        TContext
+    >;
     axios?: AxiosRequestConfig;
-}): UseMutationOptions<Awaited<ReturnType<typeof postAppointment>>, TError, { data: Appointment }, TContext> => {
+}): UseMutationOptions<Awaited<ReturnType<typeof postAppointment>>, TError, { data: AppointmentDTO }, TContext> => {
     const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
-    const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAppointment>>, { data: Appointment }> = (
+    const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAppointment>>, { data: AppointmentDTO }> = (
         props
     ) => {
         const { data } = props ?? {};
@@ -689,13 +695,18 @@ export const getPostAppointmentMutationOptions = <TError = AxiosError<unknown>, 
 };
 
 export type PostAppointmentMutationResult = NonNullable<Awaited<ReturnType<typeof postAppointment>>>;
-export type PostAppointmentMutationBody = Appointment;
+export type PostAppointmentMutationBody = AppointmentDTO;
 export type PostAppointmentMutationError = AxiosError<unknown>;
 
 export const usePostAppointment = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof postAppointment>>, TError, { data: Appointment }, TContext>;
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postAppointment>>,
+        TError,
+        { data: AppointmentDTO },
+        TContext
+    >;
     axios?: AxiosRequestConfig;
-}): UseMutationResult<Awaited<ReturnType<typeof postAppointment>>, TError, { data: Appointment }, TContext> => {
+}): UseMutationResult<Awaited<ReturnType<typeof postAppointment>>, TError, { data: AppointmentDTO }, TContext> => {
     const mutationOptions = getPostAppointmentMutationOptions(options);
 
     return useMutation(mutationOptions);
@@ -1451,19 +1462,19 @@ export function useGetDiagnoses<TData = Awaited<ReturnType<typeof getDiagnoses>>
 }
 
 export const postDiagnosis = (
-    diagnosis: Diagnosis,
+    diagnosisDTO: DiagnosisDTO,
     options?: AxiosRequestConfig
 ): Promise<AxiosResponse<Diagnosis>> => {
-    return axios.default.post(`/api/Diagnoses`, diagnosis, options);
+    return axios.default.post(`/api/Diagnoses`, diagnosisDTO, options);
 };
 
 export const getPostDiagnosisMutationOptions = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: Diagnosis }, TContext>;
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: DiagnosisDTO }, TContext>;
     axios?: AxiosRequestConfig;
-}): UseMutationOptions<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: Diagnosis }, TContext> => {
+}): UseMutationOptions<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: DiagnosisDTO }, TContext> => {
     const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
 
-    const mutationFn: MutationFunction<Awaited<ReturnType<typeof postDiagnosis>>, { data: Diagnosis }> = (props) => {
+    const mutationFn: MutationFunction<Awaited<ReturnType<typeof postDiagnosis>>, { data: DiagnosisDTO }> = (props) => {
         const { data } = props ?? {};
 
         return postDiagnosis(data, axiosOptions);
@@ -1473,13 +1484,13 @@ export const getPostDiagnosisMutationOptions = <TError = AxiosError<unknown>, TC
 };
 
 export type PostDiagnosisMutationResult = NonNullable<Awaited<ReturnType<typeof postDiagnosis>>>;
-export type PostDiagnosisMutationBody = Diagnosis;
+export type PostDiagnosisMutationBody = DiagnosisDTO;
 export type PostDiagnosisMutationError = AxiosError<unknown>;
 
 export const usePostDiagnosis = <TError = AxiosError<unknown>, TContext = unknown>(options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: Diagnosis }, TContext>;
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: DiagnosisDTO }, TContext>;
     axios?: AxiosRequestConfig;
-}): UseMutationResult<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: Diagnosis }, TContext> => {
+}): UseMutationResult<Awaited<ReturnType<typeof postDiagnosis>>, TError, { data: DiagnosisDTO }, TContext> => {
     const mutationOptions = getPostDiagnosisMutationOptions(options);
 
     return useMutation(mutationOptions);
@@ -3775,6 +3786,78 @@ export function useGetPatientAppointments<
     }
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
     const queryOptions = getGetPatientAppointmentsQueryOptions(id, params, options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getDashboardData = (options?: AxiosRequestConfig): Promise<AxiosResponse<DashboardDTO>> => {
+    return axios.default.get(`/api/Report`, options);
+};
+
+export const getGetDashboardDataQueryKey = () => {
+    return [`/api/Report`] as const;
+};
+
+export const getGetDashboardDataQueryOptions = <
+    TData = Awaited<ReturnType<typeof getDashboardData>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardData>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}) => {
+    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetDashboardDataQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDashboardData>>> = ({ signal }) =>
+        getDashboardData({ signal, ...axiosOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getDashboardData>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetDashboardDataQueryResult = NonNullable<Awaited<ReturnType<typeof getDashboardData>>>;
+export type GetDashboardDataQueryError = AxiosError<unknown>;
+
+export function useGetDashboardData<
+    TData = Awaited<ReturnType<typeof getDashboardData>>,
+    TError = AxiosError<unknown>,
+>(options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardData>>, TError, TData>> &
+        Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getDashboardData>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetDashboardData<
+    TData = Awaited<ReturnType<typeof getDashboardData>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardData>>, TError, TData>> &
+        Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getDashboardData>>, TError, TData>, 'initialData'>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetDashboardData<
+    TData = Awaited<ReturnType<typeof getDashboardData>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardData>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useGetDashboardData<
+    TData = Awaited<ReturnType<typeof getDashboardData>>,
+    TError = AxiosError<unknown>,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardData>>, TError, TData>>;
+    axios?: AxiosRequestConfig;
+}): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getGetDashboardDataQueryOptions(options);
 
     const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
 
