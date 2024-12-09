@@ -52,22 +52,22 @@ const Hero: React.FC = () => {
                                 <IconBox
                                     dadelay="300"
                                     icon={<i className="bi bi-clipboard-data"></i>}
-                                    title="Corporis voluptates officia eiusmod"
-                                    description="Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip"
+                                    title="Không ngừng phát triển"
+                                    description="Nỗ lực, bước vững trong lĩnh vực y tế"
                                 />
 
                                 <IconBox
                                     dadelay="400"
                                     icon={<i className="bi bi-gem"></i>}
-                                    title=""
-                                    description=""
+                                    title="Chất lượng y tế"
+                                    description="Đạt chuẩn y khoa, luôn mang đến những dịch vụ cải tiến"
                                 />
 
                                 <IconBox
                                     dadelay="500"
                                     icon={<i className="bi bi-inboxes"></i>}
-                                    title=""
-                                    description=""
+                                    title="Bảo mật thông tin"
+                                    description="Thận trọng trong bảo mật thông tin cá nhân của bệnh nhân"
                                 />
                             </div>
                         </div>
