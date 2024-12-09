@@ -2,14 +2,13 @@ import { GridActionsCellItem, GridCallbackDetails, GridColDef, GridFilterModel, 
 import React from "react";
 import { Appointment, GetInvoicesParams, Invoice, Patient } from "@/types";
 import ViewIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import UpdateModal from '../component/update-modal';
 import DetailModal from "../component/detail-modal";
 import { useDialogs, useNotifications } from "@toolpad/core";
 import { getGetInvoicesQueryKey, getInvoices, useDeleteInvoice, useGetAppointment, useGetInvoices } from "@/services/api";
 import { keepPreviousData, QueryClient, useQueryClient } from "@tanstack/react-query";
 import { camelCaseToPascalCase } from "@/utils/string-utils";
+import { InvoiceDTO } from "../validations";
 
 export default function useInvoiceTable() {
     const [filter, setFilter] = React.useState<GetInvoicesParams>({
@@ -17,18 +16,7 @@ export default function useInvoiceTable() {
         PageSize: 10,
     });
 
-    const { data, isLoading } = useGetInvoices(
-        {
-            ...filter,
-            Page: filter.Page! + 1,
-            SortBy: camelCaseToPascalCase(filter.SortBy || 'invoiceId'),
-        },
-        {
-            query: {
-                placeholderData: keepPreviousData,
-            },
-        }
-    );
+    console.log("Filter: ", filter);
     const handlePageChange = (page: GridPaginationModel) => {
         setFilter((pre) => ({
             ...pre,
@@ -38,11 +26,45 @@ export default function useInvoiceTable() {
     };
 
     const handleFilterModelChange = (model: GridFilterModel) => {
-        setFilter((pre) => ({
-            ...pre,
+        console.log("New Filter Model: ", model);
+
+        const updatedFilter: GetInvoicesParams = {
+            ...filter,
             Search: model.quickFilterValues?.[0] as string,
-        }));
+        };
+
+        if (model.items) {
+            const dateFilter = model.items.find(item => item.field === 'invoiceDate');
+            if (dateFilter) {
+                updatedFilter["InvoiceDate.Equal"] = dateFilter.value;
+            }
+        }
+
+
+        if (model.items) {
+            const priceFilter = model.items.find(item => item.field === 'totalAmount');
+            if (priceFilter) {
+                const priceRange = priceFilter.value as number[];
+
+                if (priceRange && priceRange.length === 2) {
+                    const [minPrice, maxPrice] = priceRange;
+
+                    const filteredItems = model.items.filter(item =>
+                        item.field === 'totalAmount' &&
+                        typeof item.value === 'number' &&
+                        item.value >= minPrice &&
+                        item.value <= maxPrice
+                    );
+
+                    updatedFilter["TotalAmount.In"] = filteredItems.map(item => item.value);
+                }
+            }
+        }
+
+
+        setFilter(updatedFilter);
     };
+
 
     const handleSortModelChange = (model: GridSortModel, details: GridCallbackDetails) => {
         setFilter((pre) => ({
@@ -52,9 +74,30 @@ export default function useInvoiceTable() {
         }));
     };
 
+    console.log("filter", filter);
+
+    const { data, isLoading } = useGetInvoices(
+        {
+            ...filter,
+            Page: filter.Page! + 1,
+            SortBy: camelCaseToPascalCase(filter.SortBy || "invoiceId"),
+            "InvoiceDate.GreaterThanOrEqual": filter["InvoiceDate.GreaterThanOrEqual"],
+            "InvoiceDate.LessThanOrEqual": filter["InvoiceDate.LessThanOrEqual"],
+            "TotalAmount.GreaterThanOrEqual": filter["TotalAmount.GreaterThanOrEqual"],
+            "TotalAmount.LessThanOrEqual": filter["TotalAmount.LessThanOrEqual"],
+        },
+        {
+            query: {
+                placeholderData: keepPreviousData,
+            },
+        }
+    );
+
+    console.log("Data from useGetInvoices: ", data);
+
     const dialogs = useDialogs();
-    const queryClient = useQueryClient();
     const { show } = useNotifications();
+    const queryClient = useQueryClient();
     const { mutateAsync } = useDeleteInvoice({
         mutation: {
             onSuccess: () => {
@@ -69,7 +112,7 @@ export default function useInvoiceTable() {
         }
     });
 
-    const columns: GridColDef[] = React.useMemo(() => {
+    const columns: GridColDef<InvoiceDTO>[] = React.useMemo(() => {
         return [
             { field: 'invoiceId', headerName: 'ID', width: 150 },
             {
@@ -99,11 +142,13 @@ export default function useInvoiceTable() {
                     const time = params.appointmentTime;
                     return `${day}/${month}/${year} - ${time}`;
                 },
+                filterable: true,
             },
             {
                 field: 'totalAmount',
                 headerName: 'Tổng tiền',
-                width: 150
+                width: 150,
+                filterable: true,
             },
             {
                 field: 'status',
@@ -116,7 +161,6 @@ export default function useInvoiceTable() {
                 width: 100,
                 getActions: (params: GridRowParams<Invoice>) => {
                     const id = params.row.invoiceId as number;
-                    console.log('params: ', params.row);
                     return [
                         <GridActionsCellItem
                             showInMenu
@@ -186,8 +230,4 @@ export default function useInvoiceTable() {
             value: filter,
         }
     }
-}
-
-function setFilterModel(arg0: (prevModel: any) => any) {
-    throw new Error("Function not implemented.");
 }

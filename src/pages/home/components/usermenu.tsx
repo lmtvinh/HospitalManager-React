@@ -60,7 +60,7 @@ export default function UserMenu() {
                         </Link>
                     </div>
                 </MenuItem>
-                <MenuItem >
+                {profile?.patient && (<MenuItem >
                     <div>
                         <Typography variant="subtitle1" fontWeight="bold" className="text-black">
 
@@ -73,8 +73,8 @@ export default function UserMenu() {
                             Lịch sử khám bệnh
                         </Link>
                     </div>
-                </MenuItem>
-                {profile?.roles?.includes('doctor') && (
+                </MenuItem>)}
+                {profile?.doctor && (
                     <MenuItem onClick={() => navigate('/admin')}>
                         <LogoutIcon sx={{ marginRight: 1 }} />
                         Quản lý

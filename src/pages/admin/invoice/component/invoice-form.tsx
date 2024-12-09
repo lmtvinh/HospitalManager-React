@@ -1,12 +1,10 @@
-import { useGetAppointments, useGetDepartments, useGetPatient, useGetPatients } from "@/services/api";
+import { useGetAppointments } from "@/services/api";
 import { Controller, UseFormReturn } from "react-hook-form";
 import FormInput from "../../components/form/FormInput";
 import { Autocomplete, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import React from "react";
-import { Patient } from "../../patient/validations";
-import { MenuItem } from '@mui/material';
 
 interface InvoiceFormProps {
     form: UseFormReturn<any>;

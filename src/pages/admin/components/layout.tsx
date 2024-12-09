@@ -17,7 +17,6 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import PersonIcon from '@mui/icons-material/Person';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import EmergencyIcon from '@mui/icons-material/Emergency';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PeopleIcon from '@mui/icons-material/People';
 import { THEME } from '@/configs/themes';
@@ -89,7 +88,6 @@ export default function AdminLayoutComponent() {
     const location = useLocation();
     const pathname = location.pathname;
     const searchParams = React.useMemo(() => new URLSearchParams(location.search), [location.search]);
-
     const router: Router = React.useMemo(
         () => ({
             navigate: (url: string | URL) => {
