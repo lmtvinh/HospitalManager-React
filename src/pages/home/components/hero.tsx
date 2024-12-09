@@ -32,14 +32,14 @@ const Hero: React.FC = () => {
                 <div className="content row gy-4">
                     <div className="col-lg-4 d-flex align-items-stretch">
                         <div className="why-box" data-aos="zoom-out" data-aos-delay="200">
-                            <h3>Tại sao nên chọn NETHos?</h3>
-                            <p>"NETHos – Tận tâm, Chuyên nghiệp, Hiện đại ..."</p>
+                            <h3>Đặt lịch</h3>
+                            <p>"Đặt lịch hẹn khám trước để được chọn bác sĩ và dịch vụ phù hợp, nhanh chóng"</p>
                             <div className="text-center">
                                 <Button
-                                    href="#about"
+                                    href="#appointment"
                                     className="more-btn text-decoration-none"
                                 >
-                                    <span>Xem thêm</span>
+                                    <span>Đặt lịch khám</span>
                                     <i className="bi bi-chevron-right"></i>
                                 </Button>
                             </div>
