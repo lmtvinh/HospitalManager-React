@@ -82,7 +82,7 @@ export default function DiagnosisForm({ form, type, initAppointmentId }: Diagnos
                         <DateTimePicker
                             label="Ngày chuẩn đoán"
                             {...rest}
-                            value={value ? dayjs(value) : undefined}
+                            value={value ? dayjs(value) : dayjs()}
                             dayOfWeekFormatter={(day) => day.format('dd')}
                         />
                     );

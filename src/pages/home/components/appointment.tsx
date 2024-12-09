@@ -18,16 +18,22 @@ interface FormData {
 }
 
 const Appointment: React.FC = () => {
-    const { register, watch, handleSubmit, control } = useForm();
+    const { register, watch, handleSubmit, control ,setValue} = useForm();
     const { data: departments } = useGetDepartments({
         Page: 1,
         PageSize: 10000,
     });
     const canSelectDoctor = !!watch('date') && !!watch('departmentId');
     const profile = useUserProfile();
+    React.useEffect(() => {
+        setValue('name', profile?.patient?.name);
+        setValue('email', profile?.email);
+        setValue('phone', profile?.phoneNumber);
+
+    }, [profile]);
     const { data: doctors, isLoading: loadingDoctors } = useGetFreeDoctors(
         {
-            AppointmentDate: dayjs(watch('date')).toISOString(),
+            AppointmentDate: dayjs(watch('date')).add(7, 'hour').toISOString(),
             DepartmentId: watch('departmentId'),
         },
         {
@@ -42,7 +48,7 @@ const Appointment: React.FC = () => {
         try {
             await mutateAsync({
                 data: {
-                    appointmentDate: dayjs(formData.date).toISOString(),
+                    appointmentDate: dayjs(formData.date).add(7, 'hour').toISOString(),
                     doctorId: Number(formData.doctorId),
                     email: formData.email,
                     phoneNumber: formData.phone,
@@ -74,7 +80,9 @@ const Appointment: React.FC = () => {
                                 id="name"
                                 placeholder="Họ và tên"
                                 required
+                                readOnly={!!profile?.patient?.name}
                                 {...register('name')}
+
                             />
                         </div>
 
@@ -85,6 +93,7 @@ const Appointment: React.FC = () => {
                                 id="email"
                                 placeholder="Địa chỉ email"
                                 required
+                                readOnly={!!profile?.email}
                                 {...register('email')}
                             />
                         </div>
@@ -95,6 +104,7 @@ const Appointment: React.FC = () => {
                                 className="form-control"
                                 id="phone"
                                 placeholder="Số điện thoại"
+                                readOnly={!!profile?.phoneNumber}
                                 required
                                 {...register('phone')}
                             />
