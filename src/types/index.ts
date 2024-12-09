@@ -6,10 +6,12 @@
  */
 
 export * from './appointment';
+export * from './appointmentByDepartmentDTO';
 export * from './appointmentDTO';
 export * from './appointmentDTOPaginated';
 export * from './assignDoctorParams';
 export * from './closeTicketParams';
+export * from './dashboardDTO';
 export * from './department';
 export * from './departmentDTO';
 export * from './departmentDTOPaginated';
@@ -65,3 +67,5 @@ export * from './tokenDTO';
 export * from './uploadFileBody';
 export * from './userProfileDTO';
 export * from './weatherForecast';
+export * from './weeklyAppointmentDTO';
+export * from './weeklyRevenueDTO';
