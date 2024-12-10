@@ -15,7 +15,6 @@ const Header = () => {
                 <div className="container d-flex justify-content-center justify-content-md-between">
                     <div className="contact-info d-flex align-items-center">
                         <i className="bi bi-envelope d-flex align-items-center">
-                            {/* <a href="mailto:contact@example.com">contact@example.com</a> */}
                             <Button title="contact@example.com" href="mailto:contact@example.com"></Button>
                         </i>
                         <i className="bi bi-phone d-flex align-items-center ms-4">
@@ -29,12 +28,14 @@ const Header = () => {
             <div className="branding d-flex align-items-center">
                 <div className="container position-relative d-flex align-items-center justify-content-between">
                     <Link to="/" className="text-decoration-none logo d-flex align-items-center me-auto">
-                        <h1 className="sitename">NETHos</h1>
+                        <Link to="/#hero" className="text-decoration-none" css={{ fontSize: '30px', color: '#126893', fontWeight: 500 }}>
+                            NETHos
+                        </Link>
                     </Link>
                     <nav id="navmenu" className="navmenu">
                         <ul>
                             <li>
-                                <Link to="/" className="text-decoration-none active">
+                                <Link to="/#hero" className="text-decoration-none active">
                                     Trang chủ
                                 </Link>
                             </li>

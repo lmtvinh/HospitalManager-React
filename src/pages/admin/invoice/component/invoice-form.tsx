@@ -5,10 +5,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import React from "react";
-<<<<<<< HEAD
 import { Invoice } from "../validations";
-=======
->>>>>>> 37c101b4fe46f6722dc996cf928f7e43faee9743
 
 interface InvoiceFormProps {
     form: UseFormReturn<Invoice>;

@@ -1,12 +1,5 @@
 import React from "react";
 import ContactForm from "./contactForm";
-import InfoItem from "@/pages/home/components/footer/infoItem";
-
-interface InfoItemProps {
-    icon: string;
-    title: string;
-    description: string;
-}
 
 const Contact: React.FC = () => {
     return (
@@ -26,32 +19,6 @@ const Contact: React.FC = () => {
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                 ></iframe>
-            </div>
-
-            <div className="container" data-aos="fade-up" data-aos-delay="300">
-                <div className="row gy-4">
-                    <div className="col-lg-4 text-start">
-                        <InfoItem
-                            icon="bi bi-geo-alt"
-                            title="Địa chỉ"
-                            description="273 Đ. An Dương Vương, Phường 3, Quận 5, TP Hồ Chí Minh, Việt Nam"
-                        />
-                        <InfoItem
-                            icon="bi bi-telephone"
-                            title="Hotline"
-                            description="1800 5678  "
-                        />
-                        <InfoItem
-                            icon="bi bi-envelope"
-                            title="Email"
-                            description="https://sgu.edu.vn/"
-                        />
-                    </div>
-
-                    <div className="col-lg-8">
-                        <ContactForm />
-                    </div>
-                </div>
             </div>
         </section>
     );

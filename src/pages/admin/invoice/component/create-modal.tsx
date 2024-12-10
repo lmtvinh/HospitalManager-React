@@ -63,8 +63,8 @@ function FromDialog({ payload, open, onClose }: DialogProps<{ initAppointmentId?
 
         const preparedData = {
             ...data,
-            invoiceDate: dayjs(data.invoiceDate).toISOString(), // Convert `invoiceDate` to ISO format
-            appointmentId: data.appointmentId || 0,            // Ensure default value is 0
+            invoiceDate: dayjs(data.invoiceDate).toISOString(),
+            appointmentId: data.appointmentId || 0,
         };
 
         console.log('Prepared data for API:', preparedData);

@@ -5,6 +5,12 @@ import './main.css';
 import Button from '@/components/button';
 import InfoItem from './infoItem';
 
+interface InfoItemProps {
+    icon: string;
+    title: string;
+    description: string;
+}
+
 const Footer: FC = () => {
     return (
         <footer id="footer" className="footer light-background pb-5 mb-0">
@@ -42,12 +48,13 @@ const Footer: FC = () => {
                             </Button>
                         </div>
                     </div>
-                    <div className='col-lg-8 col-md-6 footer-about'>
+
+                    <div className='col-lg-4 col-md-6 footer-about'>
                         <div className='col-lg-2 col-md-3 footer-links text-start ms-5'>
                             <h4>Khác</h4>
                             <ul>
                                 <li>
-                                    <Button href="#" children="Trang chủ" className='btn-link-footer' />
+                                    <Button href="#hero" children="Trang chủ" className='btn-link-footer' />
                                 </li>
                                 <li>
                                     <Button href="#about" children="Giới thiệu" className='btn-link-footer' />
